@@ -1,20 +1,8 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import Navigator from './routes/navigator';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+	ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+	return ( <Navigator /> );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
