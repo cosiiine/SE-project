@@ -4,6 +4,8 @@ import Records from '../screens/captain/records';
 import Member from '../screens/captain/member';
 import SignRecords from '../screens/captain/signRecords';
 import Setting from '../screens/setting';
+import EditRecords from '../screens/captain/editRecords';
+import AddMember from '../screens/captain/addMember';
 
 const tab = createBottomTabNavigator();
 
@@ -35,6 +37,16 @@ export default function CaptainStack() {
                 name='Setting'
                 component={Setting}
                 options={{title: 'Setting'}}
+            />
+            <tab.Screen
+                name='EditRecords'
+                component={EditRecords}
+                options={{title: 'EditRecords'}}
+            />
+            <tab.Screen
+                name='AddMember'
+                component={AddMember}
+                options={{title: 'AddMember'}}
             />
         </tab.Navigator>
     );

@@ -47,16 +47,16 @@ export default function Member({ navigation }) {
                                     value={search}
                                 />
                             </View>
-                            <TouchableOpacity style={[globalStyles.button, styles.add]}>
+                            <TouchableOpacity style={[globalStyles.button, styles.add]} onPress={()=>{navigation.navigate('AddMember')}}>
                                 <Ionicons name='add-outline' size={30} color='white' />
                             </TouchableOpacity>
                         </View>
-                        <Card status={false} pressHandler={pressHandler} />
+                        <Card showStatus={false} pressHandler={pressHandler} />
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
                         <TouchableOpacity style={styles.delete}>
                             <Ionicons name='ios-trash-sharp' size={30} color='white' />
-                            <Text style={{fontWeight: 'bold', fontSize: 20, color: 'white', marginLeft: 10}}>delete</Text>
+                            <Text style={{fontWeight: 'bold', fontSize: 20, color: 'white', marginLeft: 10, letterSpacing: 1}}>delete</Text>
                         </TouchableOpacity>
                         <View style={styles.block}>
                             <View style={styles.circle}>
@@ -85,7 +85,6 @@ export default function Member({ navigation }) {
 }
 const styles = StyleSheet.create({
     add: {
-        borderRadius: 5,
         width: 50,
         height: 50,
         margin: 0,

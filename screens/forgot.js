@@ -23,7 +23,7 @@ export default function Forgot({ navigation }) {
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss();}}>
             <View style={globalStyles.container}>
-                <View style={globalStyles.appbar}>
+                <View style={[globalStyles.appbar, {justifyContent: 'flex-start'}]}>
                     <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={() => {navigation.goBack();}}>
                         <Ionicons name='chevron-back-outline' size={30} style={{marginLeft: 10}} />
                         <Text style={globalStyles.titleText}>Sign In</Text>
@@ -42,7 +42,7 @@ export default function Forgot({ navigation }) {
                         secureTextEntry={true}
                         onChangeText={setTwice}
                     />
-                    <TouchableOpacity style={globalStyles.button} onPress={() => {pressHandler(account, twice)}}>
+                    <TouchableOpacity style={[globalStyles.button, {width: 200}]} onPress={() => {pressHandler(account, twice)}}>
                         <Text style={[globalStyles.titleText, {fontSize: 20, color: 'white'}]}>Reset</Text>
                     </TouchableOpacity>
                 </View>

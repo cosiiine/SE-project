@@ -156,7 +156,7 @@ export default function SignIn({ navigation }) {
                     onChangeText={setPassword}
                     value={password}
                 />
-                <TouchableOpacity style={globalStyles.button} onPress={() => pressHandler(account, password)}>
+                <TouchableOpacity style={[globalStyles.button, {width: 200}]} onPress={() => pressHandler(account, password)}>
                     <Text style={[globalStyles.titleText, {fontSize: 20, color: 'white'}]}>Sign in</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {navigation.navigate('Forgot');}}>
