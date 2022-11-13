@@ -40,7 +40,7 @@ export default function SignIn({ navigation }) {
                 //     // to sailor page
                 // }
                 
-                navigation.navigate('CaptainStack');
+                navigation.navigate('WorkerStack');
             }).catch(() => {
                 Alert.alert('Wrong!', 'Account or password wrong', [
                     {text: 'OK', onPress: () => console.log('Login error') },

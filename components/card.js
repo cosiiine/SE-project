@@ -31,7 +31,7 @@ export default function Card({ showStatus, pressHandler, data}) {
         if (status == 'accepted') {
             return <Ionicons name='checkmark-circle' size={40} color={'#19AC9F'} style={{position: 'absolute', right: 0}}/>
         }
-        else if (status == 'checking') {
+        else if (status == 'pending') {
             return <Ionicons name='ellipsis-horizontal-circle-sharp' size={40} color={'#F5C63E'} style={{position: 'absolute', right: 0}}/>
         }
         else if (status == 'denied') {

@@ -45,8 +45,7 @@ export default function Setting({ navigation }) {
                         <View style={[globalStyles.circle, {backgroundColor: '#E4E7EA'}]}>
                             <Ionicons name='person' size={18} color='#9EACB9'/>
                         </View>
-                        {/* 還沒設name */}
-                        <Text style={globalStyles.contentText}>User</Text>
+                        <Text style={globalStyles.contentText}>{global.user.name}</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={[globalStyles.frame, {flex: 9, flexDirection: 'row'}]}>
@@ -55,7 +54,7 @@ export default function Setting({ navigation }) {
                             <Ionicons name='person' size={80} color='#9EACB9' />
                         </View>
                     </View>
-                    <View style={[styles.block, {flex: 3, justifyContent: 'space-around', borderLeftColor: '#9EACB9', borderLeftWidth: 1}]}>
+                    <View style={styles.block}>
                         <View style={{marginHorizontal: 100, alignItems: 'center'}}>
                             {/* 還沒連結資料 */}
                             <View style={{flexDirection: 'row'}}>

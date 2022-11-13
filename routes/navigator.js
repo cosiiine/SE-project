@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import SignIn from '../screens/signIn';
 import Forgot from '../screens/forgot';
 import CaptainStack from './captainStack';
+import WorkerStack from './workerStack';
 
 const stack = createStackNavigator();
 
@@ -28,6 +29,11 @@ export default function Navigator() {
                     name='CaptainStack'
                     component={CaptainStack}
                     options={{title: 'Captain'}}
+                />
+                <stack.Screen
+                    name='WorkerStack'
+                    component={WorkerStack}
+                    options={{title: 'Worker'}}
                 />
             </stack.Navigator>
         </NavigationContainer>

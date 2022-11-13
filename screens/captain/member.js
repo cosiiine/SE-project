@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import { globalStyles } from '../../styles/global';
-import Card from '../../compoments/card';
-import AppBar from '../../compoments/appBar';
+import Card from '../../components/card';
+import AppBar from '../../components/appBar';
 import { db,createUserTable,deleteAllUsers,insertUser,getAllUsers, deleteUser} from '../../db/user';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -31,28 +31,10 @@ export default function Member({ navigation }) {
         setPhone(phone);
     }
 
-    const deleteHandler = () => {
-        if(account.length == 0){
-            Alert.alert('Wrong!', 'Please select a member.', [
-                {text: 'OK', onPress: () => console.log('Delete failed.') },
-            ]);
-        }else{
-            deleteUser(account).then((results)=>{
-                Alert.alert('Notice!', `Member '${account}' has been deleted.`, [{text: 'OK'}]);
-            }).catch(()=>{
-                Alert.alert('Wrong!', 'Delete member encounters an error', [
-                    {text: 'OK', onPress: () => console.log('Delete member error') },
-                ])
-            });
-            pressHandler('','',''); // reset to 0
-            fetchMembers();
-        }
-    }
-    
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss();}}>
             <View style={globalStyles.container}>
-                <AppBar title={'漁工勤務登錄系統  |  船員管理'} visible={true} navigation={navigation} />
+                <AppBar title={'漁工勤務登錄系統  |  船員管理'} navigation={navigation} />
                 <View style={globalStyles.allContent}>
                     <View style={[globalStyles.frame, globalStyles.drawer]}>
                         <TouchableOpacity onPress={() => {navigation.navigate('Records');}}>
@@ -70,6 +52,7 @@ export default function Member({ navigation }) {
                     </View>
                     <View style={[globalStyles.frame, globalStyles.member]}>
                         <View style={[globalStyles.allContent, {flex: 0, width: '100%', marginBottom: 5}]}>
+                            {/* 還沒有功能 */}
                             <View style={styles.search}>
                                 <Ionicons name='search' size={18} style={globalStyles.color} />
                                 <TextInput 
@@ -86,7 +69,7 @@ export default function Member({ navigation }) {
                         <Card showStatus={false} pressHandler={pressHandler} data={members}/>
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
-                        <TouchableOpacity style={styles.delete} onPress={deleteHandler}>
+                        <TouchableOpacity style={styles.delete}>
                             <Ionicons name='ios-trash-sharp' size={30} color='white' />
                             <Text style={{fontWeight: 'bold', fontSize: 20, color: 'white', marginLeft: 10, letterSpacing: 1}}>delete</Text>
                         </TouchableOpacity>
@@ -102,7 +85,7 @@ export default function Member({ navigation }) {
                             </View>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={[globalStyles.contentText, styles.text]}>身分證/居留證</Text>
-                                <Text style={[globalStyles.contentText, styles.text]}>{account}</Text>
+                                <Text style={[globalStyles.contentText, styles.text]}>{idNumber}</Text>
                             </View>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={[globalStyles.contentText, styles.text]}>連絡電話</Text>

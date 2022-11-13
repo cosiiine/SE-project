@@ -11,8 +11,7 @@ export default function AppBar({ title, navigation }) {
                 <View style={[globalStyles.circle, {backgroundColor: '#E4E7EA'}]}>
                     <Ionicons name='person' size={18} color='#9EACB9'/>
                 </View>
-                {/* 還沒設name */}
-                <Text style={globalStyles.contentText}>User</Text>
+                <Text style={globalStyles.contentText}>{global.user.name}</Text>
             </TouchableOpacity>
         </View>
     );

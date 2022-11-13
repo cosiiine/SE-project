@@ -96,5 +96,14 @@ export const globalStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#E1DEFC',
-    }
+    },
+    grid: {
+        borderTopWidth: 2,
+        borderBottomWidth: 2,
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        borderColor: '#9EACB9',
+        paddingHorizontal: 12,
+        paddingVertical: 25,
+    },
 });
