@@ -20,7 +20,7 @@ export default function EditRecords({ navigation }) {
         const list = [];
         for (let i = 0; i < 11; i++) {
             list.push(
-                <View style={{paddingTop: 15}}>
+                <View style={{paddingTop: 15}} key={i}>
                     <Text>{num + i}</Text>
                     <View style={{flexDirection: 'row', paddingTop: 5}}>
                         <TouchableOpacity style={styles.grid}></TouchableOpacity>
@@ -30,7 +30,7 @@ export default function EditRecords({ navigation }) {
             )
         }
         list.push(
-            <View style={{paddingTop: 15}}>
+            <View style={{paddingTop: 15}} key={11}>
                 <Text>{num + 11}</Text>
                 <View style={{flexDirection: 'row', paddingTop: 5}}>
                     <TouchableOpacity style={styles.grid}></TouchableOpacity>

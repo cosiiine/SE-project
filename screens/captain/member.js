@@ -1,22 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import { globalStyles } from '../../styles/global';
 import Card from '../../compoments/card';
 import AppBar from '../../compoments/appBar';
+import { db,createUserTable,deleteAllUsers,insertUser,getAllUsers, deleteUser} from '../../db/user';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Member({ navigation }) {
     const [search, setSearch] = useState('');
     const [name, setName] = useState('');
-    const [idNumber, setIdNumber] = useState('');
+    const [account, setAccount] = useState('');
     const [phone, setPhone] = useState('');
+    const [members, setMembers] = useState([]);
 
-    const pressHandler = ( name, idNumber, phone ) => {
+    const isFocused = useIsFocused(); // 此頁面被focus的狀態
+
+    useEffect(()=>{fetchMembers();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call fetchmember
+
+    async function fetchMembers(){
+        getAllUsers().then((results)=>{
+            setMembers(results);
+            console.log('reset members from member page');
+        }).catch(()=>{});
+    }
+
+    const pressHandler = ( name, account, phone ) => {
         setName(name);
-        setIdNumber(idNumber);
+        setAccount(account);
         setPhone(phone);
     }
 
+    const deleteHandler = () => {
+        if(account.length == 0){
+            Alert.alert('Wrong!', 'Please select a member.', [
+                {text: 'OK', onPress: () => console.log('Delete failed.') },
+            ]);
+        }else{
+            deleteUser(account).then((results)=>{
+                Alert.alert('Notice!', `Member '${account}' has been deleted.`, [{text: 'OK'}]);
+            }).catch(()=>{
+                Alert.alert('Wrong!', 'Delete member encounters an error', [
+                    {text: 'OK', onPress: () => console.log('Delete member error') },
+                ])
+            });
+            pressHandler('','',''); // reset to 0
+            fetchMembers();
+        }
+    }
+    
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss();}}>
             <View style={globalStyles.container}>
@@ -51,10 +83,10 @@ export default function Member({ navigation }) {
                                 <Ionicons name='add-outline' size={30} color='white' />
                             </TouchableOpacity>
                         </View>
-                        <Card showStatus={false} pressHandler={pressHandler} />
+                        <Card showStatus={false} pressHandler={pressHandler} data={members}/>
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
-                        <TouchableOpacity style={styles.delete}>
+                        <TouchableOpacity style={styles.delete} onPress={deleteHandler}>
                             <Ionicons name='ios-trash-sharp' size={30} color='white' />
                             <Text style={{fontWeight: 'bold', fontSize: 20, color: 'white', marginLeft: 10, letterSpacing: 1}}>delete</Text>
                         </TouchableOpacity>
@@ -70,7 +102,7 @@ export default function Member({ navigation }) {
                             </View>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={[globalStyles.contentText, styles.text]}>身分證/居留證</Text>
-                                <Text style={[globalStyles.contentText, styles.text]}>{idNumber}</Text>
+                                <Text style={[globalStyles.contentText, styles.text]}>{account}</Text>
                             </View>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={[globalStyles.contentText, styles.text]}>連絡電話</Text>

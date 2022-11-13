@@ -2,22 +2,33 @@ import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View, Text, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert } from 'react-native';
 import { globalStyles } from '../styles/global';
+import { db,createUserTable,deleteAllUsers,insertUser,editUser} from '../db/user';
 
 export default function Setting({ navigation }) {
     const [ password, setPassword ] = useState('');
     const [ twice, setTwice ] = useState('');
 
     const pressHandler = (password, twice) => {
-        if (password != twice || password.length == 0) {
+        if (password != twice || password.length < 3) {
             Alert.alert('Wrong!', 'Please try again.', [
                 {text: 'OK', onPress: () => console.log('Change failed.') },
             ]);
         }
         else {
             console.log("Reset: ", password);
-            Alert.alert('Notice!', 'Your password has been changed.', [{text: 'OK'}]);
-            setPassword('');
-            setTwice('');
+            editUser(global.user.account,password).then((results) => {
+                // console.log(results);
+                global.user.password = password;
+                
+                Alert.alert('Notice!', 'Your password has been changed.', [{text: 'OK'}]);
+            }).catch(() => {
+                Alert.alert('Wrong!', 'Change password encounters an error', [
+                    {text: 'OK', onPress: () => console.log('Change password error') },
+                ])
+            });
+
+            // setPassword('');
+            // setTwice('');
         }
     }
 
@@ -49,11 +60,11 @@ export default function Setting({ navigation }) {
                             {/* 還沒連結資料 */}
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={[globalStyles.contentText, styles.text]}>姓名</Text>
-                                <Text style={[globalStyles.contentText, styles.text, {width: 200}]}>user name</Text>
+                                <Text style={[globalStyles.contentText, styles.text, {width: 200}]}>{global.user.name}</Text>
                             </View>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={[globalStyles.contentText, styles.text]}>身分證/居留證</Text>
-                                <Text style={[globalStyles.contentText, styles.text, {width: 200}]}>X123456789</Text>
+                                <Text style={[globalStyles.contentText, styles.text, {width: 200}]}>{global.user.account}</Text>
                             </View>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={[globalStyles.contentText, styles.text]}>連絡電話</Text>
