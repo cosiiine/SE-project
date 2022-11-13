@@ -33,14 +33,14 @@ export default function SignIn({ navigation }) {
                 console.log(user);
                 global.user = user;
                 
-                // if(user.account == 'captain'){
-                //     // to captain page
-                // }
-                // else{
-                //     // to sailor page
-                // }
+                if(user.account == 'captain'){
+                    navigation.navigate('CaptainStack');
+                }
+                else{
+                    navigation.navigate('WorkerStack');
+                }
                 
-                navigation.navigate('WorkerStack');
+                
             }).catch(() => {
                 Alert.alert('Wrong!', 'Account or password wrong', [
                     {text: 'OK', onPress: () => console.log('Login error') },
