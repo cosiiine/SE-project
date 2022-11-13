@@ -24,9 +24,6 @@ export default function SignRecords({ navigation }) {
                     <TouchableOpacity onPress={() => {navigation.navigate('Records');}}>
                         <Ionicons name='grid' style={globalStyles.drawerButton} />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {navigation.navigate('Member');}}>
-                        <Ionicons name='ios-people-sharp' style={globalStyles.drawerButton} />
-                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => {navigation.navigate('SignRecords');}}>
                         <Ionicons name='time' style={[globalStyles.drawerButton, globalStyles.color]} />
                     </TouchableOpacity>

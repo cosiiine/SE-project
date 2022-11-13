@@ -7,7 +7,7 @@ export default function Card({ showStatus, pressHandler }) {
     const [member, setMember] = useState([
         {name: '漁工1', status: 'accepted', idNumber: '12345678', phone: '0000-000000', key: '1'},
         {name: '漁工2', status: 'denied', idNumber: '12345678', phone: '0000-000000', key: '2'},
-        {name: '漁工3', status: 'checking', idNumber: '12345678', phone: '0000-000000', key: '3'},
+        {name: '漁工3', status: 'pending', idNumber: '12345678', phone: '0000-000000', key: '3'},
         {name: '漁工4', status: 'accepted', idNumber: '12345678', phone: '0000-000000', key: '4'},
         {name: '漁工5', status: 'accepted', idNumber: '12345678', phone: '0000-000000', key: '5'},
         {name: '漁工6', status: 'accepted', idNumber: '12345678', phone: '0000-000000', key: '6'},
@@ -26,7 +26,7 @@ export default function Card({ showStatus, pressHandler }) {
         if (status == 'accepted') {
             return <Ionicons name='checkmark-circle' size={40} color={'#19AC9F'} style={{position: 'absolute', right: 0}}/>
         }
-        else if (status == 'checking') {
+        else if (status == 'pending') {
             return <Ionicons name='ellipsis-horizontal-circle-sharp' size={40} color={'#F5C63E'} style={{position: 'absolute', right: 0}}/>
         }
         else if (status == 'denied') {

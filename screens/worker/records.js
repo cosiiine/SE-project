@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { globalStyles } from '../../styles/global';
 import Card from '../../components/card';
 import AppBar from '../../components/appBar';
@@ -10,8 +10,6 @@ export default function Records({ navigation }) {
     const [date, setDate] = useState(new Date());
     const [text, setText] = useState(date.getFullYear()+ '/' + (date.getMonth() + 1) + '/' + date.getDate());
     const [show, setShow] = useState((Platform.OS === 'ios'));
-    const [search, setSearch] = useState('');
-
     const [name, setName] = useState('');
     const [status, setStatus] = useState('');
 
@@ -77,16 +75,18 @@ export default function Records({ navigation }) {
                     <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#D34C5E'}]}>Denied</Text>
                 </View>
         }
-        return <Text style={[globalStyles.titleText]}> </Text>
+        return <View style={[styles.status]}>
+                    <Ionicons name='help-circle' size={40} color={'#9EACB9'}/>
+                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#9EACB9'}]}>Unkown</Text>
+                </View>
     };
     function showContent() {
-        let results = [];
-        results.push(
-            <View style={[styles.block, {flex: 2}]} key={0}>
+        return(
+            <View style={styles.block}>
                 {showStatus()}
                 {grid(0)}
                 {grid(12)}
-                <View style={{flexDirection: 'row', marginTop: 40}}>
+                <View style={{flexDirection: 'row', marginVertical: 80}}>
                     <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
                         <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
                             <View style={[styles.circle, {backgroundColor: '#D34C5E'}]} />
@@ -110,24 +110,7 @@ export default function Records({ navigation }) {
                 </View>
             </View>
         );
-        results.push(
-            <View style={[styles.block, {flex: 1, borderTopColor: '#9EACB9', borderTopWidth: 1}]} key={1}>
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={[globalStyles.contentText, styles.text]}>姓名</Text>
-                    <Text style={[globalStyles.contentText, styles.text, {textAlign: 'center'}]}>{name}</Text>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={[globalStyles.contentText, styles.text]}>當日工作時數</Text>
-                    <Text style={[globalStyles.contentText, styles.text, {textAlign: 'center'}]}>123</Text>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={[globalStyles.contentText, styles.text]}>當月工作時數</Text>
-                    <Text style={[globalStyles.contentText, styles.text, {textAlign: 'center'}]}>123</Text>
-                </View>
-            </View>
-        );
-        return results;
-    }
+    };
     
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss();}}>
@@ -138,9 +121,6 @@ export default function Records({ navigation }) {
                         <TouchableOpacity onPress={() => {navigation.navigate('Records');}}>
                             <Ionicons name='grid' style={[globalStyles.drawerButton, globalStyles.color]} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {navigation.navigate('Member');}}>
-                            <Ionicons name='ios-people-sharp' style={globalStyles.drawerButton} />
-                        </TouchableOpacity>
                         <TouchableOpacity onPress={() => {navigation.navigate('SignRecords');}}>
                             <Ionicons name='time' style={globalStyles.drawerButton} />
                         </TouchableOpacity>
@@ -149,34 +129,20 @@ export default function Records({ navigation }) {
                         </TouchableOpacity>
                     </View>
                     <View style={[globalStyles.frame, globalStyles.member]}>
-                        <View style={[globalStyles.allContent, {flex: 0, width: '100%'}]}>
-                            <TouchableOpacity onPress={() => {setShow(true)}} style={styles.date}>
-                                <Ionicons name='calendar-sharp' size={18} style={globalStyles.color} />
-                                {(Platform.OS === 'android') && <Text style={[globalStyles.contentText, globalStyles.color, {flex: 1, paddingHorizontal: 5}]}>{text}</Text>}
-                                {show && (
-                                    <DateTimePicker
-                                        style={{flex: 1}}
-                                        testID="dateTimePicker"
-                                        value={date}
-                                        mode={'date'}
-                                        onChange={onChange}
-                                        maximumDate={new Date()} // ?
-                                    />
-                                )}
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[globalStyles.button, styles.add]} onPress={()=>{navigation.navigate('EditRecords')}}>
-                                <Ionicons name='add-outline' size={30} color='white' />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.search}>
-                            <Ionicons name='search' size={18} style={globalStyles.color} />
-                            <TextInput 
-                                placeholder='name'
-                                style={[globalStyles.contentText, {flex: 1, paddingHorizontal: 5}]}
-                                onChangeText={setSearch}
-                                value={search}
-                            />
-                        </View>
+                        <TouchableOpacity onPress={() => {setShow(true)}} style={styles.date}>
+                            <Ionicons name='calendar-sharp' size={18} style={globalStyles.color} />
+                            {(Platform.OS === 'android') && <Text style={[globalStyles.contentText, globalStyles.color, {flex: 1, paddingHorizontal: 5}]}>{text}</Text>}
+                            {show && (
+                                <DateTimePicker
+                                    style={{flex: 1}}
+                                    testID="dateTimePicker"
+                                    value={date}
+                                    mode={'date'}
+                                    onChange={onChange}
+                                    maximumDate={new Date()} // ?
+                                />
+                            )}
+                        </TouchableOpacity>
                         <Card showStatus={true} pressHandler={pressHandler}/>
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
@@ -195,40 +161,19 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 5,
         paddingHorizontal: 10,
-        flex: 1,
-    },
-    add: {
-        width: 50,
         height: 50,
-        margin: 0,
-        marginLeft: 10,
-    },
-    search: {
-        alignItems: 'center',
-        flexDirection: 'row',
-        width: '100%',
-        borderColor: '#D1C9FB',
-        borderWidth: 2,
-        borderRadius: 5,
-        height: 40,
-        margin: 5,
-        paddingLeft: 10,
     },
     block: {
         alignItems: 'center',
-        justifyContent: 'center',
         width: '90%',
-    },
-    text: {
-        width: 150,
-        marginVertical: 5,
     },
     status: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginBottom: 50,
     },
     circle: {
-        width: 20,
+        width: 20, 
         height: 20,
         borderRadius: 10,
     }

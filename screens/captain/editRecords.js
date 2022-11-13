@@ -17,24 +17,33 @@ export default function EditRecords({ navigation }) {
         setText(currentDate.getFullYear()+ '/' + (currentDate.getMonth() + 1) + '/' + currentDate.getDate());
     };
     function grid(num) {
-        const list = [];
-        for (let i = 0; i < 11; i++) {
+        let list = [];
+        list.push(
+            <View style={{paddingTop: 15}} key={0}>
+                <Text>{num}</Text>
+                <View style={{flexDirection: 'row', paddingTop: 5}}>
+                    <TouchableOpacity style={[globalStyles.grid, styles.grid, {borderLeftWidth: 2}]}></TouchableOpacity>
+                    <TouchableOpacity style={[globalStyles.grid, styles.grid]}></TouchableOpacity>
+                </View>
+            </View>
+        )
+        for (let i = 1; i < 11; i++) {
             list.push(
-                <View style={{paddingTop: 15}}>
+                <View style={{paddingTop: 15}} key={i}>
                     <Text>{num + i}</Text>
                     <View style={{flexDirection: 'row', paddingTop: 5}}>
-                        <TouchableOpacity style={styles.grid}></TouchableOpacity>
-                        <TouchableOpacity style={styles.grid}></TouchableOpacity>
+                        <TouchableOpacity style={[globalStyles.grid, styles.grid]}></TouchableOpacity>
+                        <TouchableOpacity style={[globalStyles.grid, styles.grid]}></TouchableOpacity>
                     </View>
                 </View>
             )
         }
         list.push(
-            <View style={{paddingTop: 15}}>
+            <View style={{paddingTop: 15}} key={11}>
                 <Text>{num + 11}</Text>
                 <View style={{flexDirection: 'row', paddingTop: 5}}>
-                    <TouchableOpacity style={styles.grid}></TouchableOpacity>
-                    <TouchableOpacity style={[styles.grid, {borderRightWidth: 2}]}></TouchableOpacity>
+                    <TouchableOpacity style={[globalStyles.grid, styles.grid]}></TouchableOpacity>
+                    <TouchableOpacity style={[globalStyles.grid, styles.grid, {borderRightWidth: 2}]}></TouchableOpacity>
                 </View>
             </View>
         )
@@ -53,8 +62,7 @@ export default function EditRecords({ navigation }) {
                         <View style={[globalStyles.circle, {backgroundColor: '#E4E7EA'}]}>
                             <Ionicons name='person' size={18} color='#9EACB9'/>
                         </View>
-                        {/* 還沒設name */}
-                        <Text style={globalStyles.contentText}>User</Text>
+                        <Text style={globalStyles.contentText}>{global.user.name}</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={[globalStyles.frame, {flex: 9, justifyContent: 'flex-start'}]}>
@@ -87,7 +95,7 @@ export default function EditRecords({ navigation }) {
                             <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>save</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={[styles.block, {width: '60%', marginTop: 40}]}>
+                    <View style={styles.block}>
                         {grid(0)}
                         {grid(12)}
                         <View style={{flexDirection: 'row', marginTop: 40}}>
@@ -120,33 +128,12 @@ const styles = StyleSheet.create({
     block: {
         alignItems: 'center',
         justifyContent: 'center',
-        width: '90%',
-    },
-    text: {
-        width: 150,
-        marginVertical: 5,
-    },
-    status: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        width: '60%',
+        marginTop: 40,
     },
     grid: {
-        borderWidth: 2,
-        borderRightWidth: 0,
-        borderColor: '#9EACB9',
         paddingHorizontal: 15,
         paddingVertical: 35,
-    },
-    delete: {
-        backgroundColor: '#D34C5E',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        marginVertical: 20,
-        height: 50,
-        marginLeft: 10,
-        borderRadius: 5,
-        paddingHorizontal: 10,
     },
     circle: {
         width: 20,

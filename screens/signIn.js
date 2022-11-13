@@ -122,6 +122,7 @@ export default function SignIn({ navigation }) {
             getUser(account,password).then((user) => {
                 console.log("user found");
                 console.log(user);
+                global.user = user;
                 // if(user.account == 'captain'){
                 //     // to captain page
                 // }
@@ -129,7 +130,7 @@ export default function SignIn({ navigation }) {
                 //     // to sailor page
                 // }
                 
-                navigation.navigate('CaptainStack');
+                navigation.navigate('WorkerStack');
             }).catch(() => {
                 Alert.alert('Wrong!', 'Account or password wrong', [
                     {text: 'OK', onPress: () => console.log('Login error') },
