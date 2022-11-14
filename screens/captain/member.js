@@ -52,7 +52,7 @@ export default function Member({ navigation }) {
     function showContent() {
         let results = [];
         results.push(
-        <TouchableOpacity style={styles.delete} key={0}>
+        <TouchableOpacity style={styles.delete} key={0} onPress={deleteHandler}>
             <Ionicons name='ios-trash-sharp' size={30} color='white' />
             <Text style={{fontWeight: 'bold', fontSize: 20, color: 'white', marginLeft: 10, letterSpacing: 1}}>delete</Text>
         </TouchableOpacity>);
@@ -70,7 +70,7 @@ export default function Member({ navigation }) {
             </View>
             <View style={{flexDirection: 'row'}}>
                 <Text style={[globalStyles.contentText, styles.text]}>身分證/居留證</Text>
-                <Text style={[globalStyles.contentText, styles.text]}>{idNumber}</Text>
+                <Text style={[globalStyles.contentText, styles.text]}>{account}</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
                 <Text style={[globalStyles.contentText, styles.text]}>連絡電話</Text>
