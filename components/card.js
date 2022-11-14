@@ -1,26 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { globalStyles } from '../styles/global';
 
-export default function Card({ showStatus, pressHandler }) {
-    const [member, setMember] = useState([
-        {name: '漁工1', status: 'accepted', idNumber: '12345678', phone: '0000-000000', key: '1'},
-        {name: '漁工2', status: 'denied', idNumber: '12345678', phone: '0000-000000', key: '2'},
-        {name: '漁工3', status: 'pending', idNumber: '12345678', phone: '0000-000000', key: '3'},
-        {name: '漁工4', status: 'accepted', idNumber: '12345678', phone: '0000-000000', key: '4'},
-        {name: '漁工5', status: 'accepted', idNumber: '12345678', phone: '0000-000000', key: '5'},
-        {name: '漁工6', status: 'accepted', idNumber: '12345678', phone: '0000-000000', key: '6'},
-        {name: '漁工7', status: 'accepted', idNumber: '12345678', phone: '0000-000000', key: '7'},
-        {name: '漁工8', status: 'accepted', idNumber: '12345678', phone: '0000-000000', key: '8'},
-        {name: '漁工9', status: 'accepted', idNumber: '12345678', phone: '0000-000000', key: '9'},
-        {name: '漁工10', status: 'accepted', idNumber: '12345678', phone: '0000-000000', key: '10'},
-    ]);
+
+
+export default function Card({ showStatus, pressHandler, data}) {
+    
+    const [member, setMember] = useState(data);
+    useEffect(()=>{ setMember(data); console.log('reset card');},[data]);
+    // const [member, setMember] = useState([
+    //     {name: '漁工1', status: 'accepted', account: '12345678', phone: '0000-000000', key: '1'},
+    //     {name: '漁工2', status: 'denied', account: '12345678', phone: '0000-000000', key: '2'},
+    //     {name: '漁工3', status: 'checking', account: '12345678', phone: '0000-000000', key: '3'},
+    //     {name: '漁工4', status: 'accepted', account: '12345678', phone: '0000-000000', key: '4'},
+    //     {name: '漁工5', status: 'accepted', account: '12345678', phone: '0000-000000', key: '5'},
+    //     {name: '漁工6', status: 'accepted', account: '12345678', phone: '0000-000000', key: '6'},
+    //     {name: '漁工7', status: 'accepted', account: '12345678', phone: '0000-000000', key: '7'},
+    //     {name: '漁工8', status: 'accepted', account: '12345678', phone: '0000-000000', key: '8'},
+    //     {name: '漁工9', status: 'accepted', account: '12345678', phone: '0000-000000', key: '9'},
+    //     {name: '漁工10', status: 'accepted', account: '12345678', phone: '0000-000000', key: '10'},
+    // ]);
     const [press, setPress] = useState();
     const turnTo = (item) => {
         setPress(item.key);
         if (showStatus) pressHandler(item.name, item.status);
-        else pressHandler(item.name, item.idNumber, item.phone);
+        else pressHandler(item.name, item.account, item.phone);
     }
     function show(status) {
         if (status == 'accepted') {

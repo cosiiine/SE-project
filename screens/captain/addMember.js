@@ -1,12 +1,37 @@
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard,Alert } from 'react-native';
 import { globalStyles } from '../../styles/global';
+import { getAllUser, insertUser } from '../../db/user';
 
 export default function AddMember({ navigation }) {
     const [ name, setName] = useState('');
-    const [ idNumber, setIdNumber ] = useState('');
+    const [ account, setAccount ] = useState('');
     const [ phone, setPhone ] = useState('');
+
+    const pressHandler = (name, account, phone) => {
+        if (name.length < 3 || account.length < 3) {
+            Alert.alert('Wrong!', 'Please try again.', [
+                {text: 'OK', onPress: () => console.log('New user failed.') },
+            ]);
+        }
+        else {
+            console.log("Insert: ", name, account);
+            insertUser(account,name,account).then((results) => {
+                console.log(results);
+                
+                Alert.alert('Notice!', 'New member has been added.', [{text: 'OK'}]);
+            }).catch(() => {
+                Alert.alert('Wrong!', 'Error occurs when adding new member', [
+                    {text: 'OK', onPress: () => console.log('New member error') },
+                ])
+            });
+
+            setName('');
+            setAccount('');
+            setPhone('');
+        }
+    }
 
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss();}}>
@@ -44,7 +69,7 @@ export default function AddMember({ navigation }) {
                                 <TextInput
                                     placeholder='ID'
                                     style={globalStyles.input}
-                                    onChangeText={setIdNumber}
+                                    onChangeText={setAccount}
                                 />
                             </View>
                             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -56,7 +81,7 @@ export default function AddMember({ navigation }) {
                                 />
                             </View>
                             {/* 沒有功能 */}
-                            <TouchableOpacity style={[globalStyles.button, {marginTop: 60, width: 120, height: 50, backgroundColor: '#3785D6'}]}>
+                            <TouchableOpacity style={[globalStyles.button, {marginTop: 60, width: 120, height: 50, backgroundColor: '#3785D6'}]} onPress={() => pressHandler(name,account,phone)}>
                                 <Ionicons name='save' size={30} color='white' />
                                 <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>save</Text>
                             </TouchableOpacity>
