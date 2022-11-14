@@ -3,8 +3,6 @@ import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native
 import { Ionicons } from '@expo/vector-icons';
 import { globalStyles } from '../styles/global';
 
-
-
 export default function Card({ showStatus, pressHandler, data}) {
     
     const [member, setMember] = useState(data);
