@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Records from '../screens/worker/records';
-import SignRecords from '../screens/worker/signRecords';
+import SignRecords from '../screens/signRecords';
 import Setting from '../screens/setting';
 
 const tab = createBottomTabNavigator();

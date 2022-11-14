@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFe
 import { globalStyles } from '../../styles/global';
 import Card from '../../components/card';
 import AppBar from '../../components/appBar';
+import Drawer from '../../components/drawer';
 import { db,createUserTable,deleteAllUsers,insertUser,getAllUsers, deleteUser} from '../../db/user';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -85,20 +86,7 @@ export default function Member({ navigation }) {
             <View style={globalStyles.container}>
                 <AppBar title={'漁工勤務登錄系統  |  船員管理'} navigation={navigation} />
                 <View style={globalStyles.allContent}>
-                    <View style={[globalStyles.frame, globalStyles.drawer]}>
-                        <TouchableOpacity onPress={() => {navigation.navigate('Records');}}>
-                            <Ionicons name='grid' style={globalStyles.drawerButton} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {navigation.navigate('Member');}}>
-                            <Ionicons name='ios-people-sharp' style={[globalStyles.drawerButton, globalStyles.color]} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {navigation.navigate('SignRecords');}}>
-                            <Ionicons name='time' style={globalStyles.drawerButton} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {navigation.navigate('SignIn');}}>
-                            <Ionicons name='log-out-outline' style={globalStyles.drawerButton} />
-                        </TouchableOpacity>
-                    </View>
+                <Drawer navigation={navigation} captain={true} current={'Member'} />
                     <View style={[globalStyles.frame, globalStyles.member]}>
                         <View style={[globalStyles.allContent, {flex: 0, width: '100%', marginBottom: 5}]}>
                             {/* 還沒有功能 */}

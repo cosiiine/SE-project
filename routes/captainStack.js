@@ -2,7 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Records from '../screens/captain/records';
 import Member from '../screens/captain/member';
-import SignRecords from '../screens/captain/signRecords';
+import SignRecords from '../screens/signRecords';
 import Setting from '../screens/setting';
 import EditRecords from '../screens/captain/editRecords';
 import AddMember from '../screens/captain/addMember';

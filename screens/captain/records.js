@@ -5,6 +5,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, Touchabl
 import { globalStyles } from '../../styles/global';
 import Card from '../../components/card';
 import AppBar from '../../components/appBar';
+import Drawer from '../../components/drawer';
 
 export default function Records({ navigation }) {
     const [date, setDate] = useState(new Date());
@@ -134,20 +135,7 @@ export default function Records({ navigation }) {
             <View style={globalStyles.container}>
                 <AppBar title={'漁工勤務登錄系統  |  勤務紀錄'} navigation={navigation} />
                 <View style={globalStyles.allContent}>
-                    <View style={[globalStyles.frame, globalStyles.drawer]}>
-                        <TouchableOpacity onPress={() => {navigation.navigate('Records');}}>
-                            <Ionicons name='grid' style={[globalStyles.drawerButton, globalStyles.color]} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {navigation.navigate('Member');}}>
-                            <Ionicons name='ios-people-sharp' style={globalStyles.drawerButton} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {navigation.navigate('SignRecords');}}>
-                            <Ionicons name='time' style={globalStyles.drawerButton} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {navigation.navigate('SignIn');}}>
-                            <Ionicons name='log-out-outline' style={globalStyles.drawerButton} />
-                        </TouchableOpacity>
-                    </View>
+                    <Drawer navigation={navigation} captain={true} current={'Records'} />
                     <View style={[globalStyles.frame, globalStyles.member]}>
                         <View style={[globalStyles.allContent, {flex: 0, width: '100%'}]}>
                             <TouchableOpacity onPress={() => {setShow(true)}} style={styles.date}>

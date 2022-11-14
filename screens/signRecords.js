@@ -1,8 +1,8 @@
 import React from 'react';
-import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
-import { globalStyles } from '../../styles/global';
-import AppBar from '../../components/appBar';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { globalStyles } from '../styles/global';
+import AppBar from '../components/appBar';
+import Drawer from '../components/drawer';
 
 export default function SignRecords({ navigation }) {
     const signRecords = [
@@ -20,17 +20,7 @@ export default function SignRecords({ navigation }) {
         <View style={globalStyles.container}>
             <AppBar title={'漁工勤務登錄系統  |  帳戶紀錄'} navigation={navigation} />
             <View style={globalStyles.allContent}>
-                <View style={[globalStyles.frame, globalStyles.drawer]}>
-                    <TouchableOpacity onPress={() => {navigation.navigate('Records');}}>
-                        <Ionicons name='grid' style={globalStyles.drawerButton} />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {navigation.navigate('SignRecords');}}>
-                        <Ionicons name='time' style={[globalStyles.drawerButton, globalStyles.color]} />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {navigation.navigate('SignIn');}}>
-                        <Ionicons name='log-out-outline' style={globalStyles.drawerButton} />
-                    </TouchableOpacity>
-                </View>
+                <Drawer navigation={navigation} captain={(global.user.account == 'captain')} current={'SignRecords'} />
                 <View style={[globalStyles.frame, {width: '91%', justifyContent: 'center'}]}>
                     <View style={{height: '80%'}}>
                         <View style={[styles.list, {borderColor: '#9EACB9'}]}>
