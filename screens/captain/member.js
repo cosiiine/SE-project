@@ -49,6 +49,37 @@ export default function Member({ navigation }) {
         }
     }
 
+    function showContent() {
+        let results = [];
+        results.push(
+        <TouchableOpacity style={styles.delete} key={0}>
+            <Ionicons name='ios-trash-sharp' size={30} color='white' />
+            <Text style={{fontWeight: 'bold', fontSize: 20, color: 'white', marginLeft: 10, letterSpacing: 1}}>delete</Text>
+        </TouchableOpacity>);
+        results.push(
+        <View style={styles.block} key={1}>
+            <View style={styles.circle}>
+                <Ionicons name='person' size={80} color='#9EACB9' />
+            </View>
+        </View>);
+        results.push(
+        <View style={[styles.block, {borderTopColor: '#9EACB9', borderTopWidth: 1}]} key={2}>
+            <View style={{flexDirection: 'row'}}>
+                <Text style={[globalStyles.contentText, styles.text]}>姓名</Text>
+                <Text style={[globalStyles.contentText, styles.text]}>{name}</Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+                <Text style={[globalStyles.contentText, styles.text]}>身分證/居留證</Text>
+                <Text style={[globalStyles.contentText, styles.text]}>{idNumber}</Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+                <Text style={[globalStyles.contentText, styles.text]}>連絡電話</Text>
+                <Text style={[globalStyles.contentText, styles.text]}>{phone}</Text>
+            </View>
+        </View>);
+        return results;
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss();}}>
             <View style={globalStyles.container}>
@@ -87,29 +118,7 @@ export default function Member({ navigation }) {
                         <Card showStatus={false} pressHandler={pressHandler} data={members}/>
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
-                        <TouchableOpacity style={styles.delete}  onPress={deleteHandler}>
-                            <Ionicons name='ios-trash-sharp' size={30} color='white' />
-                            <Text style={{fontWeight: 'bold', fontSize: 20, color: 'white', marginLeft: 10, letterSpacing: 1}}>delete</Text>
-                        </TouchableOpacity>
-                        <View style={styles.block}>
-                            <View style={styles.circle}>
-                                <Ionicons name='person' size={80} color='#9EACB9' />
-                            </View>
-                        </View>
-                        <View style={[styles.block, {borderTopColor: '#9EACB9', borderTopWidth: 1}]}>
-                            <View style={{flexDirection: 'row'}}>
-                                <Text style={[globalStyles.contentText, styles.text]}>姓名</Text>
-                                <Text style={[globalStyles.contentText, styles.text]}>{name}</Text>
-                            </View>
-                            <View style={{flexDirection: 'row'}}>
-                                <Text style={[globalStyles.contentText, styles.text]}>身分證/居留證</Text>
-                                <Text style={[globalStyles.contentText, styles.text]}>{account}</Text>
-                            </View>
-                            <View style={{flexDirection: 'row'}}>
-                                <Text style={[globalStyles.contentText, styles.text]}>連絡電話</Text>
-                                <Text style={[globalStyles.contentText, styles.text]}>{phone}</Text>
-                            </View>
-                        </View>
+                        {(name.length != 0) && showContent()}
                     </View>
                 </View>
             </View>
