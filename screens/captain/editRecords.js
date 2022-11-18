@@ -6,15 +6,15 @@ import { globalStyles } from '../../styles/global';
 // import MyGrid from '../../components/grid';
 
 export class TouchableGrid extends Component {
-    constructor({startIdx,taskColors,chosenTask}) {
-        super();
-        this.taskColors = taskColors; // 在第一次渲染不能用 this.props.taskColors，所以要存起來
+    constructor(props) {
+        super(props);
+        let startIdx = this.props.startIdx;
 
         let temp = {}; // 建立
         for (let i = startIdx; i < startIdx + 24; i++) {
             temp[i] = 'break';
         }
-        this.state = { ...temp}; // 儲存資料，用state才會重新渲染
+        this.state = { ...temp }; // 儲存資料，用state才會重新渲染
 
         this.itemList = []; // 儲存每個格子的html
         for(let i = startIdx; i < startIdx + 24; i++){
@@ -41,6 +41,7 @@ export class TouchableGrid extends Component {
             onPanResponderRelease: (evt, gestureState) => { // 滑動結束
                 this.index = -1;
                 this.indexes = [];
+                this.props.setRecords({...this.props.records, ...this.state})
             },
             onPanResponderTerminationRequest: (evt, gestureState) => true,
         });
@@ -57,6 +58,9 @@ export class TouchableGrid extends Component {
                 temp[index] = this.props.chosenTask;
                 this.setState(temp);
                 console.log('setstate', index, '-' ,this.props.chosenTask);
+
+                this.forceUpdate();
+                console.log('force update');
             }
         }
     };
@@ -69,7 +73,7 @@ export class TouchableGrid extends Component {
         
         return(
             <View style={{ flexDirection: 'row' }} key={num}>
-                <TouchableOpacity style={[globalStyles.grid, styles.grid, borderSetting, { backgroundColor: this.taskColors[this.state[num]] }]}></TouchableOpacity>
+                <TouchableOpacity style={[globalStyles.grid, styles.grid, borderSetting, { backgroundColor: this.props.taskColors[this.state[num]] }]}></TouchableOpacity>
             </View>
         );
     };
@@ -112,6 +116,15 @@ export default function EditRecords({ navigation }) {
     const [show, setShow] = useState((Platform.OS === 'ios'));
     const [search, setSearch] = useState('');
     const [chosenTask, setChosenTask] = useState('break');
+    const [records, setRecords] = useState({}); // 0~47
+
+    // const emptyRecords = () => {
+    //     const temp = {};
+    //     for(let i = 0; i < 48; i++){
+    //         temp[i] = 'break';
+    //     }
+    //     return temp;
+    // };
 
     const [taskColors,setTaskColors] = useState({
         'break':'#cfcfcf',
@@ -166,7 +179,7 @@ export default function EditRecords({ navigation }) {
                                 value={search}
                             />
                         </View>
-                        <TouchableOpacity style={[globalStyles.button, { margin: 0, width: 120, height: 50, backgroundColor: '#3785D6' }]}>
+                        <TouchableOpacity style={[globalStyles.button, { margin: 0, width: 120, height: 50, backgroundColor: '#3785D6' }]} onPress={()=>{console.log(records)}}>
                             <Ionicons name='save' size={25} color='white' />
                             <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>save</Text>
                         </TouchableOpacity>
@@ -174,9 +187,9 @@ export default function EditRecords({ navigation }) {
                     <View style={styles.block}>
                         <View>
                             {NumberGrid(0)}
-                            <TouchableGrid startIdx={0} taskColors={taskColors} chosenTask={chosenTask}/>
+                            <TouchableGrid startIdx={0} taskColors={taskColors} chosenTask={chosenTask} records={records} setRecords={setRecords}/>
                             {NumberGrid(12)}
-                            <TouchableGrid startIdx={24} taskColors={taskColors} chosenTask={chosenTask}/>
+                            <TouchableGrid startIdx={24} taskColors={taskColors} chosenTask={chosenTask} records={records} setRecords={setRecords}/>
                         </View>
                         
                         
