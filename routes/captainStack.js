@@ -59,10 +59,15 @@ export default function CaptainStack() {
                 options={{title: 'Setting'}}
             />
             <Stack.Screen
+                name='EditRecords'
+                component={EditRecords}
+                options={{title: 'EditRecords'}}
+            />
+            {/* <Stack.Screen
                 name='EditRecordsNavigate'
                 component={EditRecordsNavigate}
                 options={{title: 'EditRecords'}}
-            />
+            /> */}
             <Stack.Screen
                 name='AddMember'
                 component={AddMember}

@@ -59,8 +59,8 @@ export class TouchableGrid extends Component {
                 this.setState(temp);
                 console.log('setstate', index, '-' ,this.props.chosenTask);
 
-                this.forceUpdate();
-                console.log('force update');
+                // this.forceUpdate();
+                // console.log('force update');
             }
         }
     };
@@ -143,7 +143,7 @@ export default function EditRecords({ navigation }) {
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
             <View style={globalStyles.container}>
                 <View style={[globalStyles.appbar]}>
-                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => { navigation.pop(); }}>
+                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => { navigation.navigate('Records'); }}>
                         <Ionicons name='chevron-back-outline' size={30} style={{ marginLeft: 10 }} />
                         <Text style={globalStyles.titleText}>新增勤務紀錄</Text>
                     </TouchableOpacity>
