@@ -152,7 +152,7 @@ export default function Records({ navigation }) {
                                     />
                                 )}
                             </TouchableOpacity>
-                            <TouchableOpacity style={[globalStyles.button, styles.add]} onPress={()=>{navigation.navigate('EditRecords')}}>
+                            <TouchableOpacity style={[globalStyles.button, styles.add]} onPress={()=>{navigation.push('EditRecordsNavigate')}}>
                                 <Ionicons name='add-outline' size={30} color='white' />
                             </TouchableOpacity>
                         </View>
