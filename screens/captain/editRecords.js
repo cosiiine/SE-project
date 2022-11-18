@@ -196,15 +196,15 @@ export default function EditRecords({ navigation }) {
                         
                         
                         <View style={{ flexDirection: 'row', marginTop: 40 }}>
-                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }} onPress={()=>{setChosenTask('break');console.log(chosenTask)}}>
+                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }} onPress={()=>{setChosenTask('break');console.log('break')}}>
                                 <View style={[styles.circle, { backgroundColor: '#8f8f8f' }]} />
                                 <Text style={{ fontSize: 20, color: '#8f8f8f', fontWeight: 'bold', paddingLeft: 10 }}>break</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }} onPress={()=>{setChosenTask('work');console.log(chosenTask)}}>
+                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }} onPress={()=>{setChosenTask('work');console.log('work')}}>
                                 <View style={[styles.circle, { backgroundColor: '#D34C5E' }]} />
                                 <Text style={{ fontSize: 20, color: '#D34C5E', fontWeight: 'bold', paddingLeft: 10 }}>work</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}  onPress={()=>{setChosenTask('eat');console.log(chosenTask)}}>
+                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}  onPress={()=>{setChosenTask('eat');console.log('eat')}}>
                                 <View style={[styles.circle, { backgroundColor: '#3785D6' }]} />
                                 <Text style={{ fontSize: 20, color: '#3785D6', fontWeight: 'bold', paddingLeft: 10 }}>eat</Text>
                             </TouchableOpacity>
