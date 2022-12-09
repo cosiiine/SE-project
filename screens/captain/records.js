@@ -7,11 +7,11 @@ import Card from '../../components/card';
 import AppBar from '../../components/appBar';
 import Drawer from '../../components/drawer';
 
-export default function Records({ navigation }) {
+export default function Records({ route,navigation }) {
     const [date, setDate] = useState(new Date());
     const [text, setText] = useState(date.getFullYear()+ '/' + (date.getMonth() + 1) + '/' + date.getDate());
     const [show, setShow] = useState((Platform.OS === 'ios'));
-    const [search, setSearch] = useState('');
+    const [search, setSearch] = useState('test');
 
     const [name, setName] = useState('');
     const [status, setStatus] = useState('');
@@ -162,7 +162,8 @@ export default function Records({ navigation }) {
                                 placeholder='name'
                                 style={[globalStyles.contentText, {flex: 1, paddingHorizontal: 5}]}
                                 onChangeText={setSearch}
-                                value={search}
+                                // value={search}
+                                value={route.params?.post} // 得到下一頁的回傳值
                             />
                         </View>
                         <Card showStatus={true} pressHandler={pressHandler}/>

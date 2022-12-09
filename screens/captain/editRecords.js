@@ -110,7 +110,7 @@ export function NumberGrid (start){
     return <View style={{ flexDirection: 'row', paddingBottom: 5 }}>{numlist}</View>;
 }
 
-export default function EditRecords({ navigation }) {
+export default function EditRecords({ route, navigation }) {
     const [date, setDate] = useState(new Date());
     const [text, setText] = useState(date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate());
     const [show, setShow] = useState((Platform.OS === 'ios'));
@@ -179,7 +179,15 @@ export default function EditRecords({ navigation }) {
                                 value={search}
                             />
                         </View>
-                        <TouchableOpacity style={[globalStyles.button, { margin: 0, width: 120, height: 50, backgroundColor: '#3785D6' }]} onPress={()=>{console.log(records)}}>
+                        <TouchableOpacity style={[globalStyles.button, { margin: 0, width: 120, height: 50, backgroundColor: '#3785D6' }]} onPress={()=>{
+                                console.log(records);
+                                // console.log('route param test',route.params.test)
+                                navigation.navigate({
+                                    name: 'Records',
+                                    params: { post: 'cool' },
+                                    merge: true,
+                                  });
+                            }}>
                             <Ionicons name='save' size={25} color='white' />
                             <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>save</Text>
                         </TouchableOpacity>
