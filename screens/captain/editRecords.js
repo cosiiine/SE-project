@@ -1,8 +1,9 @@
-import React, { useState, useEffect,useIsFocused, Component } from 'react';
+import React, { useState, useEffect, Component } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, TouchableWithoutFeedback, Keyboard, PanResponder, Animated } from 'react-native';
 import { globalStyles } from '../../styles/global';
+import { useIsFocused } from '@react-navigation/native';
 // import MyGrid from '../../components/grid';
 
 export class TouchableGrid extends Component {
@@ -116,15 +117,26 @@ export default function EditRecords({ route, navigation }) {
     const [show, setShow] = useState((Platform.OS === 'ios'));
     const [search, setSearch] = useState('');
     const [chosenTask, setChosenTask] = useState('break');
-    const [records, setRecords] = useState({}); // 0~47
+    const [records, setRecords] = useState(emptyRecords); // 0~47
+    const isFocused = useIsFocused(); // 此頁面被focus的狀態
 
-    // const emptyRecords = () => {
-    //     const temp = {};
-    //     for(let i = 0; i < 48; i++){
-    //         temp[i] = 'break';
-    //     }
-    //     return temp;
-    // };
+    useEffect(()=>{resetRecords();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call resetRecords
+
+    const emptyRecords = () => {
+        const temp = {};
+        for(let i = 0; i < 48; i++){
+            temp[i] = 'break';
+        }
+        return temp;
+    };
+
+    const resetRecords = () => {
+        setRecords(emptyRecords);
+        setChosenTask('work');
+        setDate(new Date());
+        setText(date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate());
+        console.log('resetRecords from editRecords page');
+    };
 
     const [taskColors,setTaskColors] = useState({
         'break':'#cfcfcf',
@@ -195,26 +207,26 @@ export default function EditRecords({ route, navigation }) {
                     <View style={styles.block}>
                         <View>
                             {NumberGrid(0)}
-                            <TouchableGrid startIdx={0} taskColors={taskColors} chosenTask={chosenTask} records={records} setRecords={setRecords}/>
+                            {isFocused && <TouchableGrid startIdx={0} taskColors={taskColors} chosenTask={chosenTask} records={records} setRecords={setRecords}/>}
                             {NumberGrid(12)}
-                            <TouchableGrid startIdx={24} taskColors={taskColors} chosenTask={chosenTask} records={records} setRecords={setRecords}/>
+                            {isFocused && <TouchableGrid startIdx={24} taskColors={taskColors} chosenTask={chosenTask} records={records} setRecords={setRecords}/>}
                         </View>
                         
                         
                         
                         
                         <View style={{ flexDirection: 'row', marginTop: 40 }}>
-                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }} onPress={()=>{setChosenTask('break');console.log('break')}}>
-                                <View style={[styles.circle, { backgroundColor: '#8f8f8f' }]} />
-                                <Text style={{ fontSize: 20, color: '#8f8f8f', fontWeight: 'bold', paddingLeft: 10 }}>break</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }} onPress={()=>{setChosenTask('work');console.log('work')}}>
+                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }} onPress={()=>{setChosenTask('work');console.log('set task to work')}}>
                                 <View style={[styles.circle, { backgroundColor: '#D34C5E' }]} />
                                 <Text style={{ fontSize: 20, color: '#D34C5E', fontWeight: 'bold', paddingLeft: 10 }}>work</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}  onPress={()=>{setChosenTask('eat');console.log('eat')}}>
+                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}  onPress={()=>{setChosenTask('eat');console.log('set task to eat')}}>
                                 <View style={[styles.circle, { backgroundColor: '#3785D6' }]} />
                                 <Text style={{ fontSize: 20, color: '#3785D6', fontWeight: 'bold', paddingLeft: 10 }}>eat</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }} onPress={()=>{setChosenTask('break');console.log('set task to break')}}>
+                                <View style={[styles.circle, { backgroundColor: '#8f8f8f' }]} />
+                                <Text style={{ fontSize: 20, color: '#8f8f8f', fontWeight: 'bold', paddingLeft: 10 }}>break</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
