@@ -5,6 +5,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, Touchabl
 import { globalStyles } from '../../styles/global';
 import { useIsFocused } from '@react-navigation/native';
 // import MyGrid from '../../components/grid';
+import Card from '../../components/card';
 
 export class TouchableGrid extends Component {
     constructor(props) {
@@ -120,6 +121,10 @@ export default function EditRecords({ route, navigation }) {
     const [records, setRecords] = useState(emptyRecords); // 0~47
     const isFocused = useIsFocused(); // 此頁面被focus的狀態
 
+    
+    const [name, setName] = useState('');
+    const [status, setStatus] = useState('');
+
     useEffect(()=>{resetRecords();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call resetRecords
 
     const emptyRecords = () => {
@@ -150,6 +155,10 @@ export default function EditRecords({ route, navigation }) {
         setDate(currentDate);
         setText(currentDate.getFullYear() + '/' + (currentDate.getMonth() + 1) + '/' + currentDate.getDate());
     };
+    const pressHandler = ( name, status ) => {
+        setName(name);
+        setStatus(status);
+    };
 
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
@@ -166,68 +175,74 @@ export default function EditRecords({ route, navigation }) {
                         <Text style={globalStyles.contentText}>{global.user.name}</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={[globalStyles.frame, { flex: 9, justifyContent: 'flex-start' }]}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '60%', marginTop: 80 }}>
-                        <TouchableOpacity onPress={() => { setShow(true) }} style={styles.search}>
-                            <Ionicons name='calendar-sharp' size={18} style={globalStyles.color} />
-                            {(Platform.OS === 'android') && <Text style={[globalStyles.contentText, globalStyles.color, { flex: 1, paddingHorizontal: 5 }]}>{text}</Text>}
-                            {show && (
-                                <DateTimePicker
-                                    style={{ flex: 1 }}
-                                    testID="dateTimePicker"
-                                    value={date}
-                                    mode={'date'}
-                                    onChange={onChange}
-                                    maximumDate={new Date()} // ?
-                                />
-                            )}
-                        </TouchableOpacity>
+                <View style={globalStyles.allContent}>
+                    <View style={[globalStyles.frame, {width: '25%'}]}>
                         <View style={styles.search}>
                             <Ionicons name='search' size={18} style={globalStyles.color} />
-                            <TextInput
+                            <TextInput 
                                 placeholder='name'
-                                style={[globalStyles.contentText, { flex: 1, paddingHorizontal: 5 }]}
+                                style={[globalStyles.contentText, {flex: 1, paddingHorizontal: 5}]}
                                 onChangeText={setSearch}
-                                value={search}
+                                // value={search}
+                                value={route.params?.post} // 得到下一頁的回傳值
                             />
                         </View>
-                        <TouchableOpacity style={[globalStyles.button, { margin: 0, width: 120, height: 50, backgroundColor: '#3785D6' }]} onPress={()=>{
-                                console.log(records);
-                                // console.log('route param test',route.params.test)
-                                navigation.navigate({
-                                    name: 'Records',
-                                    params: { post: 'cool' },
-                                    merge: true,
-                                  });
-                            }}>
-                            <Ionicons name='save' size={25} color='white' />
-                            <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>save</Text>
-                        </TouchableOpacity>
+                        <Card showStatus={true} pressHandler={pressHandler}/>
                     </View>
-                    <View style={styles.block}>
-                        <View>
-                            {NumberGrid(0)}
-                            {isFocused && <TouchableGrid startIdx={0} taskColors={taskColors} chosenTask={chosenTask} records={records} setRecords={setRecords}/>}
-                            {NumberGrid(12)}
-                            {isFocused && <TouchableGrid startIdx={24} taskColors={taskColors} chosenTask={chosenTask} records={records} setRecords={setRecords}/>}
+                    <View style={[globalStyles.frame, {width: '74%', justifyContent: 'flex-start'}]}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '60%', marginTop: 80 }}>
+                            <TouchableOpacity onPress={() => { setShow(true) }} style={styles.search}>
+                                <Ionicons name='calendar-sharp' size={18} style={globalStyles.color} />
+                                {(Platform.OS === 'android') && <Text style={[globalStyles.contentText, globalStyles.color, { flex: 1, paddingHorizontal: 5 }]}>{text}</Text>}
+                                {show && (
+                                    <DateTimePicker
+                                        style={{ flex: 1 }}
+                                        testID="dateTimePicker"
+                                        value={date}
+                                        mode={'date'}
+                                        onChange={onChange}
+                                        maximumDate={new Date()} // ?
+                                    />
+                                )}
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[globalStyles.button, { margin: 0, width: 120, height: 50, backgroundColor: '#3785D6' }]} onPress={()=>{
+                                    console.log(records);
+                                    // console.log('route param test',route.params.test)
+                                    navigation.navigate({
+                                        name: 'Records',
+                                        params: { post: 'cool' },
+                                        merge: true,
+                                    });
+                                }}>
+                                <Ionicons name='save' size={25} color='white' />
+                                <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>save</Text>
+                            </TouchableOpacity>
                         </View>
-                        
-                        
-                        
-                        
-                        <View style={{ flexDirection: 'row', marginTop: 40 }}>
-                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }} onPress={()=>{setChosenTask('work');console.log('set task to work')}}>
-                                <View style={[styles.circle, { backgroundColor: '#D34C5E' }]} />
-                                <Text style={{ fontSize: 20, color: '#D34C5E', fontWeight: 'bold', paddingLeft: 10 }}>work</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}  onPress={()=>{setChosenTask('eat');console.log('set task to eat')}}>
-                                <View style={[styles.circle, { backgroundColor: '#3785D6' }]} />
-                                <Text style={{ fontSize: 20, color: '#3785D6', fontWeight: 'bold', paddingLeft: 10 }}>eat</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }} onPress={()=>{setChosenTask('break');console.log('set task to break')}}>
-                                <View style={[styles.circle, { backgroundColor: '#8f8f8f' }]} />
-                                <Text style={{ fontSize: 20, color: '#8f8f8f', fontWeight: 'bold', paddingLeft: 10 }}>break</Text>
-                            </TouchableOpacity>
+                        <View style={styles.block}>
+                            <View>
+                                {NumberGrid(0)}
+                                {isFocused && <TouchableGrid startIdx={0} taskColors={taskColors} chosenTask={chosenTask} records={records} setRecords={setRecords}/>}
+                                {NumberGrid(12)}
+                                {isFocused && <TouchableGrid startIdx={24} taskColors={taskColors} chosenTask={chosenTask} records={records} setRecords={setRecords}/>}
+                            </View>
+                            
+                            
+                            
+                            
+                            <View style={{ flexDirection: 'row', marginTop: 40 }}>
+                                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }} onPress={()=>{setChosenTask('work');console.log('set task to work')}}>
+                                    <View style={[styles.circle, { backgroundColor: '#D34C5E' }]} />
+                                    <Text style={{ fontSize: 20, color: '#D34C5E', fontWeight: 'bold', paddingLeft: 10 }}>work</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}  onPress={()=>{setChosenTask('eat');console.log('set task to eat')}}>
+                                    <View style={[styles.circle, { backgroundColor: '#3785D6' }]} />
+                                    <Text style={{ fontSize: 20, color: '#3785D6', fontWeight: 'bold', paddingLeft: 10 }}>eat</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }} onPress={()=>{setChosenTask('break');console.log('set task to break')}}>
+                                    <View style={[styles.circle, { backgroundColor: '#8f8f8f' }]} />
+                                    <Text style={{ fontSize: 20, color: '#8f8f8f', fontWeight: 'bold', paddingLeft: 10 }}>break</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 </View>
