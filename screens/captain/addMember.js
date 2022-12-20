@@ -17,7 +17,7 @@ export default function AddMember({ navigation }) {
         }
         else {
             console.log("Insert: ", name, account);
-            insertUser(account,name,account).then((results) => {
+            insertUser(0,account,name,account).then((results) => {
                 console.log(results);
                 
                 Alert.alert('Notice!', 'New member has been added.', [{text: 'OK'}]);

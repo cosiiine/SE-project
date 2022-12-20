@@ -5,7 +5,7 @@ import { globalStyles } from '../../styles/global';
 import Card from '../../components/card';
 import AppBar from '../../components/appBar';
 import Drawer from '../../components/drawer';
-import { db,createUserTable,deleteAllUsers,insertUser,getAllUsers, deleteUser} from '../../db/user';
+import { createUserTable,deleteAllUsers,insertUser,getAllUsers, deleteUser} from '../../db/user';
 import { useIsFocused } from '@react-navigation/native';
 
 export default function Member({ navigation }) {

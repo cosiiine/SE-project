@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase(
-    'db.testDb',
+    'db.user',
 ); // returns Database object
 
 
@@ -10,33 +10,34 @@ export function createUserTable () {
         tx.executeSql(
             "CREATE TABLE IF NOT EXISTS users" +
             "("+
-            "key INTEGER PRIMARY KEY AUTOINCREMENT," + 
+            "key INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "isCaptain INTEGER NOT NULL,"+ 
             "account TEXT NOT NULL,"+
             "name TEXT NOT NULL," +
             "password TEXT NOT NULL"+
             ");",
             [],
             (tx, results) => {
-                console.log("create user table success");
+                console.log("create user table | success");
             },
             (tx, results) => {
-                console.log('error create');
+                console.log('create user table | error');
                 console.log(results);
             }
         )
     });
     db.transaction((tx) => { // if no captain exist, create a captain account
         tx.executeSql(
-            "SELECT * FROM users WHERE account='captain'",
-            [],
+            "SELECT * FROM users WHERE isCaptain=?",
+            [1],
             (tx, results) => {
                 if (results.rows.length == 0) {
                     console.log('init captain');
-                    insertUser('captain', 'captain', 'captain');
+                    insertUser(1,'captain', 'captain', 'captain');
                 }
             },
             (tx, results) => {
-                console.log("error finding captain");
+                console.log("finding captain | error");
             }
         )
     });
@@ -48,23 +49,23 @@ export function deleteAllUsers () {
             "DELETE FROM users",
             [],
             (tx, results) => {
-                console.log("delete success");
+                console.log("delete all | success");
             },
             (tx, results) => {
-                console.log('delete error');
+                console.log('delete all | error');
                 console.log(results);
             }
         )
     });
 };
 
-export function insertUser (account, name, password) {
+export function insertUser (isCaptain, account, name, password) {
     return new Promise((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql (
-                "INSERT INTO users (account,name,password)"+
-                "VALUES (?,?,?)",
-                [account, name, password],
+                "INSERT INTO users (isCaptain,account,name,password)"+
+                "VALUES (?,?,?,?)",
+                [isCaptain,account, name, password],
                 (_, results) => {
                     resolve(results);
                 },
@@ -113,8 +114,8 @@ export function getAllUsers () { // except captain
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "SELECT * FROM users WHERE account!=?",
-                ['captain'],
+                "SELECT * FROM users WHERE isCaptain!=?",
+                [1],
                 (_, results) => {
                     resolve(results.rows._array);
                 },

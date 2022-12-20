@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert } from 'react-native';
 import { globalStyles } from '../styles/global';
-import { db,createUserTable,deleteAllUsers,insertUser,getUser} from '../db/user';
+import { createUserTable,deleteAllUsers,insertUser,getUser} from '../db/user';
 
 
 
@@ -33,7 +33,7 @@ export default function SignIn({ navigation }) {
                 console.log(user);
                 global.user = user;
                 
-                if(user.account == 'captain'){
+                if(user.isCaptain == 1){
                     navigation.navigate('CaptainStack');
                 }
                 else{

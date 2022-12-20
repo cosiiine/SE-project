@@ -4,8 +4,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, TouchableWithoutFeedback, Keyboard, PanResponder, Animated } from 'react-native';
 import { globalStyles } from '../../styles/global';
 import { useIsFocused } from '@react-navigation/native';
-// import MyGrid from '../../components/grid';
-import Card from '../../components/card';
+import { createUserTable,deleteAllUsers,insertUser,getAllUsers, deleteUser} from '../../db/user';
+import MultiSelectCard from '../../components/multiSelectCard';
 
 export class TouchableGrid extends Component {
     constructor(props) {
@@ -119,11 +119,10 @@ export default function EditRecords({ route, navigation }) {
     const [search, setSearch] = useState('');
     const [chosenTask, setChosenTask] = useState('break');
     const [records, setRecords] = useState(emptyRecords); // 0~47
-    const isFocused = useIsFocused(); // 此頁面被focus的狀態
-
     
-    const [name, setName] = useState('');
-    const [status, setStatus] = useState('');
+    const [selected, setSelected] = useState({}); // 被選中的
+
+    const isFocused = useIsFocused(); // 此頁面被focus的狀態
 
     useEffect(()=>{resetRecords();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call resetRecords
 
@@ -141,6 +140,7 @@ export default function EditRecords({ route, navigation }) {
         setDate(new Date());
         setText(date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate());
         console.log('resetRecords from editRecords page');
+        setSelected({});
     };
 
     const [taskColors,setTaskColors] = useState({
@@ -154,10 +154,6 @@ export default function EditRecords({ route, navigation }) {
         if (Platform.OS === 'android') setShow(false);
         setDate(currentDate);
         setText(currentDate.getFullYear() + '/' + (currentDate.getMonth() + 1) + '/' + currentDate.getDate());
-    };
-    const pressHandler = ( name, status ) => {
-        setName(name);
-        setStatus(status);
     };
 
     return (
@@ -187,7 +183,7 @@ export default function EditRecords({ route, navigation }) {
                                 value={route.params?.post} // 得到下一頁的回傳值
                             />
                         </View>
-                        <Card showStatus={true} pressHandler={pressHandler}/>
+                        {isFocused && <MultiSelectCard selected={selected} setSelected={setSelected}/>}
                     </View>
                     <View style={[globalStyles.frame, {width: '74%', justifyContent: 'flex-start'}]}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '60%', marginTop: 80 }}>
@@ -207,12 +203,13 @@ export default function EditRecords({ route, navigation }) {
                             </TouchableOpacity>
                             <TouchableOpacity style={[globalStyles.button, { margin: 0, width: 120, height: 50, backgroundColor: '#3785D6' }]} onPress={()=>{
                                     console.log(records);
+                                    console.log(selected);
                                     // console.log('route param test',route.params.test)
-                                    navigation.navigate({
-                                        name: 'Records',
-                                        params: { post: 'cool' },
-                                        merge: true,
-                                    });
+                                    // navigation.navigate({
+                                    //     name: 'Records',
+                                    //     params: { post: 'cool' },
+                                    //     merge: true,
+                                    // });
                                 }}>
                                 <Ionicons name='save' size={25} color='white' />
                                 <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>save</Text>
