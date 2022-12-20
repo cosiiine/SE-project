@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert } from 'react-native';
 import { globalStyles } from '../styles/global';
-import { createUserTable,deleteAllUsers,insertUser,getUser} from '../db/user';
+import { createUserTable,deleteAllUsers,insertUser,getUser,USERTYPE} from '../db/user';
+import { createWorkTable } from '../db/work';
 
 
 
@@ -9,7 +10,7 @@ export default function SignIn({ navigation }) {
     const [ account, setAccount ] = useState('');
     const [ password, setPassword ] = useState('');
 
-    useEffect(() => { createUserTable(); }, []);
+    useEffect(() => { createUserTable();createWorkTable(); }, []);
 
     
 
@@ -33,7 +34,7 @@ export default function SignIn({ navigation }) {
                 console.log(user);
                 global.user = user;
                 
-                if(user.isCaptain == 1){
+                if(user.userType == USERTYPE.CAPTAIN){
                     navigation.navigate('CaptainStack');
                 }
                 else{

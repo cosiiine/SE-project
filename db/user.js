@@ -4,6 +4,11 @@ const db = SQLite.openDatabase(
     'db.user',
 ); // returns Database object
 
+export const USERTYPE = {
+    SAILOR : 0,
+    CAPTAIN : 1
+};
+
 
 export function createUserTable () {
     db.transaction((tx) => {
@@ -11,7 +16,7 @@ export function createUserTable () {
             "CREATE TABLE IF NOT EXISTS users" +
             "("+
             "key INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "isCaptain INTEGER NOT NULL,"+ 
+            "userType INTEGER NOT NULL,"+ 
             "account TEXT NOT NULL,"+
             "name TEXT NOT NULL," +
             "password TEXT NOT NULL"+
@@ -28,12 +33,12 @@ export function createUserTable () {
     });
     db.transaction((tx) => { // if no captain exist, create a captain account
         tx.executeSql(
-            "SELECT * FROM users WHERE isCaptain=?",
-            [1],
+            "SELECT * FROM users WHERE userType=?",
+            [USERTYPE.CAPTAIN],
             (tx, results) => {
                 if (results.rows.length == 0) {
                     console.log('init captain');
-                    insertUser(1,'captain', 'captain', 'captain');
+                    insertUser(USERTYPE.CAPTAIN,'captain', 'captain', 'captain');
                 }
             },
             (tx, results) => {
@@ -59,13 +64,13 @@ export function deleteAllUsers () {
     });
 };
 
-export function insertUser (isCaptain, account, name, password) {
+export function insertUser (userType, account, name, password) {
     return new Promise((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql (
-                "INSERT INTO users (isCaptain,account,name,password)"+
+                "INSERT INTO users (userType,account,name,password)"+
                 "VALUES (?,?,?,?)",
-                [isCaptain,account, name, password],
+                [userType, account, name, password],
                 (_, results) => {
                     resolve(results);
                 },
@@ -110,12 +115,12 @@ export function deleteUser (account) {
       });
 };
 
-export function getAllUsers () { // except captain
+export function getAllUsers () { // get all sailor except captain
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "SELECT * FROM users WHERE isCaptain!=?",
-                [1],
+                "SELECT * FROM users WHERE userType=?",
+                [USERTYPE.SAILOR],
                 (_, results) => {
                     resolve(results.rows._array);
                 },

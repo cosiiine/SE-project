@@ -23,7 +23,7 @@ export default function Member({ navigation }) {
         getAllUsers().then((results)=>{
             setMembers(results);
             console.log('reset members from member page');
-        }).catch(()=>{});
+        }).catch(()=>{console.log('fetch member from member page | error')});
     }
 
     const pressHandler = ( name, account, phone ) => {

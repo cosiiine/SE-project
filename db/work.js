@@ -4,32 +4,36 @@ const db = SQLite.openDatabase(
     'db.work',
 );
 
-// name + year + month + date + work + check
+export const STATUS = {
+    DENY : 0,
+    WAITING : 1,
+    ACCEPT : 2
+}
+
+// key + userId + year + month + date + records + check(0,1,2)
 // 
 export function createWorkTable () {
-    return new Promise((resolve, reject) => {
-        db.transaction((tx) => {
-            tx.executeSql(
-                "CREATE TABLE IF NOT EXISTS works" +
-                "(" +
-                "no INTEGER PRIMARY KEY AUTOINCREMENT," + 
-                "name TEXT NOT NULL," +
-                "year INTERGER NOT NULL," +
-                "month INTERGER NOT NULL," +
-                "date INTERGER NOT NULL," +
-                "work TEXT NOT NULL," +
-                "check INTERGER NOT NULL," +
-                ");",
-                [],
-                (tx, results) => {
-                    console.log("create work table success");
-                },
-                (tx, results) => {
-                    console.log('error create work table');
-                    console.log(results);
-                }
-            )
-        });
+    db.transaction((tx) => {
+        tx.executeSql(
+            "CREATE TABLE IF NOT EXISTS works" +
+            "(" +
+            "key INTEGER PRIMARY KEY AUTOINCREMENT," + // record key
+            "userId INTEGER NOT NULL," + // user id
+            "year INTEGER NOT NULL," +
+            "month INTEGER NOT NULL," +
+            "date INTEGER NOT NULL," +
+            "records TEXT NOT NULL," + // stringify object
+            "status INTEGER NOT NULL" + // check 是內建字不能用
+            ");",
+            [],
+            (tx, results) => {
+                console.log("create work table | success");
+            },
+            (tx, results) => {
+                console.log('create work table | error');
+                console.log(results);
+            }
+        )
     });
 };
 
@@ -51,31 +55,31 @@ export function deleteAllWorks () {
     });
 };
 
-export function insertWork (name, year, month, date, work, check) {
+export function insertWork (userId, year, month, date, records, status) { // records is a json_string
     return new Promise((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql (
-                "INSERT INTO works (name, year, month, date, work, check)" +
+                "INSERT INTO works (userId, year, month, date, records, status)" +
                 "VALUES (?,?,?,?,?,?)",
-                [name, year, month, date, work, check],
+                [userId, year, month, date, records, status],
                 (_, results) => {
                     resolve(results);
                 },
                 (tx, results) => {
-                    reject();
+                    reject(results);
                 }
             )
         });
     });
 };
 
-export function checkWorks (name, year, month, date, check) {
+export function setWorkStatus (userId, year, month, date, status) {
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "UPDATE works SET check=?" + 
+                "UPDATE works SET status=?" + 
                 "WHERE name=? AND year=? AND month=? AND date=?",
-                [check, name, year, month, date],
+                [status, userId, year, month, date],
                 (_, results) => {
                     resolve(results);
                 },
@@ -107,8 +111,8 @@ export function getNearWorks () {
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "SELECT * FROM works" +
-                "ORDER BY no DESC" + 
+                "SELECT * FROM works " +
+                "ORDER BY key DESC" + 
                 "LIMIT 30",
                 (_, results) => {
                     resolve(results.rows._array);
@@ -124,9 +128,9 @@ export function getNameNearWorks (name) {
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "SELECT * FROM works" +
+                "SELECT * FROM works " +
                 "WHERE name=?" +
-                "ORDER BY no DESC" + 
+                "ORDER BY key DESC" + 
                 "LIMIT 30",
                 [name],
                 (_, results) => {
@@ -143,9 +147,9 @@ export function getNameMonthWorks (name, year, month) {
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "SELECT * FROM works" +
+                "SELECT * FROM works " +
                 "WHERE name=? AND year=? AND month=?" +
-                "ORDER BY no DESC" + 
+                "ORDER BY key DESC" + 
                 "LIMIT 30",
                 [name, year, month],
                 (_, results) => {
@@ -162,15 +166,15 @@ export function getDateWorks (year, month, date) {
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "SELECT * FROM works" +
+                "SELECT * FROM works " +
                 "WHERE year=? AND month=? AND date=?" +
-                "ORDER BY no",
+                "ORDER BY key",
                 [year, month, date],
                 (_, results) => {
                     resolve(results.rows._array);
                 },
-                () => {
-                    reject();
+                (_,results) => {
+                    reject(results);
                 });
         });
     });

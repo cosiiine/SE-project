@@ -3,21 +3,12 @@ import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native
 import { Ionicons } from '@expo/vector-icons';
 import { globalStyles } from '../styles/global';
 import { getAllUsers } from '../db/user';
+import { getDateWorks } from '../db/work';
 
 export default class MultiSelectCard extends Component{
     constructor(props){
         super(props);
-        getAllUsers().then((results)=>{
-            this.members = results;
-            console.log('reset members from multiSelectCard');
-            let temp = {};
-            results.forEach(item => {
-                temp[item.key] = 'false';
-            });
-            this.setState(temp);
-            this.props.setSelected(temp);
-        }).catch(()=>{});
-        
+        this.resetMembers();
     }
     onTouch = (item) => {
         let select = this.state[item.key]=='true'?true:false;
@@ -27,7 +18,42 @@ export default class MultiSelectCard extends Component{
         this.setState(temp);
         this.props.setSelected({...this.state,...temp});
     }
+    resetMembers = () => {
+        getAllUsers().then((results)=>{
+            const exist = [];
+            getDateWorks(this.props.date.getFullYear(),this.props.date.getMonth()+1,this.props.date.getDate()).then((rets)=>{
+                rets.forEach(item => {
+                    exist.push(item.userId);
+                });
+                const newResult = [];
+                // console.log("exist",exist);
+                results.forEach(item => {
+                    if(!exist.includes(item.key)){
+                        newResult.push(item);
+                    }
+                });
+                let temp = {};
+                newResult.forEach(item => {
+                    temp[item.key] = 'false';
+                });
+                this.members = newResult;
+                this.setState(temp);
+                this.props.setSelected(temp);
+                console.log('reset members from multiSelectCard | success');
+
+            }).catch((e)=>{console.log('fetch records from multiselect | error',e)});
+        }).catch((e)=>{console.log('reset members from multiselect | error',e)});
+        this.year = this.props.date.getFullYear();
+        this.month = this.props.date.getMonth()+1;
+        this.date = this.props.date.getDate();
+    };
     render(){
+        // console.log('rerender multiSelectCard',this.date,this.props.date);
+        const dt = this.props.date;
+        if(dt.getFullYear()!=this.year || (dt.getMonth()+1)!=this.month || dt.getDate()!=this.date){
+            // reset members
+            this.resetMembers();
+        }
         return (
             <View style={{width: '100%', flex: 1}}>
                 <FlatList

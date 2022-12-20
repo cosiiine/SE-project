@@ -1,11 +1,12 @@
 import React, { useState, useEffect, Component } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, TouchableWithoutFeedback, Keyboard, PanResponder, Animated } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, TouchableWithoutFeedback, Keyboard, PanResponder, Animated, Alert } from 'react-native';
 import { globalStyles } from '../../styles/global';
 import { useIsFocused } from '@react-navigation/native';
 import { createUserTable,deleteAllUsers,insertUser,getAllUsers, deleteUser} from '../../db/user';
 import MultiSelectCard from '../../components/multiSelectCard';
+import { insertWork, STATUS } from '../../db/work';
 
 export class TouchableGrid extends Component {
     constructor(props) {
@@ -156,6 +157,29 @@ export default function EditRecords({ route, navigation }) {
         setText(currentDate.getFullYear() + '/' + (currentDate.getMonth() + 1) + '/' + currentDate.getDate());
     };
 
+    const onSave = () => {
+        // console.log(date.getFullYear(),date.getMonth()+1,date.getDate());
+        // console.log(records);
+        // console.log(selected);
+        let temp = [];
+        for(var userKey in selected){
+            if(selected[userKey]=='true'){
+                temp.push(userKey);
+            }
+        }
+        if(temp.length == 0){ // 沒選人 給error
+            Alert.alert('Error!', 'Please select at least one sailor.', [{text: 'OK'}]);
+        }else{ // 將這些人存到資料庫
+            const recordString = JSON.stringify(records);
+            console.log("storing sailor records...");
+            temp.forEach(userKey => {
+                insertWork(parseInt(userKey),date.getFullYear(),date.getMonth()+1,date.getDate(),recordString,STATUS.WAITING).then(()=>{
+                    console.log("insertwork key:"+userKey+" | success");
+                }).catch((e)=>{console.log("insertwork key:"+userKey+" | error",e);});
+            });
+        }
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
             <View style={globalStyles.container}>
@@ -183,7 +207,7 @@ export default function EditRecords({ route, navigation }) {
                                 value={route.params?.post} // 得到下一頁的回傳值
                             />
                         </View>
-                        {isFocused && <MultiSelectCard selected={selected} setSelected={setSelected}/>}
+                        {isFocused && <MultiSelectCard selected={selected} setSelected={setSelected} date={date}/>}
                     </View>
                     <View style={[globalStyles.frame, {width: '74%', justifyContent: 'flex-start'}]}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '60%', marginTop: 80 }}>
@@ -201,16 +225,7 @@ export default function EditRecords({ route, navigation }) {
                                     />
                                 )}
                             </TouchableOpacity>
-                            <TouchableOpacity style={[globalStyles.button, { margin: 0, width: 120, height: 50, backgroundColor: '#3785D6' }]} onPress={()=>{
-                                    console.log(records);
-                                    console.log(selected);
-                                    // console.log('route param test',route.params.test)
-                                    // navigation.navigate({
-                                    //     name: 'Records',
-                                    //     params: { post: 'cool' },
-                                    //     merge: true,
-                                    // });
-                                }}>
+                            <TouchableOpacity style={[globalStyles.button, { margin: 0, width: 120, height: 50, backgroundColor: '#3785D6' }]} onPress={onSave}>
                                 <Ionicons name='save' size={25} color='white' />
                                 <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>save</Text>
                             </TouchableOpacity>

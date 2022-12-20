@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard,Alert } from 'react-native';
 import { globalStyles } from '../../styles/global';
-import { getAllUser, insertUser } from '../../db/user';
+import { getAllUser, insertUser,USERTYPE} from '../../db/user';
 
 export default function AddMember({ navigation }) {
     const [ name, setName] = useState('');
@@ -17,7 +17,7 @@ export default function AddMember({ navigation }) {
         }
         else {
             console.log("Insert: ", name, account);
-            insertUser(0,account,name,account).then((results) => {
+            insertUser( USERTYPE.SAILOR,account,name,account).then((results) => {
                 console.log(results);
                 
                 Alert.alert('Notice!', 'New member has been added.', [{text: 'OK'}]);

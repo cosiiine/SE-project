@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { globalStyles } from '../styles/global';
+import { STATUS } from '../db/work';
 
 export default function Card({ showStatus, pressHandler, data}) {
     
     const [member, setMember] = useState(data);
-    useEffect(()=>{ setMember(data); console.log('reset card');},[data]);
+    useEffect(()=>{ 
+        setMember(data);
+        //console.log('reset card');
+    },[data]);
     // const [member, setMember] = useState([
     //     {name: '漁工1', status: 'accepted', account: '12345678', phone: '0000-000000', key: '1'},
     //     {name: '漁工2', status: 'denied', account: '12345678', phone: '0000-000000', key: '2'},
@@ -22,17 +26,17 @@ export default function Card({ showStatus, pressHandler, data}) {
     const [press, setPress] = useState();
     const turnTo = (item) => {
         setPress(item.key);
-        if (showStatus) pressHandler(item.name, item.status);
+        if (showStatus) pressHandler(item);
         else pressHandler(item.name, item.account, item.phone);
     }
     function show(status) {
-        if (status == 'accepted') {
+        if (status == STATUS.ACCEPT) {
             return <Ionicons name='checkmark-circle' size={40} color={'#19AC9F'} style={{position: 'absolute', right: 0}}/>
         }
-        else if (status == 'pending') {
+        else if (status == STATUS.WAITING) {
             return <Ionicons name='ellipsis-horizontal-circle-sharp' size={40} color={'#F5C63E'} style={{position: 'absolute', right: 0}}/>
         }
-        else if (status == 'denied') {
+        else if (status == STATUS.DENY) {
             return <Ionicons name='close-circle' size={40} color={'#D34C5E'} style={{position: 'absolute', right: 0}}/>
         }
         return <Ionicons name='help-circle' size={40} color={'#aaa'} style={{position: 'absolute', right: 0}}/>
