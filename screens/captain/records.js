@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import { globalStyles } from '../../styles/global';
 import Card from '../../components/card';
 import AppBar from '../../components/appBar';
 import Drawer from '../../components/drawer';
 import { useIsFocused } from '@react-navigation/native';
-import { getDateWorks, STATUS } from '../../db/work';
+import { deleteWorks, deleteWorksFromKey, deleteWorksFromUser, getDateWorks, STATUS } from '../../db/work';
 import { getAllUsers } from '../../db/user';
 
 export default function Records({ route,navigation }) {
@@ -34,14 +34,21 @@ export default function Records({ route,navigation }) {
             ret.forEach(item => {
                 temp[item.key]=item;
             });
+            // console.log(temp);
             setMembers(temp);
             getDateWorks(date.getFullYear(),date.getMonth()+1,date.getDate()).then((results)=>{
+                let tp = [];
+                //console.log(results);
                 results.forEach(item => {
-                    item.records = JSON.parse(item.records);
-                    item.name = temp[item.userId].name;
+                    if(Object.keys(temp).includes(item.userId.toString())){
+                        const i = {};
+                        i["records"] = JSON.parse(item.records);
+                        i["name"] = temp[item.userId].name;
+                        tp.push({...item,...i});
+                    }
                 });
-                setRecords(results);
-                // console.log(results);
+                setRecords(tp);
+                
                 console.log('fetch records from records page | success');
             }).catch((e)=>{console.log('fetch records from records page | error',e)});
         }).catch(()=>{console.log('fetch member from records page | error')});
@@ -58,6 +65,16 @@ export default function Records({ route,navigation }) {
         // console.log(item);
         setSelectedItem(item);
     };
+    const deleteHandler = () => {
+        if(Object.keys(selectedItem).length == 0){
+        }else{
+            console.log(selectedItem);
+            deleteWorksFromKey(selectedItem.key).then((ret)=>{
+                Alert.alert('Notice!', `The work record has been deleted.`, [{text: 'OK'}]);
+            }).catch((ret)=>{console.log("Delete member works record encounters an error",ret)});
+            fetchRecords();
+        }
+    }
     function grid(num) {
         let list = [];
         const rec = selectedItem.records;
@@ -136,7 +153,7 @@ export default function Records({ route,navigation }) {
                             <Ionicons name='pencil' size={30} color='white' />
                             <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>edit</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}]}>
+                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}]} onPress={deleteHandler}>
                             <Ionicons name='ios-trash-sharp' size={30} color='white' />
                             <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>delete</Text>
                         </TouchableOpacity>

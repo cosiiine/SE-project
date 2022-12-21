@@ -7,12 +7,11 @@ import AppBar from '../../components/appBar';
 import Drawer from '../../components/drawer';
 import { createUserTable,deleteAllUsers,insertUser,getAllUsers, deleteUser} from '../../db/user';
 import { useIsFocused } from '@react-navigation/native';
+import { deleteWorksFromUser } from '../../db/work';
 
 export default function Member({ navigation }) {
     const [search, setSearch] = useState('');
-    const [name, setName] = useState('');
-    const [account, setAccount] = useState('');
-    const [phone, setPhone] = useState('');
+    const [selectedItem, setSelectedItem] = useState({});
     const [members, setMembers] = useState([]);
 
     const isFocused = useIsFocused(); // 此頁面被focus的狀態
@@ -26,26 +25,26 @@ export default function Member({ navigation }) {
         }).catch(()=>{console.log('fetch member from member page | error')});
     }
 
-    const pressHandler = ( name, account, phone ) => {
-        setName(name);
-        setAccount(account);
-        setPhone(phone);
+    const pressHandler = ( item ) => {
+        setSelectedItem(item);
     }
 
     const deleteHandler = () => {
-        if(account.length == 0){
+        if(Object.keys(selectedItem).length == 0){
             Alert.alert('Wrong!', 'Please select a member.', [
                 {text: 'OK', onPress: () => console.log('Delete failed.') },
             ]);
         }else{
-            deleteUser(account).then((results)=>{
-                Alert.alert('Notice!', `Member '${account}' has been deleted.`, [{text: 'OK'}]);
+            deleteUser(selectedItem.key).then((results)=>{
+                deleteWorksFromUser(selectedItem.key).then((ret)=>{
+                    Alert.alert('Notice!', `member '${selectedItem.name}' has been deleted.`, [{text: 'OK'}]);
+                }).catch((ret)=>{console.log("Delete member works record encounters an error")});
             }).catch(()=>{
                 Alert.alert('Wrong!', 'Delete member encounters an error', [
                     {text: 'OK', onPress: () => console.log('Delete member error') },
                 ])
             });
-            pressHandler('','',''); // reset to 0
+            setSelectedItem({});
             fetchMembers();
         }
     }
@@ -67,15 +66,15 @@ export default function Member({ navigation }) {
         <View style={[styles.block, {borderTopColor: '#9EACB9', borderTopWidth: 1}]} key={2}>
             <View style={{flexDirection: 'row'}}>
                 <Text style={[globalStyles.contentText, styles.text]}>姓名</Text>
-                <Text style={[globalStyles.contentText, styles.text]}>{name}</Text>
+                <Text style={[globalStyles.contentText, styles.text]}>{selectedItem.name}</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
                 <Text style={[globalStyles.contentText, styles.text]}>身分證/居留證</Text>
-                <Text style={[globalStyles.contentText, styles.text]}>{account}</Text>
+                <Text style={[globalStyles.contentText, styles.text]}>{selectedItem.account}</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
                 <Text style={[globalStyles.contentText, styles.text]}>連絡電話</Text>
-                <Text style={[globalStyles.contentText, styles.text]}>{phone}</Text>
+                <Text style={[globalStyles.contentText, styles.text]}>{''}</Text>
             </View>
         </View>);
         return results;
@@ -106,7 +105,7 @@ export default function Member({ navigation }) {
                         <Card showStatus={false} pressHandler={pressHandler} data={members}/>
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
-                        {(name.length != 0) && showContent()}
+                        {(Object.keys(selectedItem).length != 0) && showContent()}
                     </View>
                 </View>
             </View>

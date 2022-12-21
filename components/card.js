@@ -26,8 +26,7 @@ export default function Card({ showStatus, pressHandler, data}) {
     const [press, setPress] = useState();
     const turnTo = (item) => {
         setPress(item.key);
-        if (showStatus) pressHandler(item);
-        else pressHandler(item.name, item.account, item.phone);
+        pressHandler(item);
     }
     function show(status) {
         if (status == STATUS.ACCEPT) {

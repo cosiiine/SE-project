@@ -99,17 +99,17 @@ export function editUser (account, password) {
       });
 };
 
-export function deleteUser (account) {
+export function deleteUser (key) {
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "DELETE FROM users WHERE account=?",
-                [account],
+                "DELETE FROM users WHERE key=?",
+                [key],
                 (_, results) => {
                     resolve(results);
                 },
                 () => {
-                    reject();
+                    reject(results);
                 });
         });
       });

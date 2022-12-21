@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View, Text, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert } from 'react-native';
 import { globalStyles } from '../styles/global';
 import { db,createUserTable,deleteAllUsers,insertUser,editUser} from '../db/user';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Setting({ navigation }) {
     const [ password, setPassword ] = useState('');
     const [ twice, setTwice ] = useState('');
+    const isFocused = useIsFocused();
+
+    useEffect(()=>{resetBoxes();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call fetchmember
+
+    const resetBoxes = () => {
+        setPassword('');
+        setTwice('');
+        // console.log('resetBox')
+    };
 
     const pressHandler = (password, twice) => {
         if (password != twice || password.length < 3) {
@@ -27,8 +37,7 @@ export default function Setting({ navigation }) {
                 ])
             });
 
-            // setPassword('');
-            // setTwice('');
+            resetBoxes();
         }
     }
 
@@ -78,6 +87,7 @@ export default function Setting({ navigation }) {
                                     style={globalStyles.input}
                                     secureTextEntry={true}
                                     onChangeText={setPassword}
+                                    value={password}
                                 />
                             </View>
                             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -87,6 +97,7 @@ export default function Setting({ navigation }) {
                                     style={globalStyles.input}
                                     secureTextEntry={true}
                                     onChangeText={setTwice}
+                                    value={twice}
                                 />
                             </View>
                             <TouchableOpacity style={[globalStyles.button, {marginTop: 20, width: 120, height: 50, backgroundColor: '#3785D6'}]} onPress={() => pressHandler(password, twice)}>

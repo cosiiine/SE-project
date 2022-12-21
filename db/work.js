@@ -78,7 +78,7 @@ export function setWorkStatus (userId, year, month, date, status) {
         db.transaction(tx => { 
             tx.executeSql (
                 "UPDATE works SET status=?" + 
-                "WHERE name=? AND year=? AND month=? AND date=?",
+                "WHERE userId=? AND year=? AND month=? AND date=?",
                 [status, userId, year, month, date],
                 (_, results) => {
                     resolve(results);
@@ -90,18 +90,52 @@ export function setWorkStatus (userId, year, month, date, status) {
     });
 };
 
-export function deleteWorks (name, year, month, date) {
+export function deleteWorksFromUser (userId) {
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
                 "DELETE FROM works " +
-                "WHERE name=? AND year=? AND month=? AND date=?"
-                [name, year, month, date],
+                "WHERE userId=?"
+                [userId],
                 (_, results) => {
                     resolve(results);
                 },
-                () => {
-                    reject();
+                (_,results) => {
+                    reject(results);
+                });
+        });
+    });
+};
+
+export function deleteWorksFromKey (key) {
+    return new Promise((resolve, reject) => {
+        db.transaction(tx => { 
+            tx.executeSql (
+                "DELETE FROM works " +
+                "WHERE key=?"
+                [key],
+                (_, results) => {
+                    resolve(results);
+                },
+                (_,results) => {
+                    reject(results);
+                });
+        });
+    });
+};
+
+export function deleteWorks (userId, year, month, date) {
+    return new Promise((resolve, reject) => {
+        db.transaction(tx => { 
+            tx.executeSql (
+                "DELETE FROM works " +
+                "WHERE userId=? AND year=? AND month=? AND date=?"
+                [userId, year, month, date],
+                (_, results) => {
+                    resolve(results);
+                },
+                (_,results) => {
+                    reject(results);
                 });
         });
     });
