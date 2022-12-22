@@ -11,43 +11,64 @@ export const USERTYPE = {
 
 
 export function createUserTable () {
-    db.transaction((tx) => {
-        tx.executeSql(
-            "CREATE TABLE IF NOT EXISTS users" +
-            "("+
-            "key INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "userType INTEGER NOT NULL,"+ 
-            "account TEXT NOT NULL,"+
-            "name TEXT NOT NULL," +
-            "password TEXT NOT NULL"+
-            ");",
-            [],
-            (tx, results) => {
-                console.log("create user table | success");
-            },
-            (tx, results) => {
-                console.log('create user table | error');
-                console.log(results);
-            }
-        )
-    });
-    db.transaction((tx) => { // if no captain exist, create a captain account
-        tx.executeSql(
-            "SELECT * FROM users WHERE userType=?;",
-            [USERTYPE.CAPTAIN],
-            (tx, results) => {
-                if (results.rows.length == 0) {
-                    console.log('init captain | success');
-                    insertUser(USERTYPE.CAPTAIN,'captain', 'captain', 'captain');
-                }else{
-                    console.log('found captain | success');
+    new Promise((resolve, reject) => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                "CREATE TABLE IF NOT EXISTS users" +
+                "("+
+                "key INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "userType INTEGER NOT NULL,"+ 
+                "account TEXT NOT NULL,"+
+                "name TEXT NOT NULL," +
+                "password TEXT NOT NULL"+
+                ");",
+                [],
+                (tx, results) => {
+                    resolve(results);
+                },
+                (tx, results) => {
+                    
+                    reject(results);
                 }
-            },
-            (tx, results) => {
-                console.log("finding captain | error");
+            )
+        });
+    }).then((ret)=>{
+        console.log("create user table | success");
+        // console.log(results);
+
+        new Promise((resolve, reject) => { // check if captain exist
+            db.transaction((tx) => {
+                tx.executeSql(
+                    "SELECT * FROM users WHERE userType=?;",
+                    [USERTYPE.CAPTAIN],
+                    (tx, results) => {
+                        resolve(results);
+                    },
+                    (tx, results) => {
+                        reject(results);
+                    }
+                )
+            });
+        }).then((results)=>{
+            if (results.rows.length == 0){ // no captain , create one
+                insertUser(USERTYPE.CAPTAIN,'captain', 'captain', 'captain').then((ret)=>{
+                    console.log('init captain | success');
+                }).catch((ret)=>{
+                    console.log('init captain | error',ret);
+                });
+            }else{ // found a captain
+                console.log('found captain | success',results.rows._array);
             }
-        )
+            
+        }).catch((ret)=>{
+            console.log("finding captain | error",ret);
+        });
+    }).catch((ret)=>{
+        console.log('create user table | error');
+        // console.log(results);
     });
+    
+    
 };
 
 export function deleteAllUsers () {
@@ -77,7 +98,7 @@ export function insertUser (userType, account, name, password) {
                     resolve(results);
                 },
                 (tx, results) => {
-                    reject();
+                    reject(results);
                 }
             )
         });
