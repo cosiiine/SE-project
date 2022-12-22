@@ -48,8 +48,15 @@ export function createSignTable () {
 // };
 
 export function insertSign (userId, date, record) { // 登入登出紀錄
-    const dateStr = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
-    const timeStr = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    function format(value) {
+        if (value < 10) {
+            return '0' + value.toString();
+        }
+        return value.toString();
+    }
+    const dateStr = `${date.getFullYear()}/${format((date.getMonth() + 1) % 13)}/${format(date.getDate())}`;
+    const timeStr = `${format(date.getHours())}:${format(date.getMinutes())}:${format(date.getSeconds())}`;
+    
     return new Promise((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql (
