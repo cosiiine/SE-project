@@ -8,8 +8,5 @@ import { createSignTable } from './db/signRecords';
 
 export default function App() {
 	ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-	createUserTable();
-	createWorkTable();
-	createSignTable();
 	return ( <Navigator /> );
 }
