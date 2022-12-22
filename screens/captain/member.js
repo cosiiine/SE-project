@@ -38,14 +38,19 @@ export default function Member({ navigation }) {
         }else{
             const key = selectedItem.key; // userId
             const name = selectedItem.name;
-            
+            console.log(`deleting member:${name} key:${key}`);
             deleteUser(key).then((results)=>{
-                deleteWorksFromUser(key);
                 Alert.alert('Notice!', `member '${name}' has been deleted.`, [{text: 'OK'}]);
+                deleteWorksFromUser(key).then((ret)=>{
+                    console.log("delete works from user | success");
+                }).catch((ret)=>{
+                    console.log("delete works from user | error",ret);
+                });
+                
             }).catch((ret)=>{
                 console.log(ret);
                 Alert.alert('Wrong!', 'Delete member encounters an error', [
-                    {text: 'OK', onPress: () => console.log('Delete member |error') },
+                    {text: 'OK', onPress: () => console.log('Delete member | error') },
                 ])
             });
             setSelectedItem({});

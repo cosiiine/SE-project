@@ -91,11 +91,12 @@ export function setWorkStatus (userId, year, month, date, status) {
 };
 
 export function deleteWorksFromUser (userId) {
-    new Promise((resolve, reject) => {
+    const str = `DELETE FROM works WHERE userId=${userId}`;
+    return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "DELETE FROM works WHERE userId=?;"
-                [userId],
+                str,
+                [],
                 (_, results) => {
                     resolve(results);
                 },
@@ -103,10 +104,6 @@ export function deleteWorksFromUser (userId) {
                     reject(results);
                 });
         });
-    }).then((ret)=>{
-        console.log("delete works from user | success");
-    }).catch((ret)=>{
-        console.log("delete works from user | error",ret);
     });
 };
 
