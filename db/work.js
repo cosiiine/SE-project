@@ -91,23 +91,23 @@ export function setWorkStatus (userId, year, month, date, status) {
 };
 
 export function deleteWorksFromUser (userId) {
-    getWorks().then((ret)=>{
-        console.log(ret);
-        return new Promise((resolve, reject) => {
-            db.transaction(tx => { 
-                tx.executeSql (
-                    "DELETE FROM works WHERE userId=?"
-                    [userId],
-                    (_, results) => {
-                        resolve(results);
-                    },
-                    (_,results) => {
-                        reject(results);
-                    });
-            });
+    new Promise((resolve, reject) => {
+        db.transaction(tx => { 
+            tx.executeSql (
+                "DELETE FROM works WHERE userId=?;"
+                [userId],
+                (_, results) => {
+                    resolve(results);
+                },
+                (_,results) => {
+                    reject(results);
+                });
         });
-    }).catch((e)=>{console.log(e)});
-    
+    }).then((ret)=>{
+        console.log("delete works from user | success");
+    }).catch((ret)=>{
+        console.log("delete works from user | error",ret);
+    });
 };
 
 export function deleteWorksFromKey (key) {
@@ -209,6 +209,22 @@ export function getWorks () {
             tx.executeSql (
                 "SELECT key FROM works;",
                 [],
+                (_, results) => {
+                    resolve(results.rows._array);
+                },
+                (_,results) => {
+                    reject(results);
+                });
+        });
+    });
+};
+
+export function getWorksByUser (userId) {
+    return new Promise((resolve, reject) => {
+        db.transaction(tx => { 
+            tx.executeSql (
+                "SELECT * FROM works WHERE userId=?;",
+                [userId],
                 (_, results) => {
                     resolve(results.rows._array);
                 },

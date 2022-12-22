@@ -30,7 +30,7 @@ export default function AddMember({ navigation }) {
         else {
             console.log("Insert: ", name, account);
             insertUser( USERTYPE.SAILOR,account,name,account).then((results) => {
-                console.log(results);
+                // console.log(results);
                 
                 Alert.alert('Notice!', 'New member has been added.', [{text: 'OK'}]);
             }).catch(() => {

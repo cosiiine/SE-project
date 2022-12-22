@@ -36,13 +36,16 @@ export default function Member({ navigation }) {
                 {text: 'OK', onPress: () => console.log('Delete failed.') },
             ]);
         }else{
-            deleteUser(selectedItem.key).then((results)=>{
-                deleteWorksFromUser(selectedItem.key).then((ret)=>{
-                    Alert.alert('Notice!', `member '${selectedItem.name}' has been deleted.`, [{text: 'OK'}]);
-                }).catch((ret)=>{console.log("Delete member works record encounters an error")});
-            }).catch(()=>{
+            const key = selectedItem.key; // userId
+            const name = selectedItem.name;
+            
+            deleteUser(key).then((results)=>{
+                deleteWorksFromUser(key);
+                Alert.alert('Notice!', `member '${name}' has been deleted.`, [{text: 'OK'}]);
+            }).catch((ret)=>{
+                console.log(ret);
                 Alert.alert('Wrong!', 'Delete member encounters an error', [
-                    {text: 'OK', onPress: () => console.log('Delete member error') },
+                    {text: 'OK', onPress: () => console.log('Delete member |error') },
                 ])
             });
             setSelectedItem({});

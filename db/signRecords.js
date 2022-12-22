@@ -48,7 +48,7 @@ export function createSignTable () {
 // };
 
 export function insertSign (userId, date, record) { // 登入登出紀錄
-    const dateStr = `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`;
+    const dateStr = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
     const timeStr = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
     return new Promise((resolve, reject) => {
         db.transaction((tx) => {
