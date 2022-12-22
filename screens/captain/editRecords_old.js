@@ -6,7 +6,7 @@ import { globalStyles } from '../../styles/global';
 
 export default function EditRecords({ navigation }) {
     const [date, setDate] = useState(new Date());
-    const [text, setText] = useState(date.getFullYear()+ '/' + (date.getMonth() + 1) + '/' + date.getDate());
+    const [text, setText] = useState(date.getFullYear()+ '/' + (date.getMonth() + 1) % 13 + '/' + date.getDate());
     const [show, setShow] = useState((Platform.OS === 'ios'));
     const [search, setSearch] = useState('');
 
@@ -14,7 +14,7 @@ export default function EditRecords({ navigation }) {
         const currentDate = selectedDate;
         if (Platform.OS === 'android') setShow(false);
         setDate(currentDate);
-        setText(currentDate.getFullYear()+ '/' + (currentDate.getMonth() + 1) + '/' + currentDate.getDate());
+        setText(currentDate.getFullYear()+ '/' + (currentDate.getMonth() + 1) % 13 + '/' + currentDate.getDate());
     };
     function grid(num) {
         let list = [];

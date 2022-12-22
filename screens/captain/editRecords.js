@@ -115,7 +115,7 @@ export function NumberGrid (start){
 
 export default function EditRecords({ route, navigation }) {
     const [date, setDate] = useState(new Date());
-    const [text, setText] = useState(date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate());
+    const [text, setText] = useState(date.getFullYear() + '/' + (date.getMonth() + 1) % 13 + '/' + date.getDate());
     const [show, setShow] = useState((Platform.OS === 'ios'));
     const [search, setSearch] = useState('');
     const [chosenTask, setChosenTask] = useState('break');
@@ -139,7 +139,7 @@ export default function EditRecords({ route, navigation }) {
         setRecords(emptyRecords);
         setChosenTask('work');
         setDate(new Date());
-        setText(date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate());
+        setText(date.getFullYear() + '/' + (date.getMonth() + 1) % 13 + '/' + date.getDate());
         console.log('resetRecords from editRecords page');
         setSelected({});
     };
@@ -154,11 +154,11 @@ export default function EditRecords({ route, navigation }) {
         const currentDate = selectedDate;
         if (Platform.OS === 'android') setShow(false);
         setDate(currentDate);
-        setText(currentDate.getFullYear() + '/' + (currentDate.getMonth() + 1) + '/' + currentDate.getDate());
+        setText(currentDate.getFullYear() + '/' + (currentDate.getMonth() + 1) % 13 + '/' + currentDate.getDate());
     };
 
     const onSave = () => {
-        // console.log(date.getFullYear(),date.getMonth()+1,date.getDate());
+        // console.log(date.getFullYear(),(date.getMonth()+1)%13,date.getDate());
         // console.log(records);
         // console.log(selected);
         let temp = [];
@@ -170,14 +170,28 @@ export default function EditRecords({ route, navigation }) {
         if(temp.length == 0){ // 沒選人 給error
             Alert.alert('Error!', 'Please select at least one sailor.', [{text: 'OK'}]);
         }else{ // 將這些人存到資料庫
+            Alert.alert('Notice!', 'New record has been added.', [{text: 'OK'}]);
             const recordString = JSON.stringify(records);
             console.log("storing sailor records...");
             temp.forEach(userKey => {
-                insertWork(parseInt(userKey),date.getFullYear(),date.getMonth()+1,date.getDate(),recordString,STATUS.WAITING).then(()=>{
+                insertWork(parseInt(userKey),date.getFullYear(),(date.getMonth()+1) % 13,date.getDate(),recordString,STATUS.WAITING).then(()=>{
                     console.log("insertwork key:"+userKey+" | success");
                 }).catch((e)=>{console.log("insertwork key:"+userKey+" | error",e);});
             });
         }
+    };
+
+    function showTask(task, color) {
+        if (task == chosenTask)
+            return <TouchableOpacity style={[styles.button, {borderColor: color, backgroundColor: color}]} onPress={()=>{setChosenTask(task);console.log('set task to ' + task);}}>
+                <View style={styles.circle} />
+                <Text style={styles.buttonText}>{task}</Text>
+            </TouchableOpacity>
+        else
+            return <TouchableOpacity style={[styles.button, {borderColor: color}]} onPress={()=>{setChosenTask(task);console.log('set task to ' + task);}}>
+                <View style={[styles.circle, { backgroundColor: color }]} />
+                <Text style={[styles.buttonText, { color: color }]}>{task}</Text>
+            </TouchableOpacity>
     }
 
     return (
@@ -208,6 +222,7 @@ export default function EditRecords({ route, navigation }) {
                             />
                         </View>
                         {isFocused && <MultiSelectCard selected={selected} setSelected={setSelected} date={date}/>}
+                        <Text style={{color: '#afafaf'}}>--僅顯示當日未記錄出勤人員--</Text>
                     </View>
                     <View style={[globalStyles.frame, {width: '74%', justifyContent: 'flex-start'}]}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '60%', marginTop: 80 }}>
@@ -237,23 +252,11 @@ export default function EditRecords({ route, navigation }) {
                                 {NumberGrid(12)}
                                 {isFocused && <TouchableGrid startIdx={24} taskColors={taskColors} chosenTask={chosenTask} records={records} setRecords={setRecords}/>}
                             </View>
-                            
-                            
-                            
-                            
+                               
                             <View style={{ flexDirection: 'row', marginTop: 40 }}>
-                                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }} onPress={()=>{setChosenTask('work');console.log('set task to work')}}>
-                                    <View style={[styles.circle, { backgroundColor: '#D34C5E' }]} />
-                                    <Text style={{ fontSize: 20, color: '#D34C5E', fontWeight: 'bold', paddingLeft: 10 }}>work</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}  onPress={()=>{setChosenTask('eat');console.log('set task to eat')}}>
-                                    <View style={[styles.circle, { backgroundColor: '#3785D6' }]} />
-                                    <Text style={{ fontSize: 20, color: '#3785D6', fontWeight: 'bold', paddingLeft: 10 }}>eat</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }} onPress={()=>{setChosenTask('break');console.log('set task to break')}}>
-                                    <View style={[styles.circle, { backgroundColor: '#8f8f8f' }]} />
-                                    <Text style={{ fontSize: 20, color: '#8f8f8f', fontWeight: 'bold', paddingLeft: 10 }}>break</Text>
-                                </TouchableOpacity>
+                                {showTask('work', '#D34C5E')}
+                                {showTask('eat', '#3785D6')}
+                                {showTask('break', '#8f8f8f')}
                             </View>
                         </View>
                     </View>
@@ -270,6 +273,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 5,
         paddingHorizontal: 10,
+        marginBottom: 5,
         width: 250,
         height: 50,
     },
@@ -287,5 +291,21 @@ const styles = StyleSheet.create({
         width: 20,
         height: 20,
         borderRadius: 10,
-    }
+        backgroundColor: '#fcfcfd',
+    },
+    button: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginRight: 20,
+        borderRadius: 10,
+        padding: 8,
+        borderWidth: 2,
+        borderColor: '#fcfcfd',
+    },
+    buttonText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        paddingLeft: 10,
+        color: '#fcfcfd',
+    },
 })

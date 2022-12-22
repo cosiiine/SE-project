@@ -21,7 +21,7 @@ export default class MultiSelectCard extends Component{
     resetMembers = () => {
         getAllUsers().then((results)=>{
             const exist = [];
-            getDateWorks(this.props.date.getFullYear(),this.props.date.getMonth()+1,this.props.date.getDate()).then((rets)=>{
+            getDateWorks(this.props.date.getFullYear(),(this.props.date.getMonth()+1) % 13,this.props.date.getDate()).then((rets)=>{
                 rets.forEach(item => {
                     exist.push(item.userId);
                 });
@@ -44,7 +44,7 @@ export default class MultiSelectCard extends Component{
             }).catch((e)=>{console.log('fetch records from multiselect | error',e)});
         }).catch((e)=>{console.log('reset members from multiselect | error',e)});
         this.year = this.props.date.getFullYear();
-        this.month = this.props.date.getMonth()+1;
+        this.month = (this.props.date.getMonth()+1)%13;
         this.date = this.props.date.getDate();
     };
     render(){
