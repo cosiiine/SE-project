@@ -69,10 +69,10 @@ export function getSigns (userId) {
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "SELECT * FROM signs " +
-                "WHERE userId=? " +
+                "SELECT * FROM signs WHERE userId=? " +
                 "ORDER BY key DESC " + 
-                "LIMIT 10",
+                "LIMIT 10;",
+                
                 [userId],
                 (_, results) => {
                     resolve(results.rows._array);

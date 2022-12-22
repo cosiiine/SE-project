@@ -17,8 +17,10 @@ export default function SignRecords({ navigation }) {
     async function fetchRecords(){
         if(Object.keys(global.user).length != 0){
             getAllSigns().then((results)=>{
-                // console.log(results);
                 setRecords(results);
+                results.forEach(element => {
+                    console.log(element.key)
+                });
                 console.log('fetch signRecords from signRecords page');
             }).catch((ret)=>{console.log('fetch signRecords from signRecords page | error',ret)});
         }

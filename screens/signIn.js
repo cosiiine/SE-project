@@ -39,6 +39,9 @@ export default function SignIn({ navigation }) {
 
                 if(user.password != password){
                     insertSign(user.key,dateStr,timeStr,"登入失敗").then((ret)=>{}).catch((e)=>{console.log(e)});
+                    Alert.alert('Wrong!', 'Account or password wrong', [
+                        {text: 'OK', onPress: () => console.log('Login error') },
+                    ])
                 }
                 else{
                     global.user = user;
