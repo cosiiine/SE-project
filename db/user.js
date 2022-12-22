@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase(
-    'db.user',
+    'db.test',
 ); // returns Database object
 
 export const USERTYPE = {
@@ -33,7 +33,7 @@ export function createUserTable () {
     });
     db.transaction((tx) => { // if no captain exist, create a captain account
         tx.executeSql(
-            "SELECT * FROM users WHERE userType=?",
+            "SELECT * FROM users WHERE userType=?;",
             [USERTYPE.CAPTAIN],
             (tx, results) => {
                 if (results.rows.length == 0) {
@@ -51,7 +51,7 @@ export function createUserTable () {
 export function deleteAllUsers () {
     db.transaction((tx) => {
         tx.executeSql(
-            "DELETE FROM users",
+            "DELETE FROM users;",
             [],
             (tx, results) => {
                 console.log("delete all | success");
@@ -69,7 +69,7 @@ export function insertUser (userType, account, name, password) {
         db.transaction((tx) => {
             tx.executeSql (
                 "INSERT INTO users (userType,account,name,password)"+
-                "VALUES (?,?,?,?)",
+                "VALUES (?,?,?,?);",
                 [userType, account, name, password],
                 (_, results) => {
                     resolve(results);
@@ -87,7 +87,7 @@ export function editUser (account, password) {
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "UPDATE users SET password=? WHERE account=?",
+                "UPDATE users SET password=? WHERE account=?;",
                 [password,account],
                 (_, results) => {
                     resolve(results);
@@ -103,7 +103,7 @@ export function deleteUser (key) {
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "DELETE FROM users WHERE key=?",
+                "DELETE FROM users WHERE key=?;",
                 [key],
                 (_, results) => {
                     resolve(results);
@@ -119,7 +119,7 @@ export function getAllUsers () { // get all sailor except captain
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "SELECT * FROM users WHERE userType=?",
+                "SELECT * FROM users WHERE userType=?;",
                 [USERTYPE.SAILOR],
                 (_, results) => {
                     resolve(results.rows._array);
@@ -131,12 +131,12 @@ export function getAllUsers () { // get all sailor except captain
       });
 };
 
-export function getUser (account, password) {
+export function getUser (account) {
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "SELECT * FROM users WHERE account=? and password=?",
-                [account, password],
+                "SELECT * FROM users WHERE account=?;",
+                [account],
                 (_, results) => {
                     if(results.rows.length == 1) {
                         resolve(results.rows.item(0));

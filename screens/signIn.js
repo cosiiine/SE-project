@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpa
 import { globalStyles } from '../styles/global';
 import { createUserTable,deleteAllUsers,insertUser,getUser,USERTYPE} from '../db/user';
 import { createWorkTable } from '../db/work';
+import { createSignTable, insertSign } from '../db/signRecords';
 
 
 
@@ -10,7 +11,7 @@ export default function SignIn({ navigation }) {
     const [ account, setAccount ] = useState('');
     const [ password, setPassword ] = useState('');
 
-    useEffect(() => { createUserTable();createWorkTable(); }, []);
+    useEffect(() => { createUserTable();createWorkTable();createSignTable(); }, []);
 
     
 
@@ -29,19 +30,26 @@ export default function SignIn({ navigation }) {
             console.log("account/password => " + account + ' ' + password);
 
             // check account
-            getUser(account,password).then((user) => {
+            getUser(account).then((user) => {
                 console.log("user found");
                 console.log(user);
-                global.user = user;
-                
-                if(user.userType == USERTYPE.CAPTAIN){
-                    navigation.navigate('CaptainStack');
+                const date = new Date();
+                const dateStr = `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`;
+                const timeStr = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+
+                if(user.password != password){
+                    insertSign(global.user.key,dateStr,timeStr,"登入失敗").then((ret)=>{}).catch((e)=>{console.log(e)});
                 }
                 else{
-                    navigation.navigate('WorkerStack');
+                    global.user = user;
+                    insertSign(global.user.key,dateStr,timeStr,"登入成功").then((ret)=>{}).catch((e)=>{console.log(e)});
+                    if(user.userType == USERTYPE.CAPTAIN){
+                        navigation.navigate('CaptainStack');
+                    }
+                    else{
+                        navigation.navigate('WorkerStack');
+                    }
                 }
-                
-                
             }).catch(() => {
                 Alert.alert('Wrong!', 'Account or password wrong', [
                     {text: 'OK', onPress: () => console.log('Login error') },

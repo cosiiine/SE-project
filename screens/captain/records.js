@@ -7,14 +7,16 @@ import Card from '../../components/card';
 import AppBar from '../../components/appBar';
 import Drawer from '../../components/drawer';
 import { useIsFocused } from '@react-navigation/native';
-import { deleteWorks, deleteWorksFromKey, deleteWorksFromUser, getDateWorks, STATUS } from '../../db/work';
-import { getAllUsers } from '../../db/user';
+import { deleteAllWorks, deleteWorks, deleteWorksFromKey, deleteWorksFromUser, getDateWorks, getWorks, STATUS } from '../../db/work';
+import { deleteUser, getAllUsers } from '../../db/user';
+import * as SQLite from 'expo-sqlite';
+import { deleteWorkHandler } from './member';
 
-export default function Records({ route,navigation }) {
+export default function Records({ navigation }) {
     const [date, setDate] = useState(new Date());
     const [text, setText] = useState(date.getFullYear()+ '/' + (date.getMonth() + 1) + '/' + date.getDate());
     const [show, setShow] = useState((Platform.OS === 'ios'));
-    const [search, setSearch] = useState('test');
+    const [search, setSearch] = useState("");
     const [members,setMembers] = useState({});
     const [selectedItem, setSelectedItem] = useState({});
     const [records,setRecords] = useState([]);
@@ -26,7 +28,7 @@ export default function Records({ route,navigation }) {
         'eat':'#3785D6'
     });
 
-    useEffect(()=>{fetchRecords();} , [isFocused,date])// 當isFocused改變，或者初始化此頁，call fetchmember
+    useEffect(()=>{fetchRecords();} ,[isFocused,date,])// 當isFocused改變，或者初始化此頁，call fetchmember
 
     async function fetchRecords(){
         getAllUsers().then((ret)=>{
@@ -66,14 +68,11 @@ export default function Records({ route,navigation }) {
         setSelectedItem(item);
     };
     const deleteHandler = () => {
-        if(Object.keys(selectedItem).length == 0){
-        }else{
-            console.log(selectedItem);
-            deleteWorksFromKey(selectedItem.key).then((ret)=>{
-                Alert.alert('Notice!', `The work record has been deleted.`, [{text: 'OK'}]);
-            }).catch((ret)=>{console.log("Delete member works record encounters an error",ret)});
-            fetchRecords();
-        }
+        deleteWorks(selectedItem.userId,selectedItem.year,selectedItem.month,selectedItem.date).then((ret)=>{
+            Alert.alert('Notice!', `Work record has been deleted.`, [{text: 'OK'}]);
+        }).catch((ret)=>{console.log("Delete member works record encounters an error",ret)});
+        setSelectedItem({});
+        fetchRecords();
     }
     function grid(num) {
         let list = [];
@@ -212,8 +211,7 @@ export default function Records({ route,navigation }) {
                                 placeholder='name'
                                 style={[globalStyles.contentText, {flex: 1, paddingHorizontal: 5}]}
                                 onChangeText={setSearch}
-                                // value={search}
-                                value={route.params?.post} // 得到下一頁的回傳值
+                                value={search}
                             />
                         </View>
                         {isFocused && <Card showStatus={true} pressHandler={pressHandler} data={records}/>}

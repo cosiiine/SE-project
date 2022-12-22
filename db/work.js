@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite'
 
 const db = SQLite.openDatabase(
-    'db.work',
+    'db.test',
 );
 
 export const STATUS = {
@@ -91,20 +91,23 @@ export function setWorkStatus (userId, year, month, date, status) {
 };
 
 export function deleteWorksFromUser (userId) {
-    return new Promise((resolve, reject) => {
-        db.transaction(tx => { 
-            tx.executeSql (
-                "DELETE FROM works " +
-                "WHERE userId=?"
-                [userId],
-                (_, results) => {
-                    resolve(results);
-                },
-                (_,results) => {
-                    reject(results);
-                });
+    getWorks().then((ret)=>{
+        console.log(ret);
+        return new Promise((resolve, reject) => {
+            db.transaction(tx => { 
+                tx.executeSql (
+                    "DELETE FROM works WHERE userId=?"
+                    [userId],
+                    (_, results) => {
+                        resolve(results);
+                    },
+                    (_,results) => {
+                        reject(results);
+                    });
+            });
         });
-    });
+    }).catch((e)=>{console.log(e)});
+    
 };
 
 export function deleteWorksFromKey (key) {
@@ -125,12 +128,16 @@ export function deleteWorksFromKey (key) {
 };
 
 export function deleteWorks (userId, year, month, date) {
+    const str = `DELETE FROM works WHERE userId=${userId} AND year=${year} AND month=${month} AND date=${date}`;
+    console.log(str);
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "DELETE FROM works " +
-                "WHERE userId=? AND year=? AND month=? AND date=?"
-                [userId, year, month, date],
+                // 出了奇怪bug
+                // "DELETE FROM works WHERE userId=? AND year=? AND month=? AND date=?"
+                // [userId, year, month, date],
+                str,
+                [],
                 (_, results) => {
                     resolve(results);
                 },
@@ -191,6 +198,22 @@ export function getNameMonthWorks (name, year, month) {
                 },
                 () => {
                     reject();
+                });
+        });
+    });
+};
+
+export function getWorks () {
+    return new Promise((resolve, reject) => {
+        db.transaction(tx => { 
+            tx.executeSql (
+                "SELECT key FROM works;",
+                [],
+                (_, results) => {
+                    resolve(results.rows._array);
+                },
+                (_,results) => {
+                    reject(results);
                 });
         });
     });

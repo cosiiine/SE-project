@@ -7,7 +7,8 @@ import AppBar from '../../components/appBar';
 import Drawer from '../../components/drawer';
 import { createUserTable,deleteAllUsers,insertUser,getAllUsers, deleteUser} from '../../db/user';
 import { useIsFocused } from '@react-navigation/native';
-import { deleteWorksFromUser } from '../../db/work';
+import { deleteAllWorks, deleteWorks, deleteWorksFromUser } from '../../db/work';
+
 
 export default function Member({ navigation }) {
     const [search, setSearch] = useState('');
@@ -30,6 +31,11 @@ export default function Member({ navigation }) {
     }
 
     const deleteHandler = () => {
+        deleteWorks(2,2022,12,22).then((ret)=>{
+            console.log(ret);
+            Alert.alert('Notice!', `member has been deleted.`, [{text: 'OK'}]);
+        }).catch((ret)=>{console.log("Delete member works record encounters an error",ret)});
+        return;
         if(Object.keys(selectedItem).length == 0){
             Alert.alert('Wrong!', 'Please select a member.', [
                 {text: 'OK', onPress: () => console.log('Delete failed.') },
