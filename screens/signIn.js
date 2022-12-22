@@ -33,19 +33,16 @@ export default function SignIn({ navigation }) {
             getUser(account).then((user) => {
                 console.log("user found");
                 console.log(user);
-                const date = new Date();
-                const dateStr = `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`;
-                const timeStr = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
                 if(user.password != password){
-                    insertSign(user.key,dateStr,timeStr,"登入失敗").then((ret)=>{}).catch((e)=>{console.log(e)});
+                    insertSign(user.key,new Date(),"登入失敗").then((ret)=>{}).catch((e)=>{console.log(e)});
                     Alert.alert('Wrong!', 'Account or password wrong', [
                         {text: 'OK', onPress: () => console.log('Login error') },
                     ])
                 }
                 else{
                     global.user = user;
-                    insertSign(user.key,dateStr,timeStr,"登入成功").then((ret)=>{}).catch((e)=>{console.log(e)});
+                    insertSign(user.key,new Date(),"登入成功").then((ret)=>{}).catch((e)=>{console.log(e)});
                     if(user.userType == USERTYPE.CAPTAIN){
                         navigation.navigate('CaptainStack');
                     }

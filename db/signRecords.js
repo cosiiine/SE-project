@@ -47,13 +47,15 @@ export function createSignTable () {
 //     });
 // };
 
-export function insertSign (userId, date, time, record) { // 登入登出紀錄
+export function insertSign (userId, date, record) { // 登入登出紀錄
+    const dateStr = `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`;
+    const timeStr = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
     return new Promise((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql (
                 "INSERT INTO signs (userId, date, time, record)" +
                 "VALUES (?,?,?,?)",
-                [userId, date,time,record],
+                [userId, dateStr, timeStr,record],
                 (_, results) => {
                     resolve(results);
                 },
@@ -65,13 +67,13 @@ export function insertSign (userId, date, time, record) { // 登入登出紀錄
     });
 };
 
-export function getSigns (userId) {
+export function getSignsByUser (userId) {
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
                 "SELECT * FROM signs WHERE userId=? " +
                 "ORDER BY key DESC " + 
-                "LIMIT 10;",
+                "LIMIT 8;",
                 
                 [userId],
                 (_, results) => {

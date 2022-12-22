@@ -24,10 +24,7 @@ export default function Drawer({ navigation, captain, current }) {
                 <Ionicons name='time' style={style('SignRecords')} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {
-                const date = new Date();
-                const dateStr = `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`
-                const timeStr = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
-                insertSign(global.user.key,dateStr,timeStr,"登出成功").then((ret)=>{
+                insertSign(global.user.key,new Date(),"登出成功").then((ret)=>{
                     global.user={};
                 }).catch((e)=>{console.log(e)});
                 navigation.navigate('SignIn');

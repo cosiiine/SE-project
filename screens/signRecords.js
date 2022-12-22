@@ -4,7 +4,7 @@ import { globalStyles } from '../styles/global';
 import AppBar from '../components/appBar';
 import Drawer from '../components/drawer';
 import { useIsFocused } from '@react-navigation/native';
-import { getAllSigns, getSigns } from '../db/signRecords';
+import { getAllSigns, getSignsByUser } from '../db/signRecords';
 import { USERTYPE } from '../db/user';
 
 export default function SignRecords({ navigation }) {
@@ -16,12 +16,12 @@ export default function SignRecords({ navigation }) {
 
     async function fetchRecords(){
         if(Object.keys(global.user).length != 0){
-            getAllSigns().then((results)=>{
+            getSignsByUser(global.user.key).then((results)=>{
                 setRecords(results);
-                results.forEach(element => {
-                    console.log(element.key)
-                });
-                console.log('fetch signRecords from signRecords page');
+                // results.forEach(element => {
+                //     console.log(element.key)
+                // });
+                console.log('fetch signRecords from signRecords page | success');
             }).catch((ret)=>{console.log('fetch signRecords from signRecords page | error',ret)});
         }
         
