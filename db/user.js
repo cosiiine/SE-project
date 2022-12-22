@@ -37,8 +37,10 @@ export function createUserTable () {
             [USERTYPE.CAPTAIN],
             (tx, results) => {
                 if (results.rows.length == 0) {
-                    console.log('init captain');
+                    console.log('init captain | success');
                     insertUser(USERTYPE.CAPTAIN,'captain', 'captain', 'captain');
+                }else{
+                    console.log('found captain | success');
                 }
             },
             (tx, results) => {

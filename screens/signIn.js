@@ -38,11 +38,11 @@ export default function SignIn({ navigation }) {
                 const timeStr = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
                 if(user.password != password){
-                    insertSign(global.user.key,dateStr,timeStr,"登入失敗").then((ret)=>{}).catch((e)=>{console.log(e)});
+                    insertSign(user.key,dateStr,timeStr,"登入失敗").then((ret)=>{}).catch((e)=>{console.log(e)});
                 }
                 else{
                     global.user = user;
-                    insertSign(global.user.key,dateStr,timeStr,"登入成功").then((ret)=>{}).catch((e)=>{console.log(e)});
+                    insertSign(user.key,dateStr,timeStr,"登入成功").then((ret)=>{}).catch((e)=>{console.log(e)});
                     if(user.userType == USERTYPE.CAPTAIN){
                         navigation.navigate('CaptainStack');
                     }
