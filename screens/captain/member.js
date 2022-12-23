@@ -112,9 +112,11 @@ export default function Member({ navigation }) {
                             </TouchableOpacity>
                         </View>
                         <Card showStatus={false} pressHandler={pressHandler} data={members}/>
+                        <Text style={globalStyles.noticeText}>-- 請點右上角 + 以新增人員 --</Text>
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
                         {(Object.keys(selectedItem).length != 0) && showContent()}
+                        {(Object.keys(selectedItem).length == 0) && <Text style={globalStyles.noticeText}>-- 點左欄人員以顯示詳細資訊 --</Text>}
                     </View>
                 </View>
             </View>

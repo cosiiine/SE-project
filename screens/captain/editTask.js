@@ -38,12 +38,6 @@ export default function EditTask({ navigation }) {
                         <Ionicons name='chevron-back-outline' size={30} style={{ marginLeft: 10 }} />
                         <Text style={globalStyles.titleText}>工作類型編輯</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 10 }} onPress={() => {navigation.navigate('Setting');}}>
-                        <View style={[globalStyles.circle, { backgroundColor: '#E4E7EA' }]}>
-                            <Ionicons name='person' size={18} color='#9EACB9' />
-                        </View>
-                        <Text style={globalStyles.contentText}>{global.user.name}</Text>
-                    </TouchableOpacity>
                 </View>
                 <View style={[globalStyles.frame, {flex: 9}]}>
                     <View style={styles.block}>

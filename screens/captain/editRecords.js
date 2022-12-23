@@ -117,7 +117,7 @@ export default function EditRecords({ route, navigation }) {
     const [date, setDate] = useState(new Date());
     const [text, setText] = useState(date.getFullYear() + '/' + (date.getMonth() + 1) % 13 + '/' + date.getDate());
     const [show, setShow] = useState((Platform.OS === 'ios'));
-    const [search, setSearch] = useState('');
+    // const [search, setSearch] = useState('');
     const [chosenTask, setChosenTask] = useState('break');
     const [records, setRecords] = useState(emptyRecords); // 0~47
     
@@ -137,7 +137,7 @@ export default function EditRecords({ route, navigation }) {
 
     const resetRecords = () => {
         setRecords(emptyRecords);
-        setChosenTask('work');
+        setChosenTask('work1');
         setDate(new Date());
         setText(date.getFullYear() + '/' + (date.getMonth() + 1) % 13 + '/' + date.getDate());
         console.log('resetRecords from editRecords page');
@@ -145,9 +145,11 @@ export default function EditRecords({ route, navigation }) {
     };
 
     const [taskColors,setTaskColors] = useState({
-        'break':'#cfcfcf',
-        'work':'#D34C5E',
-        'eat':'#3785D6'
+        'work1': '#D34C5E',
+        'work2': '#F5C63E',
+        'work3': '#19AC9F',
+        'eat': '#3785D6',
+        'break': '#cfcfcf',
     });
 
     const onChange = (event, selectedDate) => {
@@ -202,16 +204,10 @@ export default function EditRecords({ route, navigation }) {
                         <Ionicons name='chevron-back-outline' size={30} style={{ marginLeft: 10 }} />
                         <Text style={globalStyles.titleText}>新增勤務紀錄</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 10 }} onPress={() => {navigation.navigate('Setting');}}>
-                        <View style={[globalStyles.circle, { backgroundColor: '#E4E7EA' }]}>
-                            <Ionicons name='person' size={18} color='#9EACB9' />
-                        </View>
-                        <Text style={globalStyles.contentText}>{global.user.name}</Text>
-                    </TouchableOpacity>
                 </View>
                 <View style={globalStyles.allContent}>
                     <View style={[globalStyles.frame, {width: '25%'}]}>
-                        <View style={styles.search}>
+                        {/* <View style={styles.search}>
                             <Ionicons name='search' size={18} style={globalStyles.color} />
                             <TextInput 
                                 placeholder='name'
@@ -220,34 +216,33 @@ export default function EditRecords({ route, navigation }) {
                                 // value={search}
                                 value={route.params?.post} // 得到下一頁的回傳值
                             />
-                        </View>
+                        </View> */}
+                        <TouchableOpacity onPress={() => { setShow(true) }} style={styles.search}>
+                            <Ionicons name='calendar-sharp' size={18} style={globalStyles.color} />
+                            {(Platform.OS === 'android') && <Text style={[globalStyles.contentText, globalStyles.color, { flex: 1, paddingHorizontal: 5 }]}>{text}</Text>}
+                            {show && (
+                                <DateTimePicker
+                                    style={{ flex: 1 }}
+                                    testID="dateTimePicker"
+                                    value={date}
+                                    mode={'date'}
+                                    onChange={onChange}
+                                    maximumDate={new Date()} // ?
+                                />
+                            )}
+                        </TouchableOpacity>
                         {isFocused && <MultiSelectCard selected={selected} setSelected={setSelected} date={date}/>}
-                        <Text style={{color: '#afafaf'}}>--僅顯示當日未記錄出勤人員--</Text>
+                        <Text style={globalStyles.noticeText}>-- 僅顯示當日未記錄出勤人員 --</Text>
                     </View>
                     <View style={[globalStyles.frame, {width: '74%', justifyContent: 'flex-start'}]}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '80%', marginTop: 80 }}>
-                            <TouchableOpacity onPress={() => { setShow(true) }} style={styles.search}>
-                                <Ionicons name='calendar-sharp' size={18} style={globalStyles.color} />
-                                {(Platform.OS === 'android') && <Text style={[globalStyles.contentText, globalStyles.color, { flex: 1, paddingHorizontal: 5 }]}>{text}</Text>}
-                                {show && (
-                                    <DateTimePicker
-                                        style={{ flex: 1 }}
-                                        testID="dateTimePicker"
-                                        value={date}
-                                        mode={'date'}
-                                        onChange={onChange}
-                                        maximumDate={new Date()} // ?
-                                    />
-                                )}
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[globalStyles.button, { margin: 0, width: 120, height: 50, backgroundColor: '#3785D6' }]} onPress={onSave}>
-                                <Ionicons name='save' size={25} color='white' />
-                                <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>save</Text>
-                            </TouchableOpacity>
-                            {/* <View style={{ marginLeft:20}} /> */}
-                            <TouchableOpacity style={[globalStyles.button, { margin: 0, width: 180, height: 50, backgroundColor: '#aaa' }]} onPress={() => {navigation.navigate('EditTask');}}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '50%', marginTop: 80 }}>
+                            <TouchableOpacity style={[globalStyles.button, { margin: 0, paddingHorizontal: 25, paddingVertical: 10, backgroundColor: '#aaa' }]} onPress={() => {navigation.navigate('EditTask');}}>
                                 <Ionicons name='pencil' size={25} color='white' />
                                 <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>edit tasks</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[globalStyles.button, { margin: 0, paddingHorizontal: 25, paddingVertical: 10, backgroundColor: '#3785D6' }]} onPress={onSave}>
+                                <Ionicons name='save' size={25} color='white' />
+                                <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>save</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.block}>
@@ -257,17 +252,15 @@ export default function EditRecords({ route, navigation }) {
                                 {NumberGrid(12)}
                                 {isFocused && <TouchableGrid startIdx={24} taskColors={taskColors} chosenTask={chosenTask} records={records} setRecords={setRecords}/>}
                             </View>
-                               
-                            <View style={{ flexDirection: 'row', marginTop: 40 }}>
+                            <View style={{ flexDirection: 'row', marginTop: 60, marginBottom: 30 }}>
                                 {showTask('work1', '#D34C5E')}
                                 {showTask('work2', '#F5C63E')}
                                 {showTask('work3', '#19AC9F')}
-                            </View>
-                            <View style={{ flexDirection: 'row', marginTop: 20 }}>
                                 {showTask('eat', '#3785D6')}
-                                {showTask('break', '#8f8f8f')}
+                                {showTask('break', '#cfcfcf')}
                             </View>
                         </View>
+                            <Text style={globalStyles.noticeText}>-- 選擇工作種類後，即可滑動輸入勤務紀錄 --</Text>
                     </View>
                 </View>
             </View>
@@ -283,14 +276,15 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 10,
         marginBottom: 5,
-        width: 250,
+        marginHorizontal: 3,
         height: 50,
     },
     block: {
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         width: '60%',
         marginTop: 40,
+        flex: 1
     },
     grid: {
         paddingHorizontal: 15,

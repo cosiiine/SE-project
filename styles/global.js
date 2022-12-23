@@ -64,6 +64,11 @@ export const globalStyles = StyleSheet.create({
         fontSize: 18,
         letterSpacing: 1,
     },
+    noticeText: {
+        color: '#333',
+        fontSize: 15,
+        letterSpacing: 1,
+    },
     // 輸入框, 按鈕設定
     input: {
         borderWidth: 1,

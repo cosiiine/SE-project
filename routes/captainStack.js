@@ -13,7 +13,7 @@ const tab = createBottomTabNavigator();
 export default function CaptainStack() {
     return (
         <tab.Navigator
-            initialRouteName='EditTask'
+            initialRouteName='Records'
             screenOptions={{
                 tabBarStyle: {display: 'none'},
                 headerShown: false,
