@@ -6,13 +6,14 @@ import SignRecords from '../screens/signRecords';
 import Setting from '../screens/setting';
 import EditRecords from '../screens/captain/editRecords';
 import AddMember from '../screens/captain/addMember';
+import EditTask from '../screens/captain/editTask';
 
 const tab = createBottomTabNavigator();
 
 export default function CaptainStack() {
     return (
         <tab.Navigator
-            initialRouteName='Records'
+            initialRouteName='EditTask'
             screenOptions={{
                 tabBarStyle: {display: 'none'},
                 headerShown: false,
@@ -47,6 +48,11 @@ export default function CaptainStack() {
                 name='AddMember'
                 component={AddMember}
                 options={{title: 'AddMember'}}
+            />
+            <tab.Screen
+                name='EditTask'
+                component={EditTask}
+                options={{title: 'EditTask'}}
             />
         </tab.Navigator>
     );

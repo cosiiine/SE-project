@@ -202,7 +202,7 @@ export default function EditRecords({ route, navigation }) {
                         <Ionicons name='chevron-back-outline' size={30} style={{ marginLeft: 10 }} />
                         <Text style={globalStyles.titleText}>新增勤務紀錄</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 10 }}>
+                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 10 }} onPress={() => {navigation.navigate('Setting');}}>
                         <View style={[globalStyles.circle, { backgroundColor: '#E4E7EA' }]}>
                             <Ionicons name='person' size={18} color='#9EACB9' />
                         </View>
@@ -225,7 +225,7 @@ export default function EditRecords({ route, navigation }) {
                         <Text style={{color: '#afafaf'}}>--僅顯示當日未記錄出勤人員--</Text>
                     </View>
                     <View style={[globalStyles.frame, {width: '74%', justifyContent: 'flex-start'}]}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '60%', marginTop: 80 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '80%', marginTop: 80 }}>
                             <TouchableOpacity onPress={() => { setShow(true) }} style={styles.search}>
                                 <Ionicons name='calendar-sharp' size={18} style={globalStyles.color} />
                                 {(Platform.OS === 'android') && <Text style={[globalStyles.contentText, globalStyles.color, { flex: 1, paddingHorizontal: 5 }]}>{text}</Text>}
@@ -244,6 +244,11 @@ export default function EditRecords({ route, navigation }) {
                                 <Ionicons name='save' size={25} color='white' />
                                 <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>save</Text>
                             </TouchableOpacity>
+                            {/* <View style={{ marginLeft:20}} /> */}
+                            <TouchableOpacity style={[globalStyles.button, { margin: 0, width: 180, height: 50, backgroundColor: '#aaa' }]} onPress={() => {navigation.navigate('EditTask');}}>
+                                <Ionicons name='pencil' size={25} color='white' />
+                                <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>edit tasks</Text>
+                            </TouchableOpacity>
                         </View>
                         <View style={styles.block}>
                             <View>
@@ -254,7 +259,11 @@ export default function EditRecords({ route, navigation }) {
                             </View>
                                
                             <View style={{ flexDirection: 'row', marginTop: 40 }}>
-                                {showTask('work', '#D34C5E')}
+                                {showTask('work1', '#D34C5E')}
+                                {showTask('work2', '#F5C63E')}
+                                {showTask('work3', '#19AC9F')}
+                            </View>
+                            <View style={{ flexDirection: 'row', marginTop: 20 }}>
                                 {showTask('eat', '#3785D6')}
                                 {showTask('break', '#8f8f8f')}
                             </View>
