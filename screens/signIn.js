@@ -13,18 +13,12 @@ export default function SignIn({ navigation }) {
 
     useEffect(() => { createUserTable();createWorkTable();createSignTable(); }, []);
 
-    
-
     const pressHandler = async(account, password) => {
         if (account.length < 3) {
-            Alert.alert('Wrong!', 'Account must be over 3 chars long.', [
-                {text: 'OK', onPress: () => console.log('Account Wrong') },
-            ]);
+            Alert.alert('帳號長度至少3個字元');
         }
         else if (password.length < 3) {
-            Alert.alert('Wrong!', 'Password must be over 3 chars long.', [
-                {text: 'OK', onPress: () => console.log('Password Wrong') },
-            ])
+            Alert.alert('密碼長度至少3個字元');
         }
         else {
             console.log("account/password => " + account + ' ' + password);
@@ -36,9 +30,7 @@ export default function SignIn({ navigation }) {
 
                 if(user.password != password){
                     insertSign(user.key,new Date(),"登入失敗").then((ret)=>{}).catch((e)=>{console.log(e)});
-                    Alert.alert('Wrong!', 'Account or password wrong', [
-                        {text: 'OK', onPress: () => console.log('Login error') },
-                    ])
+                    Alert.alert('帳號或密碼錯誤');
                 }
                 else{
                     global.user = user;
@@ -51,9 +43,7 @@ export default function SignIn({ navigation }) {
                     }
                 }
             }).catch(() => {
-                Alert.alert('Wrong!', 'Account or password wrong', [
-                    {text: 'OK', onPress: () => console.log('Login error') },
-                ])
+                Alert.alert('帳號或密碼錯誤');
             });
             setAccount(''); setPassword(''); // 回復為0
         }
@@ -64,23 +54,23 @@ export default function SignIn({ navigation }) {
             <View style={globalStyles.container}>
                 <Text style={[globalStyles.titleText, {fontSize: 36}]}>勤務登錄系統</Text>
                 <TextInput 
-                    placeholder='account'
+                    placeholder='帳號'
                     style={globalStyles.input}
                     onChangeText={setAccount}
                     value={account}
                 />
                 <TextInput 
-                    placeholder='password'
+                    placeholder='密碼'
                     style={globalStyles.input}
                     secureTextEntry={true}
                     onChangeText={setPassword}
                     value={password}
                 />
                 <TouchableOpacity style={[globalStyles.button, {width: 200}]} onPress={() => pressHandler(account, password)}>
-                    <Text style={[globalStyles.titleText, {fontSize: 20, color: 'white'}]}>Sign in</Text>
+                    <Text style={[globalStyles.titleText, {fontSize: 20, color: 'white'}]}>登入</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {navigation.navigate('Forgot');}}>
-                    <Text style={[globalStyles.color, {marginTop: 10}]}>Forgot Password?</Text>
+                    <Text style={[globalStyles.color, {marginTop: 10}]}>忘記密碼?</Text>
                 </TouchableOpacity>
             </View>
 		</TouchableWithoutFeedback>

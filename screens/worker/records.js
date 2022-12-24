@@ -61,24 +61,24 @@ export default function Records({ navigation }) {
         if (status == 'accepted') {
             return <View style={[styles.status]}>
                     <Ionicons name='checkmark-circle' size={40} color={'#19AC9F'}/>
-                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#19AC9F'}]}>Accepted</Text>
+                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#19AC9F'}]}>登錄成功</Text>
                 </View>
         }
         else if (status == 'pending') {
             return <View style={[styles.status]}>
                     <Ionicons name='ellipsis-horizontal-circle-sharp' size={40} color={'#F5C63E'}/>
-                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#F5C63E'}]}>Pending</Text>
+                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#F5C63E'}]}>審核中</Text>
                 </View>
         }
         else if (status == 'denied') {
             return <View style={[styles.status]}>
                     <Ionicons name='close-circle' size={40} color={'#D34C5E'}/>
-                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#D34C5E'}]}>Denied</Text>
+                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#D34C5E'}]}>登錄失敗</Text>
                 </View>
         }
         return <View style={[styles.status]}>
                     <Ionicons name='help-circle' size={40} color={'#9EACB9'}/>
-                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#9EACB9'}]}>Unkown</Text>
+                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#9EACB9'}]}>未知狀態</Text>
                 </View>
     };
     function showContent() {
@@ -118,7 +118,7 @@ export default function Records({ navigation }) {
             <View style={globalStyles.container}>
                 <AppBar title={'漁工勤務登錄系統  |  勤務紀錄'} navigation={navigation} />
                 <View style={globalStyles.allContent}>
-                    <Drawer navigation={navigation} captain={false} current={'Records'} />
+                    <Drawer navigation={navigation} current={'Records'} />
                     <View style={[globalStyles.frame, globalStyles.member]}>
                         <TouchableOpacity onPress={() => {setShow(true)}} style={styles.date}>
                             <Ionicons name='calendar-sharp' size={18} style={globalStyles.color} />

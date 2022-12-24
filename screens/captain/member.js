@@ -32,26 +32,22 @@ export default function Member({ navigation }) {
 
     const deleteHandler = () => {
         if(Object.keys(selectedItem).length == 0){
-            Alert.alert('Wrong!', 'Please select a member.', [
-                {text: 'OK', onPress: () => console.log('Delete failed.') },
-            ]);
+            Alert.alert('請選擇一名成員');
         }else{
             const key = selectedItem.key; // userId
             const name = selectedItem.name;
             console.log(`deleting member:${name} key:${key}`);
             deleteUser(key).then((results)=>{
-                Alert.alert('Notice!', `member '${name}' has been deleted.`, [{text: 'OK'}]);
+                Alert.alert(name + '已被刪除');
                 deleteWorksFromUser(key).then((ret)=>{
                     console.log("delete works from user | success");
                 }).catch((ret)=>{
-                    console.log("delete works from user | error",ret);
+                    console.log("delete works from user | error", ret);
                 });
                 
             }).catch((ret)=>{
                 console.log(ret);
-                Alert.alert('Wrong!', 'Delete member encounters an error', [
-                    {text: 'OK', onPress: () => console.log('Delete member | error') },
-                ])
+                Alert.alert('刪除成員失敗，請再試一次');
             });
             setSelectedItem({});
             fetchMembers();
@@ -63,16 +59,16 @@ export default function Member({ navigation }) {
         results.push(
         <TouchableOpacity style={styles.delete} key={0} onPress={deleteHandler}>
             <Ionicons name='ios-trash-sharp' size={30} color='white' />
-            <Text style={{fontWeight: 'bold', fontSize: 20, color: 'white', marginLeft: 10, letterSpacing: 1}}>delete</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 20, color: 'white', marginLeft: 10, letterSpacing: 1}}>刪除成員</Text>
         </TouchableOpacity>);
         results.push(
-        <View style={styles.block} key={1}>
+        <View style={[styles.block, {flex: 3}]} key={1}>
             <View style={styles.circle}>
                 <Ionicons name='person' size={80} color='#9EACB9' />
             </View>
         </View>);
         results.push(
-        <View style={[styles.block, {borderTopColor: '#9EACB9', borderTopWidth: 1}]} key={2}>
+        <View style={[styles.block, {borderTopColor: '#9EACB9', borderTopWidth: 1, flex: 2}]} key={2}>
             <View style={{flexDirection: 'row'}}>
                 <Text style={[globalStyles.contentText, styles.text]}>姓名</Text>
                 <Text style={[globalStyles.contentText, styles.text]}>{selectedItem.name}</Text>
@@ -81,10 +77,10 @@ export default function Member({ navigation }) {
                 <Text style={[globalStyles.contentText, styles.text]}>身分證/居留證</Text>
                 <Text style={[globalStyles.contentText, styles.text]}>{selectedItem.account}</Text>
             </View>
-            <View style={{flexDirection: 'row'}}>
+            {/* <View style={{flexDirection: 'row'}}>
                 <Text style={[globalStyles.contentText, styles.text]}>連絡電話</Text>
                 <Text style={[globalStyles.contentText, styles.text]}>{''}</Text>
-            </View>
+            </View> */}
         </View>);
         return results;
     }
@@ -94,7 +90,7 @@ export default function Member({ navigation }) {
             <View style={globalStyles.container}>
                 <AppBar title={'漁工勤務登錄系統  |  船員管理'} navigation={navigation} />
                 <View style={globalStyles.allContent}>
-                <Drawer navigation={navigation} captain={true} current={'Member'} />
+                <Drawer navigation={navigation} current={'Member'} />
                     <View style={[globalStyles.frame, globalStyles.member]}>
                         <View style={[globalStyles.allContent, {flex: 0, width: '100%', marginBottom: 5}]}>
                             {/* 還沒有功能 */}
@@ -151,7 +147,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: '75%',
-        height: '50%',
         paddingHorizontal: 100,
         paddingVertical: 30,
     },

@@ -3,8 +3,9 @@ import { View,TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { globalStyles } from '../styles/global';
 import { insertSign } from '../db/signRecords';
+import { USERTYPE } from '../db/user';
 
-export default function Drawer({ navigation, captain, current }) {
+export default function Drawer({ navigation, current }) {
     function style(show) {
         let styles = [globalStyles.drawerButton, globalStyles.color];
         if (show == current) return styles;
@@ -15,7 +16,7 @@ export default function Drawer({ navigation, captain, current }) {
             <TouchableOpacity onPress={() => {navigation.navigate('Records');}}>
                 <Ionicons name='grid' style={style('Records')} />
             </TouchableOpacity>
-            {(captain == true) &&
+            {(global.user.userType == USERTYPE.CAPTAIN) &&
                 <TouchableOpacity onPress={() => {navigation.navigate('Member');}}>
                     <Ionicons name='ios-people-sharp' style={style('Member')} />
                 </TouchableOpacity>

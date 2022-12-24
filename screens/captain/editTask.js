@@ -8,26 +8,22 @@ export default function EditTask({ navigation }) {
         ['work1','#D34C5E'],
         ['work2','#F5C63E'],
         ['work3','#19AC9F'],
-        ['eat','#6D53F1'],
-        ['break','#cfcfcf'],
+        ['用餐','#6D53F1'],
+        ['休息','#cfcfcf'],
     ];
     const [ task0, setTask0 ] = useState(tasks[0][0]);
     const [ task1, setTask1 ] = useState(tasks[1][0]);
     const [ task2, setTask2 ] = useState(tasks[2][0]);
-    const [ task3, setTask3 ] = useState(tasks[3][0]);
-    const [ task4, setTask4 ] = useState(tasks[4][0]);
 
     function onSave() {
-        if (task0.length === 0 || task1.length === 0 || task2.length === 0 || task3.length === 0 || task4.length === 0) {
-            Alert.alert('Wrong!');
+        if (task0.length === 0 || task1.length === 0 || task2.length === 0) {
+            Alert.alert('輸入欄不得為空');
             return;
         }
         tasks[0][0] = task0;
         tasks[1][0] = task1;
         tasks[2][0] = task2;
-        tasks[3][0] = task3;
-        tasks[4][0] = task4;
-        Alert.alert('Success');
+        Alert.alert('更改工作列成功');
     }
 
     return (
@@ -64,25 +60,17 @@ export default function EditTask({ navigation }) {
                             value={task2}
                         />
                     </View>
-                    <View style={styles.block}>
+                    <View style={[styles.block, {opacity: 0.6}]}>
                         <View style={[styles.circle, {backgroundColor: tasks[3][1]}]} />
-                        <TextInput 
-                            style={styles.input}
-                            onChangeText={setTask3}
-                            value={task3}
-                        />
+                        <View style={styles.input}><Text style={{fontSize: 20, fontWeight: 'bold', color: '#555'}}>{tasks[3][0]}</Text></View>
                     </View>
-                    <View style={styles.block}>
+                    <View style={[styles.block, {opacity: 0.6}]}>
                         <View style={[styles.circle, {backgroundColor: tasks[4][1]}]} />
-                        <TextInput 
-                            style={styles.input}
-                            onChangeText={setTask4}
-                            value={task4}
-                        />
+                        <View style={styles.input}><Text style={{fontSize: 20, fontWeight: 'bold', color: '#555'}}>{tasks[4][0]}</Text></View>
                     </View>
                     <TouchableOpacity style={[globalStyles.button, { margin: 10, width: 120, height: 50, backgroundColor: '#3785D6' }]} onPress={onSave}>
                         <Ionicons name='save' size={25} color='white' />
-                        <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>save</Text>
+                        <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>儲存</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -106,6 +94,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
         color: '#555'
     },
     circle: {

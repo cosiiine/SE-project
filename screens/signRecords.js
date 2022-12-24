@@ -30,7 +30,7 @@ export default function SignRecords({ navigation }) {
         <View style={globalStyles.container}>
             <AppBar title={'漁工勤務登錄系統  |  帳戶紀錄'} navigation={navigation} />
             <View style={globalStyles.allContent}>
-                <Drawer navigation={navigation} captain={(global.user.userType == USERTYPE.CAPTAIN)} current={'SignRecords'} />
+                <Drawer navigation={navigation} current={'SignRecords'} />
                 <View style={[globalStyles.frame, {width: '91%', justifyContent: 'center'}]}>
                     <View style={{height: '80%'}}>
                         <View style={[styles.list, {borderColor: '#9EACB9'}]}>

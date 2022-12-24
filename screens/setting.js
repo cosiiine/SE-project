@@ -19,22 +19,20 @@ export default function Setting({ navigation }) {
     };
 
     const pressHandler = (password, twice) => {
-        if (password != twice || password.length < 3) {
-            Alert.alert('Wrong!', 'Please try again.', [
-                {text: 'OK', onPress: () => console.log('Change failed.') },
-            ]);
+        if (password.length < 3) {
+            Alert.alert('密碼長度至少3個字元');
+        }
+        else if (password != twice) {
+            Alert.alert('輸入錯誤');
         }
         else {
             console.log("Reset: ", password);
             editUser(global.user.account,password).then((results) => {
                 // console.log(results);
                 global.user.password = password;
-                
-                Alert.alert('Notice!', 'Your password has been changed.', [{text: 'OK'}]);
+                Alert.alert('密碼更改成功');
             }).catch(() => {
-                Alert.alert('Wrong!', 'Change password encounters an error', [
-                    {text: 'OK', onPress: () => console.log('Change password error') },
-                ])
+                Alert.alert('密碼更改失敗，請再試一次');
             });
 
             resetBoxes();
@@ -65,7 +63,6 @@ export default function Setting({ navigation }) {
                     </View>
                     <View style={styles.block}>
                         <View style={{marginHorizontal: 100, alignItems: 'center'}}>
-                            {/* 還沒連結資料 */}
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={[globalStyles.contentText, styles.text]}>姓名</Text>
                                 <Text style={[globalStyles.contentText, styles.text, {width: 200}]}>{global.user.name}</Text>
@@ -74,12 +71,11 @@ export default function Setting({ navigation }) {
                                 <Text style={[globalStyles.contentText, styles.text]}>身分證/居留證</Text>
                                 <Text style={[globalStyles.contentText, styles.text, {width: 200}]}>{global.user.account}</Text>
                             </View>
-                            <View style={{flexDirection: 'row'}}>
+                            {/* <View style={{flexDirection: 'row'}}>
                                 <Text style={[globalStyles.contentText, styles.text]}>連絡電話</Text>
                                 <Text style={[globalStyles.contentText, styles.text, {width: 200}]}>0000-000000</Text>
-                            </View>
-                        </View>
-                        <View style={[{marginHorizontal: 100, alignItems: 'center'}]}>
+                            </View> */}
+                            <View style={{marginTop: 50}} />
                             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                                 <Text style={[globalStyles.contentText, styles.text]}>新密碼</Text>
                                 <TextInput
@@ -100,9 +96,10 @@ export default function Setting({ navigation }) {
                                     value={twice}
                                 />
                             </View>
+                            <View style={{marginTop: 30}} />
                             <TouchableOpacity style={[globalStyles.button, {marginTop: 20, width: 120, height: 50, backgroundColor: '#3785D6'}]} onPress={() => pressHandler(password, twice)}>
                                 <Ionicons name='save' size={30} color='white' />
-                                <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>save</Text>
+                                <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>儲存</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

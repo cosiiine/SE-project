@@ -9,14 +9,12 @@ export default function Forgot({ navigation }) {
 
     const pressHandler = (account, twice) => {
         if (account != twice || account.length == 0) {
-            Alert.alert('Wrong!', 'Please try again.', [
-                {text: 'OK', onPress: () => console.log('Reset failed.') },
-            ]);
+            Alert.alert('輸入錯誤');
         }
         else {
             navigation.goBack();
             console.log("Reset: ", account);
-            Alert.alert('Notice!', 'Your password has been reset.', [{text: 'OK'}]);
+            Alert.alert('密碼重設成功');
         }
     }
 
@@ -26,24 +24,24 @@ export default function Forgot({ navigation }) {
                 <View style={[globalStyles.appbar, {justifyContent: 'flex-start'}]}>
                     <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={() => {navigation.goBack();}}>
                         <Ionicons name='chevron-back-outline' size={30} style={{marginLeft: 10}} />
-                        <Text style={globalStyles.titleText}>Sign In</Text>
+                        <Text style={globalStyles.titleText}>登入</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={[globalStyles.frame, {flex: 9}]}>
-                    <Text style={[globalStyles.titleText, {fontSize: 30}]}>忘記密碼</Text>
+                    <Text style={[globalStyles.titleText, {fontSize: 30, marginBottom: 20}]}>忘記密碼</Text>
                     <TextInput 
-                        placeholder='account'
+                        placeholder='帳號'
                         style={globalStyles.input}
                         onChangeText={setAccount}
                     />
                     <TextInput 
-                        placeholder='enter account twice'
+                        placeholder='再次輸入帳號'
                         style={globalStyles.input}
                         secureTextEntry={true}
                         onChangeText={setTwice}
                     />
                     <TouchableOpacity style={[globalStyles.button, {width: 200}]} onPress={() => {pressHandler(account, twice)}}>
-                        <Text style={[globalStyles.titleText, {fontSize: 20, color: 'white'}]}>Reset</Text>
+                        <Text style={[globalStyles.titleText, {fontSize: 20, color: 'white'}]}>重設密碼</Text>
                     </TouchableOpacity>
                 </View>
             </View>

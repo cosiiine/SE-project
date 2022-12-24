@@ -71,7 +71,7 @@ export default function Records({ navigation }) {
     };
     const deleteHandler = () => {
         deleteWorks(selectedItem.userId,selectedItem.year,selectedItem.month,selectedItem.date).then((ret)=>{
-            Alert.alert('Notice!', `Work record has been deleted.`, [{text: 'OK'}]);
+            Alert.alert('刪除紀錄成功');
         }).catch((ret)=>{console.log("Delete member works record encounters an error",ret)});
         setSelectedItem({});
         fetchRecords();
@@ -114,19 +114,19 @@ export default function Records({ navigation }) {
         if (selectedItem.status == STATUS.ACCEPT) {
             return <View style={[styles.status]}>
                     <Ionicons name='checkmark-circle' size={40} color={'#19AC9F'}/>
-                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#19AC9F'}]}>Accepted</Text>
+                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#19AC9F'}]}>登錄成功</Text>
                 </View>
         }
         else if (selectedItem.status == STATUS.WAITING) {
             return <View style={[styles.status]}>
                     <Ionicons name='ellipsis-horizontal-circle-sharp' size={40} color={'#F5C63E'}/>
-                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#F5C63E'}]}>Pending</Text>
+                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#F5C63E'}]}>審核中</Text>
                 </View>
         }
         else if (selectedItem.status == STATUS.DENY) {
             return <View style={[styles.status]}>
                     <Ionicons name='close-circle' size={40} color={'#D34C5E'}/>
-                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#D34C5E'}]}>Denied</Text>
+                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#D34C5E'}]}>登錄失敗</Text>
                 </View>
         }
         return <Text style={[globalStyles.titleText]}> </Text>
@@ -168,7 +168,7 @@ export default function Records({ navigation }) {
                     <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
                         <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}]} onPress={deleteHandler}>
                             <Ionicons name='ios-trash-sharp' size={30} color='white' />
-                            <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>delete</Text>
+                            <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>刪除紀錄</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -188,6 +188,10 @@ export default function Records({ navigation }) {
                     <Text style={[globalStyles.contentText, styles.text]}>當月工作時數</Text>
                     <Text style={[globalStyles.contentText, styles.text, {textAlign: 'center'}]}>123</Text>
                 </View>
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={[globalStyles.contentText, styles.text]}>與上次工作間隔</Text>
+                    <Text style={[globalStyles.contentText, styles.text, {textAlign: 'center'}]}>123</Text>
+                </View>
             </View>
         );
         return results;
@@ -198,7 +202,7 @@ export default function Records({ navigation }) {
             <View style={globalStyles.container}>
                 <AppBar title={'漁工勤務登錄系統  |  勤務紀錄'} navigation={navigation} />
                 <View style={globalStyles.allContent}>
-                    <Drawer navigation={navigation} captain={true} current={'Records'} />
+                    <Drawer navigation={navigation} current={'Records'} />
                     <View style={[globalStyles.frame, globalStyles.member]}>
                         <View style={[globalStyles.allContent, {flex: 0, width: '100%'}]}>
                             <TouchableOpacity onPress={() => {setShow(true)}} style={styles.date}>

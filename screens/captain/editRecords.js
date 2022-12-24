@@ -170,7 +170,7 @@ export default function EditRecords({ route, navigation }) {
             }
         }
         if(temp.length == 0){ // 沒選人 給error
-            Alert.alert('Error!', 'Please select at least one sailor.', [{text: 'OK'}]);
+            Alert.alert('須至少選擇一名成員');
         }else{ // 將這些人存到資料庫
             Alert.alert('Notice!', 'New record has been added.', [{text: 'OK'}]);
             const recordString = JSON.stringify(records);
@@ -238,11 +238,11 @@ export default function EditRecords({ route, navigation }) {
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '50%', marginTop: 80 }}>
                             <TouchableOpacity style={[globalStyles.button, { margin: 0, paddingHorizontal: 25, paddingVertical: 10, backgroundColor: '#aaa' }]} onPress={() => {navigation.navigate('EditTask');}}>
                                 <Ionicons name='pencil' size={25} color='white' />
-                                <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>edit tasks</Text>
+                                <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>編輯工作列</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={[globalStyles.button, { margin: 0, paddingHorizontal: 25, paddingVertical: 10, backgroundColor: '#3785D6' }]} onPress={onSave}>
                                 <Ionicons name='save' size={25} color='white' />
-                                <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>save</Text>
+                                <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>儲存</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.block}>
