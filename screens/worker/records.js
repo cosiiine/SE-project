@@ -9,7 +9,7 @@ import Drawer from '../../components/drawer';
 
 export default function Records({ navigation }) {
     const [date, setDate] = useState(new Date());
-    const [text, setText] = useState(date.getFullYear()+ '/' + (date.getMonth() + 1) + '/' + date.getDate());
+    const [text, setText] = useState(date.getFullYear()+ '/' + (date.getMonth() + 1) % 13 + '/' + date.getDate());
     const [show, setShow] = useState((Platform.OS === 'ios'));
     const [name, setName] = useState('');
     const [status, setStatus] = useState('');
@@ -18,7 +18,7 @@ export default function Records({ navigation }) {
         const currentDate = selectedDate;
         if (Platform.OS === 'android') setShow(false);
         setDate(currentDate);
-        setText(currentDate.getFullYear()+ '/' + (currentDate.getMonth() + 1) + '/' + currentDate.getDate());
+        setText(currentDate.getFullYear()+ '/' + (currentDate.getMonth() + 1) % 13 + '/' + currentDate.getDate());
     };
     const pressHandler = ( name, status ) => {
         setName(name);

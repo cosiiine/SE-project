@@ -5,14 +5,14 @@ import { globalStyles } from '../../styles/global';
 import Card from '../../components/card';
 import AppBar from '../../components/appBar';
 import Drawer from '../../components/drawer';
-import { db,createUserTable,deleteAllUsers,insertUser,getAllUsers, deleteUser} from '../../db/user';
+import { createUserTable,deleteAllUsers,insertUser,getAllUsers, deleteUser} from '../../db/user';
 import { useIsFocused } from '@react-navigation/native';
+import { deleteAllWorks, deleteWorks, deleteWorksFromUser } from '../../db/work';
+
 
 export default function Member({ navigation }) {
     const [search, setSearch] = useState('');
-    const [name, setName] = useState('');
-    const [account, setAccount] = useState('');
-    const [phone, setPhone] = useState('');
+    const [selectedItem, setSelectedItem] = useState({});
     const [members, setMembers] = useState([]);
 
     const isFocused = useIsFocused(); // 此頁面被focus的狀態
@@ -23,29 +23,37 @@ export default function Member({ navigation }) {
         getAllUsers().then((results)=>{
             setMembers(results);
             console.log('reset members from member page');
-        }).catch(()=>{});
+        }).catch(()=>{console.log('fetch member from member page | error')});
     }
 
-    const pressHandler = ( name, account, phone ) => {
-        setName(name);
-        setAccount(account);
-        setPhone(phone);
+    const pressHandler = ( item ) => {
+        setSelectedItem(item);
     }
 
     const deleteHandler = () => {
-        if(account.length == 0){
+        if(Object.keys(selectedItem).length == 0){
             Alert.alert('Wrong!', 'Please select a member.', [
                 {text: 'OK', onPress: () => console.log('Delete failed.') },
             ]);
         }else{
-            deleteUser(account).then((results)=>{
-                Alert.alert('Notice!', `Member '${account}' has been deleted.`, [{text: 'OK'}]);
-            }).catch(()=>{
+            const key = selectedItem.key; // userId
+            const name = selectedItem.name;
+            console.log(`deleting member:${name} key:${key}`);
+            deleteUser(key).then((results)=>{
+                Alert.alert('Notice!', `member '${name}' has been deleted.`, [{text: 'OK'}]);
+                deleteWorksFromUser(key).then((ret)=>{
+                    console.log("delete works from user | success");
+                }).catch((ret)=>{
+                    console.log("delete works from user | error",ret);
+                });
+                
+            }).catch((ret)=>{
+                console.log(ret);
                 Alert.alert('Wrong!', 'Delete member encounters an error', [
-                    {text: 'OK', onPress: () => console.log('Delete member error') },
+                    {text: 'OK', onPress: () => console.log('Delete member | error') },
                 ])
             });
-            pressHandler('','',''); // reset to 0
+            setSelectedItem({});
             fetchMembers();
         }
     }
@@ -67,15 +75,15 @@ export default function Member({ navigation }) {
         <View style={[styles.block, {borderTopColor: '#9EACB9', borderTopWidth: 1}]} key={2}>
             <View style={{flexDirection: 'row'}}>
                 <Text style={[globalStyles.contentText, styles.text]}>姓名</Text>
-                <Text style={[globalStyles.contentText, styles.text]}>{name}</Text>
+                <Text style={[globalStyles.contentText, styles.text]}>{selectedItem.name}</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
                 <Text style={[globalStyles.contentText, styles.text]}>身分證/居留證</Text>
-                <Text style={[globalStyles.contentText, styles.text]}>{account}</Text>
+                <Text style={[globalStyles.contentText, styles.text]}>{selectedItem.account}</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
                 <Text style={[globalStyles.contentText, styles.text]}>連絡電話</Text>
-                <Text style={[globalStyles.contentText, styles.text]}>{phone}</Text>
+                <Text style={[globalStyles.contentText, styles.text]}>{''}</Text>
             </View>
         </View>);
         return results;
@@ -104,9 +112,11 @@ export default function Member({ navigation }) {
                             </TouchableOpacity>
                         </View>
                         <Card showStatus={false} pressHandler={pressHandler} data={members}/>
+                        <Text style={globalStyles.noticeText}>-- 請點右上角 + 以新增人員 --</Text>
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
-                        {(name.length != 0) && showContent()}
+                        {(Object.keys(selectedItem).length != 0) && showContent()}
+                        {(Object.keys(selectedItem).length == 0) && <Text style={globalStyles.noticeText}>-- 點左欄人員以顯示詳細資訊 --</Text>}
                     </View>
                 </View>
             </View>

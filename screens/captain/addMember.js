@@ -1,13 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard,Alert } from 'react-native';
 import { globalStyles } from '../../styles/global';
-import { getAllUser, insertUser } from '../../db/user';
+import { getAllUser, insertUser,USERTYPE} from '../../db/user';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function AddMember({ navigation }) {
     const [ name, setName] = useState('');
     const [ account, setAccount ] = useState('');
     const [ phone, setPhone ] = useState('');
+
+    const isFocused = useIsFocused(); // 此頁面被focus的狀態
+
+    useEffect(()=>{resetBoxes();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call fetchmember
+
+    const resetBoxes = () => {
+        setName('');
+        setAccount('');
+        setPhone('');
+        // console.log('resetBox')
+    };
 
     const pressHandler = (name, account, phone) => {
         if (name.length < 3 || account.length < 3) {
@@ -17,8 +29,8 @@ export default function AddMember({ navigation }) {
         }
         else {
             console.log("Insert: ", name, account);
-            insertUser(account,name,account).then((results) => {
-                console.log(results);
+            insertUser( USERTYPE.SAILOR,account,name,account).then((results) => {
+                // console.log(results);
                 
                 Alert.alert('Notice!', 'New member has been added.', [{text: 'OK'}]);
             }).catch(() => {
@@ -26,10 +38,7 @@ export default function AddMember({ navigation }) {
                     {text: 'OK', onPress: () => console.log('New member error') },
                 ])
             });
-
-            setName('');
-            setAccount('');
-            setPhone('');
+            resetBoxes();
         }
     }
 
@@ -41,7 +50,7 @@ export default function AddMember({ navigation }) {
                         <Ionicons name='chevron-back-outline' size={30} style={{marginLeft: 10}} />
                         <Text style={globalStyles.titleText}>新增船員</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10}}>
+                    <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10}} onPress={() => {navigation.navigate('Setting');}}>
                         <View style={[globalStyles.circle, {backgroundColor: '#E4E7EA'}]}>
                             <Ionicons name='person' size={18} color='#9EACB9'/>
                         </View>
@@ -62,6 +71,7 @@ export default function AddMember({ navigation }) {
                                     placeholder='Name'
                                     style={globalStyles.input}
                                     onChangeText={setName}
+                                    value={name}
                                 />
                             </View>
                             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -70,6 +80,7 @@ export default function AddMember({ navigation }) {
                                     placeholder='ID'
                                     style={globalStyles.input}
                                     onChangeText={setAccount}
+                                    value={account}
                                 />
                             </View>
                             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -78,6 +89,7 @@ export default function AddMember({ navigation }) {
                                     placeholder='Contect number'
                                     style={globalStyles.input}
                                     onChangeText={setPhone}
+                                    value={phone}
                                 />
                             </View>
                             {/* 沒有功能 */}

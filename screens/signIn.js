@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert } from 'react-native';
 import { globalStyles } from '../styles/global';
-import { db,createUserTable,deleteAllUsers,insertUser,getUser} from '../db/user';
+import { createUserTable,deleteAllUsers,insertUser,getUser,USERTYPE} from '../db/user';
+import { createWorkTable } from '../db/work';
+import { createSignTable, insertSign } from '../db/signRecords';
 
 
 
@@ -9,7 +11,7 @@ export default function SignIn({ navigation }) {
     const [ account, setAccount ] = useState('');
     const [ password, setPassword ] = useState('');
 
-    useEffect(() => { createUserTable(); }, []);
+    useEffect(() => { createUserTable();createWorkTable();createSignTable(); }, []);
 
     
 
@@ -28,19 +30,26 @@ export default function SignIn({ navigation }) {
             console.log("account/password => " + account + ' ' + password);
 
             // check account
-            getUser(account,password).then((user) => {
+            getUser(account).then((user) => {
                 console.log("user found");
                 console.log(user);
-                global.user = user;
-                
-                if(user.account == 'captain'){
-                    navigation.navigate('CaptainStack');
+
+                if(user.password != password){
+                    insertSign(user.key,new Date(),"登入失敗").then((ret)=>{}).catch((e)=>{console.log(e)});
+                    Alert.alert('Wrong!', 'Account or password wrong', [
+                        {text: 'OK', onPress: () => console.log('Login error') },
+                    ])
                 }
                 else{
-                    navigation.navigate('WorkerStack');
+                    global.user = user;
+                    insertSign(user.key,new Date(),"登入成功").then((ret)=>{}).catch((e)=>{console.log(e)});
+                    if(user.userType == USERTYPE.CAPTAIN){
+                        navigation.navigate('CaptainStack');
+                    }
+                    else{
+                        navigation.navigate('WorkerStack');
+                    }
                 }
-                
-                
             }).catch(() => {
                 Alert.alert('Wrong!', 'Account or password wrong', [
                     {text: 'OK', onPress: () => console.log('Login error') },

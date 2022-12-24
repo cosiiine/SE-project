@@ -2,6 +2,7 @@ import React from 'react';
 import { View,TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { globalStyles } from '../styles/global';
+import { insertSign } from '../db/signRecords';
 
 export default function Drawer({ navigation, captain, current }) {
     function style(show) {
@@ -22,7 +23,12 @@ export default function Drawer({ navigation, captain, current }) {
             <TouchableOpacity onPress={() => {navigation.navigate('SignRecords');}}>
                 <Ionicons name='time' style={style('SignRecords')} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {navigation.navigate('SignIn');}}>
+            <TouchableOpacity onPress={() => {
+                insertSign(global.user.key,new Date(),"登出成功").then((ret)=>{
+                    global.user={};
+                }).catch((e)=>{console.log(e)});
+                navigation.navigate('SignIn');
+                }}>
                 <Ionicons name='log-out-outline' style={style('SignIn')} />
             </TouchableOpacity>
         </View>
