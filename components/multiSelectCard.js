@@ -20,18 +20,10 @@ export default class MultiSelectCard extends Component{
     }
     resetMembers = () => {
         getAllUsers().then((results)=>{
-            const exist = [];
             getDateWorks(this.props.date.getFullYear(),(this.props.date.getMonth()+1) % 13,this.props.date.getDate()).then((rets)=>{
-                rets.forEach(item => {
-                    exist.push(item.userId);
-                });
-                const newResult = [];
-                // console.log("exist",exist);
-                results.forEach(item => {
-                    if(!exist.includes(item.key)){
-                        newResult.push(item);
-                    }
-                });
+                const existRecords = rets.map(item=>item.userId); // 本日已登記紀錄的所有 userId
+                const newResult = results.filter(item=>!existRecords.includes(item.key));
+
                 let temp = {};
                 newResult.forEach(item => {
                     temp[item.key] = 'false';

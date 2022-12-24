@@ -11,6 +11,7 @@ import { deleteAllWorks, deleteWorks, deleteWorksFromKey, deleteWorksFromUser, g
 import { deleteUser, getAllUsers } from '../../db/user';
 import * as SQLite from 'expo-sqlite';
 import { deleteWorkHandler } from './member';
+import { getAllTasks, TASKTYPE } from '../../db/task';
 
 export default function Records({ navigation }) {
     const [date, setDate] = useState(new Date());
@@ -18,31 +19,36 @@ export default function Records({ navigation }) {
     const [show, setShow] = useState((Platform.OS === 'ios'));
     const [search, setSearch] = useState("");
     const [members,setMembers] = useState({});
-    const [selectedItem, setSelectedItem] = useState({});
-    const [records,setRecords] = useState([]);
+    const [selectedItem, setSelectedItem] = useState({}); // 被選中要show出來的紀錄
+    const [records,setRecords] = useState([]); // 當日被登記的紀錄
+    const [tasks, setTasks] = useState({}); // 所有工作類型
     const isFocused = useIsFocused(); // 此頁面被focus的狀態
 
-    const [taskColors,setTaskColors] = useState({
-        'work1': '#D34C5E',
-        'work2': '#F5C63E',
-        'work3': '#19AC9F',
-        'eat': '#3785D6',
-        'break': '#cfcfcf',
-    });
+    useEffect(()=>{fetchTasks();fetchRecords();} ,[isFocused,date,])// 當isFocused改變，或者初始化此頁，call fetchmember
 
-    useEffect(()=>{fetchRecords();} ,[isFocused,date,])// 當isFocused改變，或者初始化此頁，call fetchmember
+    async function fetchTasks(){
+        getAllTasks().then((ret)=>{
+            const temp = {};
+            ret.forEach(item => {
+                temp[item.taskType] = item;
+            });
+            setTasks(temp);
+            console.log('fetch tasks from records page | success');
+        }).catch(()=>{console.log('fetch task from records page | error')});
+        
+    }
 
     async function fetchRecords(){
         getAllUsers().then((ret)=>{
             const temp = {};
-            ret.forEach(item => {
+            ret.forEach(item => { // 目前所有user
                 temp[item.key]=item;
             });
             // console.log(temp);
             setMembers(temp);
             getDateWorks(date.getFullYear(),(date.getMonth()+1)%13,date.getDate()).then((results)=>{
                 let tp = [];
-                //console.log(results);
+                
                 results.forEach(item => {
                     if(Object.keys(temp).includes(item.userId.toString())){
                         const i = {};
@@ -52,7 +58,8 @@ export default function Records({ navigation }) {
                     }
                 });
                 setRecords(tp);
-                
+                if(!tp.map((value)=>value.userId).includes(selectedItem.userId)){setSelectedItem({});}
+                // console.log(results);
                 console.log('fetch records from records page | success');
             }).catch((e)=>{console.log('fetch records from records page | error',e)});
         }).catch(()=>{console.log('fetch member from records page | error')});
@@ -83,8 +90,8 @@ export default function Records({ navigation }) {
             <View style={{paddingTop: 15}} key={0}>
                 <Text>{num}</Text>
                 <View style={{flexDirection: 'row', paddingTop: 5}}>
-                    <View style={[globalStyles.grid, {borderLeftWidth: 2,backgroundColor: taskColors[rec[num*2]]}]}></View>
-                    <View style={[globalStyles.grid, {backgroundColor: taskColors[rec[num*2+1]]}]}></View>
+                    <View style={[globalStyles.grid, {borderLeftWidth: 2,backgroundColor: tasks[rec[num*2]].color}]}></View>
+                    <View style={[globalStyles.grid, {backgroundColor: tasks[rec[num*2+1]].color}]}></View>
                 </View>
             </View>
         )
@@ -93,8 +100,8 @@ export default function Records({ navigation }) {
                 <View style={{paddingTop: 15}} key={i}>
                     <Text>{num + i}</Text>
                     <View style={{flexDirection: 'row', paddingTop: 5}}>
-                        <View style={[globalStyles.grid, {backgroundColor: taskColors[rec[2*(num+i)]]}]}></View>
-                        <View style={[globalStyles.grid, {backgroundColor: taskColors[rec[2*(num+i)+1]]}]}></View>
+                        <View style={[globalStyles.grid, {backgroundColor: tasks[rec[2*(num+i)]].color}]}></View>
+                        <View style={[globalStyles.grid, {backgroundColor: tasks[rec[2*(num+i)+1]].color}]}></View>
                     </View>
                 </View>
             )
@@ -103,8 +110,8 @@ export default function Records({ navigation }) {
             <View style={{paddingTop: 15}} key={11}>
                 <Text>{num + 11}</Text>
                 <View style={{flexDirection: 'row', paddingTop: 5}}>
-                    <View style={[globalStyles.grid, {backgroundColor: taskColors[rec[2*(num+11)]]}]}></View>
-                    <View style={[globalStyles.grid, {borderRightWidth: 2, backgroundColor: taskColors[rec[2*(num+11)+1]]}]}></View>
+                    <View style={[globalStyles.grid, {backgroundColor: tasks[rec[2*(num+11)]].color}]}></View>
+                    <View style={[globalStyles.grid, {borderRightWidth: 2, backgroundColor: tasks[rec[2*(num+11)+1]].color}]}></View>
                 </View>
             </View>
         )
@@ -142,26 +149,26 @@ export default function Records({ navigation }) {
                     <View>
                     <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
                         <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
-                            <View style={[styles.circle, {backgroundColor: '#D34C5E'}]} />
-                            <Text style={{fontSize: 20, color: '#D34C5E', fontWeight: 'bold', paddingLeft: 10}}>work</Text>
+                            <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK1].color}]} />
+                            <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK1].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK1].name}</Text>
                         </View>
                         <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
-                            <View style={[styles.circle, {backgroundColor: '#3785D6'}]} />
-                            <Text style={{fontSize: 20, color: '#3785D6', fontWeight: 'bold', paddingLeft: 10}}>eat</Text>
+                            <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK2].color}]} />
+                            <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK2].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK2].name}</Text>
                         </View>
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <View style={[styles.circle, {backgroundColor: '#3785D6'}]} />
-                            <Text style={{fontSize: 20, color: '#3785D6', fontWeight: 'bold', paddingLeft: 10}}>eat</Text>
+                            <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK3].color}]} />
+                            <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK3].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK3].name}</Text>
                         </View>
                     </View>
                     <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
                         <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
-                            <View style={[styles.circle, {backgroundColor: '#D34C5E'}]} />
-                            <Text style={{fontSize: 20, color: '#D34C5E', fontWeight: 'bold', paddingLeft: 10}}>work</Text>
+                            <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.EAT].color}]} />
+                            <Text style={{fontSize: 20, color: tasks[TASKTYPE.EAT].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.EAT].name}</Text>
                         </View>
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <View style={[styles.circle, {backgroundColor: '#3785D6'}]} />
-                            <Text style={{fontSize: 20, color: '#3785D6', fontWeight: 'bold', paddingLeft: 10}}>eat</Text>
+                            <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.BREAK].color}]} />
+                            <Text style={{fontSize: 20, color: tasks[TASKTYPE.BREAK].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.BREAK].name}</Text>
                         </View>
                     </View>
                     </View>
@@ -237,7 +244,7 @@ export default function Records({ navigation }) {
                         <Text style={globalStyles.noticeText}>-- 請點右上角 + 以新增紀錄 --</Text>
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
-                        {Object.keys(selectedItem).length != 0 && showContent()}
+                        {Object.keys(selectedItem).length != 0 && Object.keys(tasks).length != 0 && showContent()}
                         {Object.keys(selectedItem).length == 0 && <Text style={globalStyles.noticeText}>-- 點左欄紀錄以顯示詳細資訊 --</Text>}
                     </View>
                 </View>

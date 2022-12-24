@@ -1,29 +1,76 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View, Text, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert } from 'react-native';
 import { globalStyles } from '../../styles/global';
+import { useIsFocused } from "@react-navigation/native";
+import { getAllTasks, setTaskName, TASKTYPE, updateTasks } from "../../db/task";
 
 export default function EditTask({ navigation }) {
-    let tasks = [
-        ['work1','#D34C5E'],
-        ['work2','#F5C63E'],
-        ['work3','#19AC9F'],
-        ['用餐','#6D53F1'],
-        ['休息','#cfcfcf'],
-    ];
-    const [ task0, setTask0 ] = useState(tasks[0][0]);
-    const [ task1, setTask1 ] = useState(tasks[1][0]);
-    const [ task2, setTask2 ] = useState(tasks[2][0]);
+
+    const [oldTasks,setOldTasks] = useState({});
+    const [tasks, setTasks] = useState({}); // 所有工作類型
+
+    const isFocused = useIsFocused(); // 此頁面被focus的狀態
+
+    useEffect(()=>{fetchTasks();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call resetRecords
+    
+    async function fetchTasks(){
+        getAllTasks().then((ret)=>{
+            const temp = {};
+            ret.forEach(item => {
+                temp[item.taskType] = item;
+            });
+            setTasks(temp);
+            setOldTasks(temp);
+            console.log('fetch taskNames from editTasks page | success');
+        }).catch(()=>{console.log('fetch taskName from editTasks page | error')});
+    }
 
     function onSave() {
-        if (task0.length === 0 || task1.length === 0 || task2.length === 0) {
+        const diff = Object.values(tasks).filter((item)=>item.name != oldTasks[item.taskType].name); // 與原本的差別
+        const errValue = diff.filter(item=>item.name.length==0);
+        if(errValue.length > 0){
             Alert.alert('輸入欄不得為空');
             return;
         }
-        tasks[0][0] = task0;
-        tasks[1][0] = task1;
-        tasks[2][0] = task2;
-        Alert.alert('更改工作列成功');
+        if(diff.length > 0){
+            updateTasks(diff);
+            setOldTasks(tasks)
+            Alert.alert('更改工作列成功');
+        }
+    }
+
+    const onChange = (i,txt) => {
+        const tp = {};
+        tp[i] = {...tasks[i], name:txt}
+        setTasks({...tasks,...tp});
+    }
+
+    function showEditor(){
+        const arr = [];
+        for(let i = 1; i <= 3; i++){
+            arr.push(
+                <View style={styles.block} key={i}>
+                    <View style={[styles.circle, {backgroundColor: tasks[i].color}]} />
+                    <TextInput 
+                        style={styles.input}
+                        onChangeText={(text)=>{onChange(i,text);}}
+                        value={tasks[i].name}
+                    />
+                </View>
+            );
+        }
+        arr.push(
+            <View style={[styles.block, {opacity: 0.6}]}>
+                <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.EAT].color}]} />
+                <View style={styles.input}><Text style={{fontSize: 20, fontWeight: 'bold', color: '#555'}}>{tasks[TASKTYPE.EAT].name}</Text></View>
+            </View>,
+            <View style={[styles.block, {opacity: 0.6}]}>
+                <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.BREAK].color}]} />
+                <View style={styles.input}><Text style={{fontSize: 20, fontWeight: 'bold', color: '#555'}}>{tasks[TASKTYPE.BREAK].name}</Text></View>
+            </View>
+        )
+        return arr;
     }
 
     return (
@@ -36,38 +83,7 @@ export default function EditTask({ navigation }) {
                     </TouchableOpacity>
                 </View>
                 <View style={[globalStyles.frame, {flex: 9}]}>
-                    <View style={styles.block}>
-                        <View style={[styles.circle, {backgroundColor: tasks[0][1]}]} />
-                        <TextInput 
-                            style={styles.input}
-                            onChangeText={setTask0}
-                            value={task0}
-                        />
-                    </View>
-                    <View style={styles.block}>
-                        <View style={[styles.circle, {backgroundColor: tasks[1][1]}]} />
-                        <TextInput 
-                            style={styles.input}
-                            onChangeText={setTask1}
-                            value={task1}
-                        />
-                    </View>
-                    <View style={styles.block}>
-                        <View style={[styles.circle, {backgroundColor: tasks[2][1]}]} />
-                        <TextInput 
-                            style={styles.input}
-                            onChangeText={setTask2}
-                            value={task2}
-                        />
-                    </View>
-                    <View style={[styles.block, {opacity: 0.6}]}>
-                        <View style={[styles.circle, {backgroundColor: tasks[3][1]}]} />
-                        <View style={styles.input}><Text style={{fontSize: 20, fontWeight: 'bold', color: '#555'}}>{tasks[3][0]}</Text></View>
-                    </View>
-                    <View style={[styles.block, {opacity: 0.6}]}>
-                        <View style={[styles.circle, {backgroundColor: tasks[4][1]}]} />
-                        <View style={styles.input}><Text style={{fontSize: 20, fontWeight: 'bold', color: '#555'}}>{tasks[4][0]}</Text></View>
-                    </View>
+                    {isFocused && Object.keys(tasks).length!=0 && showEditor()}
                     <TouchableOpacity style={[globalStyles.button, { margin: 10, width: 120, height: 50, backgroundColor: '#3785D6' }]} onPress={onSave}>
                         <Ionicons name='save' size={25} color='white' />
                         <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>儲存</Text>

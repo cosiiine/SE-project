@@ -7,6 +7,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { createUserTable,deleteAllUsers,insertUser,getAllUsers, deleteUser} from '../../db/user';
 import MultiSelectCard from '../../components/multiSelectCard';
 import { insertWork, STATUS } from '../../db/work';
+import { getAllTasks, TASKTYPE } from '../../db/task';
 
 export class TouchableGrid extends Component {
     constructor(props) {
@@ -15,7 +16,7 @@ export class TouchableGrid extends Component {
 
         let temp = {}; // 建立
         for (let i = startIdx; i < startIdx + 24; i++) {
-            temp[i] = 'break';
+            temp[i] = TASKTYPE.BREAK;
         }
         this.state = { ...temp }; // 儲存資料，用state才會重新渲染
 
@@ -76,7 +77,7 @@ export class TouchableGrid extends Component {
         
         return(
             <View style={{ flexDirection: 'row' }} key={num}>
-                <TouchableOpacity style={[globalStyles.grid, styles.grid, borderSetting, { backgroundColor: this.props.taskColors[this.state[num]] }]}></TouchableOpacity>
+                <TouchableOpacity style={[globalStyles.grid, styles.grid, borderSetting, { backgroundColor: this.props.tasks[(this.state[num])].color }]}></TouchableOpacity>
             </View>
         );
     };
@@ -118,39 +119,43 @@ export default function EditRecords({ route, navigation }) {
     const [text, setText] = useState(date.getFullYear() + '/' + (date.getMonth() + 1) % 13 + '/' + date.getDate());
     const [show, setShow] = useState((Platform.OS === 'ios'));
     // const [search, setSearch] = useState('');
-    const [chosenTask, setChosenTask] = useState('break');
-    const [records, setRecords] = useState(emptyRecords); // 0~47
-    
-    const [selected, setSelected] = useState({}); // 被選中的
+    const [chosenTask, setChosenTask] = useState(TASKTYPE.WORK1);
+    const [records, setRecords] = useState(emptyRecords); // 0~47 滑動輸入結果
+    const [selected, setSelected] = useState({}); // 被選中的人
+    const [tasks, setTasks] = useState({}); // 所有工作類型
 
     const isFocused = useIsFocused(); // 此頁面被focus的狀態
 
-    useEffect(()=>{resetRecords();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call resetRecords
+    useEffect(()=>{fetchTasks();resetRecords();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call resetRecords
 
     const emptyRecords = () => {
         const temp = {};
         for(let i = 0; i < 48; i++){
-            temp[i] = 'break';
+            temp[i] = TASKTYPE.BREAK;
         }
         return temp;
     };
 
     const resetRecords = () => {
         setRecords(emptyRecords);
-        setChosenTask('work1');
+        setChosenTask(TASKTYPE.WORK1);
         setDate(new Date());
         setText(date.getFullYear() + '/' + (date.getMonth() + 1) % 13 + '/' + date.getDate());
         console.log('resetRecords from editRecords page');
         setSelected({});
     };
 
-    const [taskColors,setTaskColors] = useState({
-        'work1': '#D34C5E',
-        'work2': '#F5C63E',
-        'work3': '#19AC9F',
-        'eat': '#3785D6',
-        'break': '#cfcfcf',
-    });
+    async function fetchTasks(){
+        getAllTasks().then((ret)=>{
+            const temp = {};
+            ret.forEach(item => {
+                temp[item.taskType] = item;
+            });
+            setTasks(temp);
+            console.log('fetch tasks from editRecords page | success');
+        }).catch(()=>{console.log('fetch task from editRecords page | error')});
+        
+    }
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
@@ -161,14 +166,14 @@ export default function EditRecords({ route, navigation }) {
 
     const onSave = () => {
         // console.log(date.getFullYear(),(date.getMonth()+1)%13,date.getDate());
-        // console.log(records);
-        // console.log(selected);
-        let temp = [];
-        for(var userKey in selected){
-            if(selected[userKey]=='true'){
-                temp.push(userKey);
-            }
-        }
+        console.log(records);
+        console.log(selected);
+        const temp = Object.keys(selected).filter(k=>selected[k]=='true');
+        // for(var userKey in selected){
+        //     if(selected[userKey]=='true'){
+        //         temp.push(userKey);
+        //     }
+        // }
         if(temp.length == 0){ // 沒選人 給error
             Alert.alert('須至少選擇一名成員');
         }else{ // 將這些人存到資料庫
@@ -183,17 +188,26 @@ export default function EditRecords({ route, navigation }) {
         }
     };
 
-    function showTask(task, color) {
-        if (task == chosenTask)
-            return <TouchableOpacity style={[styles.button, {borderColor: color, backgroundColor: color}]} onPress={()=>{setChosenTask(task);console.log('set task to ' + task);}}>
-                <View style={styles.circle} />
-                <Text style={styles.buttonText}>{task}</Text>
-            </TouchableOpacity>
-        else
-            return <TouchableOpacity style={[styles.button, {borderColor: color}]} onPress={()=>{setChosenTask(task);console.log('set task to ' + task);}}>
-                <View style={[styles.circle, { backgroundColor: color }]} />
-                <Text style={[styles.buttonText, { color: color }]}>{task}</Text>
-            </TouchableOpacity>
+    function showTask() {
+        const arr = [];
+        for(let i = 1; i <= 5; i++){
+            if (i == chosenTask)
+                arr.push(
+                    <TouchableOpacity style={[styles.button, {borderColor: tasks[i].color, backgroundColor: tasks[i].color}]} onPress={()=>{setChosenTask(i);console.log('set task to ' + i);}} key={i}>
+                        <View style={styles.circle} />
+                        <Text style={styles.buttonText}>{tasks[i].name}</Text>
+                    </TouchableOpacity>
+                );
+            else{
+                arr.push(
+                <TouchableOpacity style={[styles.button, {borderColor: tasks[i].color}]} onPress={()=>{setChosenTask(i);console.log('set task to ' + i);}} key={i}>
+                    <View style={[styles.circle, { backgroundColor: tasks[i].color }]} />
+                    <Text style={[styles.buttonText, { color: tasks[i].color }]}>{tasks[i].name}</Text>
+                </TouchableOpacity>);
+            }
+                
+        }
+        return arr;
     }
 
     return (
@@ -248,16 +262,12 @@ export default function EditRecords({ route, navigation }) {
                         <View style={styles.block}>
                             <View>
                                 {NumberGrid(0)}
-                                {isFocused && <TouchableGrid startIdx={0} taskColors={taskColors} chosenTask={chosenTask} records={records} setRecords={setRecords}/>}
+                                {isFocused && Object.keys(tasks).length!=0 && <TouchableGrid startIdx={0} tasks={tasks} chosenTask={chosenTask} records={records} setRecords={setRecords}/>}
                                 {NumberGrid(12)}
-                                {isFocused && <TouchableGrid startIdx={24} taskColors={taskColors} chosenTask={chosenTask} records={records} setRecords={setRecords}/>}
+                                {isFocused && Object.keys(tasks).length!=0 && <TouchableGrid startIdx={24} tasks={tasks} chosenTask={chosenTask} records={records} setRecords={setRecords}/>}
                             </View>
                             <View style={{ flexDirection: 'row', marginTop: 60, marginBottom: 30 }}>
-                                {showTask('work1', '#D34C5E')}
-                                {showTask('work2', '#F5C63E')}
-                                {showTask('work3', '#19AC9F')}
-                                {showTask('eat', '#3785D6')}
-                                {showTask('break', '#cfcfcf')}
+                                {isFocused && Object.keys(tasks).length!=0 && showTask()}
                             </View>
                         </View>
                             <Text style={globalStyles.noticeText}>-- 選擇工作種類後，即可滑動輸入勤務紀錄 --</Text>

@@ -57,7 +57,8 @@ export function createUserTable () {
                     console.log('init captain | error',ret);
                 });
             }else{ // found a captain
-                console.log('found captain | success',results.rows._array);
+                console.log('found captain | success');
+                // console.log(results.rows._array);
             }
             
         }).catch((ret)=>{

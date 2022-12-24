@@ -4,6 +4,7 @@ import { globalStyles } from '../styles/global';
 import { createUserTable,deleteAllUsers,insertUser,getUser,USERTYPE} from '../db/user';
 import { createWorkTable } from '../db/work';
 import { createSignTable, insertSign } from '../db/signRecords';
+import { createTaskTable, deleteAllTasks, getAllTasks } from '../db/task';
 
 
 
@@ -11,7 +12,7 @@ export default function SignIn({ navigation }) {
     const [ account, setAccount ] = useState('');
     const [ password, setPassword ] = useState('');
 
-    useEffect(() => { createUserTable();createWorkTable();createSignTable(); }, []);
+    useEffect(() => { createUserTable();createWorkTable();createSignTable(); createTaskTable(); }, []);
 
     const pressHandler = async(account, password) => {
         if (account.length < 3) {
