@@ -175,9 +175,9 @@ export default function EditRecords({ route, navigation }) {
         //     }
         // }
         if(temp.length == 0){ // 沒選人 給error
-            Alert.alert('須至少選擇一名成員');
+            Alert.alert('至少須選擇一名成員');
         }else{ // 將這些人存到資料庫
-            Alert.alert('Notice!', 'New record has been added.', [{text: 'OK'}]);
+            Alert.alert('新增紀錄成功');
             const recordString = JSON.stringify(records);
             console.log("storing sailor records...");
             temp.forEach(userKey => {

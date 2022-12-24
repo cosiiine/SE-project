@@ -13,6 +13,13 @@ export default function Records({ navigation }) {
     const [show, setShow] = useState((Platform.OS === 'ios'));
     const [name, setName] = useState('');
     const [status, setStatus] = useState('');
+    const tasks = [
+        {name: "工作1", color:"#D34C5E"},
+        {name: "工作2", color:"#F5C63E"},
+        {name: "工作3", color:"#19AC9F"},
+        {name: "用餐", color:"#3785D6"},
+        {name: "休息", color:"#cfcfcf"}
+    ];
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
@@ -88,24 +95,40 @@ export default function Records({ navigation }) {
                 {grid(0)}
                 {grid(12)}
                 <View style={{flexDirection: 'row', marginVertical: 80}}>
-                    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
-                        <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
-                            <View style={[styles.circle, {backgroundColor: '#D34C5E'}]} />
-                            <Text style={{fontSize: 20, color: '#D34C5E', fontWeight: 'bold', paddingLeft: 10}}>work</Text>
+                    <View>
+                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
+                                <View style={[styles.circle, {backgroundColor: tasks[0].color}]} />
+                                <Text style={{fontSize: 20, color: tasks[0].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[0].name}</Text>
+                            </View>
+                            <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
+                                <View style={[styles.circle, {backgroundColor: tasks[1].color}]} />
+                                <Text style={{fontSize: 20, color: tasks[1].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[1].name}</Text>
+                            </View>
+                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                <View style={[styles.circle, {backgroundColor: tasks[2].color}]} />
+                                <Text style={{fontSize: 20, color: tasks[2].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[2].name}</Text>
+                            </View>
                         </View>
-                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <View style={[styles.circle, {backgroundColor: '#3785D6'}]} />
-                            <Text style={{fontSize: 20, color: '#3785D6', fontWeight: 'bold', paddingLeft: 10}}>eat</Text>
+                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
+                                <View style={[styles.circle, {backgroundColor: tasks[3].color}]} />
+                                <Text style={{fontSize: 20, color: tasks[3].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[3].name}</Text>
+                            </View>
+                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                <View style={[styles.circle, {backgroundColor: tasks[4].color}]} />
+                                <Text style={{fontSize: 20, color: tasks[4].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[4].name}</Text>
+                            </View>
                         </View>
                     </View>
                     <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
-                        <TouchableOpacity style={[globalStyles.button, {height: 50, opacity: 0.5}]}>
-                            <Ionicons name='pencil' size={30} color='white' />
-                            <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>edit</Text>
+                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#19AC9F'}]}>
+                            <Ionicons name='checkmark-circle' size={30} color='white' />
+                            <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>正確</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}]}>
-                            <Ionicons name='ios-trash-sharp' size={30} color='white' />
-                            <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>delete</Text>
+                            <Ionicons name='close-circle' size={30} color='white' />
+                            <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>錯誤</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -137,6 +160,7 @@ export default function Records({ navigation }) {
                         <Card showStatus={true} pressHandler={pressHandler}/>
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
+                        {showContent()}
                         {(name.length != 0) && showContent()}
                     </View>
                 </View>

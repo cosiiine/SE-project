@@ -1,5 +1,5 @@
 import React from 'react';
-import { View,TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { globalStyles } from '../styles/global';
 import { insertSign } from '../db/signRecords';
@@ -7,9 +7,8 @@ import { USERTYPE } from '../db/user';
 
 export default function Drawer({ navigation, current }) {
     function style(show) {
-        let styles = [globalStyles.drawerButton, globalStyles.color];
-        if (show == current) return styles;
-        return globalStyles.drawerButton;
+        if (show == current) return [styles.drawerButton, globalStyles.color];
+        return styles.drawerButton;
     }
     return (
         <View style={[globalStyles.frame, globalStyles.drawer]}>
@@ -35,3 +34,10 @@ export default function Drawer({ navigation, current }) {
         </View>
     );
 }
+const styles = StyleSheet.create({
+    drawerButton: {
+        color: '#333',
+        fontSize: 45,   
+        marginVertical: 10,      
+    },
+});

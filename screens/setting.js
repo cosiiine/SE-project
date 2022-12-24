@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View, Text, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert } from 'react-native';
 import { globalStyles } from '../styles/global';
-import { db,createUserTable,deleteAllUsers,insertUser,editUser} from '../db/user';
+import { editUser } from '../db/user';
 import { useIsFocused } from '@react-navigation/native';
 
 export default function Setting({ navigation }) {
@@ -40,10 +40,9 @@ export default function Setting({ navigation }) {
     }
 
     return (
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss();}}>
+        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
             <View style={globalStyles.container}>
                 <View style={[globalStyles.appbar]}>
-                    {/* 返回目前只會回到records */}
                     <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={() => {navigation.navigate('Records');}}>
                         <Ionicons name='chevron-back-outline' size={30} style={{marginLeft: 10}} />
                         <Text style={globalStyles.titleText}>帳號設定</Text>

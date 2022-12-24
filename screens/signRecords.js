@@ -4,15 +4,14 @@ import { globalStyles } from '../styles/global';
 import AppBar from '../components/appBar';
 import Drawer from '../components/drawer';
 import { useIsFocused } from '@react-navigation/native';
-import { getAllSigns, getSignsByUser } from '../db/signRecords';
-import { USERTYPE } from '../db/user';
+import { getSignsByUser } from '../db/signRecords';
 
 export default function SignRecords({ navigation }) {
     const [records, setRecords] = useState([]);
 
     const isFocused = useIsFocused(); // 此頁面被focus的狀態
 
-    useEffect(()=>{fetchRecords();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call fetchmember
+    useEffect(() => {fetchRecords();} , [isFocused]); // 當isFocused改變，或者初始化此頁，call fetchmember
 
     async function fetchRecords(){
         if(Object.keys(global.user).length != 0){

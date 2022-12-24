@@ -19,7 +19,7 @@ export default function Forgot({ navigation }) {
     }
 
     return (
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss();}}>
+        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
             <View style={globalStyles.container}>
                 <View style={[globalStyles.appbar, {justifyContent: 'flex-start'}]}>
                     <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={() => {navigation.goBack();}}>

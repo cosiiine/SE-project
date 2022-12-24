@@ -87,11 +87,6 @@ export const globalStyles = StyleSheet.create({
         margin: 10,
         paddingHorizontal: 10,
     },
-    drawerButton: {
-        color: '#333',
-        fontSize: 45,   
-        marginVertical: 10,      
-    },
     // 頭像圓框
     circle: {
         width: 40,

@@ -61,11 +61,11 @@ export default function EditTask({ navigation }) {
             );
         }
         arr.push(
-            <View style={[styles.block, {opacity: 0.6}]}>
+            <View style={[styles.block, {opacity: 0.6}]} key={4}>
                 <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.EAT].color}]} />
                 <View style={styles.input}><Text style={{fontSize: 20, fontWeight: 'bold', color: '#555'}}>{tasks[TASKTYPE.EAT].name}</Text></View>
             </View>,
-            <View style={[styles.block, {opacity: 0.6}]}>
+            <View style={[styles.block, {opacity: 0.6}]} key={5}>
                 <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.BREAK].color}]} />
                 <View style={styles.input}><Text style={{fontSize: 20, fontWeight: 'bold', color: '#555'}}>{tasks[TASKTYPE.BREAK].name}</Text></View>
             </View>

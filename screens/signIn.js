@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert } from 'react-native';
 import { globalStyles } from '../styles/global';
-import { createUserTable,deleteAllUsers,insertUser,getUser,USERTYPE} from '../db/user';
+import { createUserTable, deleteAllUsers, insertUser, getUser, USERTYPE} from '../db/user';
 import { createWorkTable } from '../db/work';
 import { createSignTable, insertSign } from '../db/signRecords';
 import { createTaskTable, deleteAllTasks, getAllTasks } from '../db/task';
-
-
 
 export default function SignIn({ navigation }) {
     const [ account, setAccount ] = useState('');
     const [ password, setPassword ] = useState('');
 
-    useEffect(() => { createUserTable();createWorkTable();createSignTable(); createTaskTable(); }, []);
+    useEffect(() => { createUserTable(); createWorkTable(); createSignTable(); createTaskTable(); }, []);
 
     const pressHandler = async(account, password) => {
         if (account.length < 3) {
@@ -51,7 +49,7 @@ export default function SignIn({ navigation }) {
     };
 
     return (
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss();}}>
+        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
             <View style={globalStyles.container}>
                 <Text style={[globalStyles.titleText, {fontSize: 36}]}>勤務登錄系統</Text>
                 <TextInput 
