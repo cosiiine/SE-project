@@ -75,9 +75,21 @@ export default function Records({ navigation }) {
         setSelectedItem(item);
     };
     const deleteHandler = () => {
+        Alert.alert(
+            '提示',
+            `確認要刪除此紀錄嗎？`,
+            [{text: '取消',onPress: () => console.log("delete pressed but not commit")},
+            {text: '確認',onPress: () => doDelete()}]
+        )
+    }
+    function doDelete () {
         deleteWorks(selectedItem.userId,selectedItem.year,selectedItem.month,selectedItem.date).then((ret)=>{
-            Alert.alert('刪除紀錄成功');
-        }).catch((ret)=>{console.log("Delete member works record encounters an error",ret)});
+            // Alert.alert('刪除紀錄成功');
+            console.log("Delete member works record | success");
+        }).catch((ret)=>{
+            Alert.alert('刪除紀錄失敗！');
+            console.log("Delete member works record | error",ret);
+        });
         setSelectedItem({});
         fetchRecords();
     }
@@ -119,19 +131,19 @@ export default function Records({ navigation }) {
         if (selectedItem.status == STATUS.ACCEPT) {
             return <View style={[styles.status]}>
                     <Ionicons name='checkmark-circle' size={40} color={'#19AC9F'}/>
-                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#19AC9F'}]}>登錄成功</Text>
+                    <Text style={[globalStyles.titleText, {color: '#19AC9F'}]}>登錄成功</Text>
                 </View>
         }
         else if (selectedItem.status == STATUS.WAITING) {
             return <View style={[styles.status]}>
                     <Ionicons name='ellipsis-horizontal-circle-sharp' size={40} color={'#F5C63E'}/>
-                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#F5C63E'}]}>審核中</Text>
+                    <Text style={[globalStyles.titleText, {color: '#F5C63E'}]}>審核中</Text>
                 </View>
         }
         else if (selectedItem.status == STATUS.DENY) {
             return <View style={[styles.status]}>
                     <Ionicons name='close-circle' size={40} color={'#D34C5E'}/>
-                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#D34C5E'}]}>登錄失敗</Text>
+                    <Text style={[globalStyles.titleText, {color: '#D34C5E'}]}>登錄失敗</Text>
                 </View>
         }
         return <Text style={[globalStyles.titleText]}> </Text>

@@ -64,7 +64,7 @@ export default function Records({ navigation }) {
         setSelectedItem(item);
     };
 
-    function commitStatus(status){
+    function checkHandler(status){
         Alert.alert(
             '提示',
             `確認要登記此紀錄為 ${status==STATUS.ACCEPT?"正確":"錯誤"} 嗎？`,
@@ -127,19 +127,19 @@ export default function Records({ navigation }) {
         if (selectedItem.status == STATUS.ACCEPT) {
             return <View style={[styles.status]}>
                     <Ionicons name='checkmark-circle' size={40} color={'#19AC9F'}/>
-                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#19AC9F'}]}>登錄成功</Text>
+                    <Text style={[globalStyles.titleText, {color: '#19AC9F'}]}>登錄成功</Text>
                 </View>
         }
         else if (selectedItem.status == STATUS.WAITING) {
             return <View style={[styles.status]}>
                     <Ionicons name='ellipsis-horizontal-circle-sharp' size={40} color={'#F5C63E'}/>
-                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#F5C63E'}]}>審核中</Text>
+                    <Text style={[globalStyles.titleText, {color: '#F5C63E'}]}>審核中</Text>
                 </View>
         }
         else if (selectedItem.status == STATUS.DENY) {
             return <View style={[styles.status]}>
                     <Ionicons name='close-circle' size={40} color={'#D34C5E'}/>
-                    <Text style={[globalStyles.titleText, {textDecorationLine: 'underline', color: '#D34C5E'}]}>登錄失敗</Text>
+                    <Text style={[globalStyles.titleText, {color: '#D34C5E'}]}>登錄失敗</Text>
                 </View>
         }
         return <Text style={[globalStyles.titleText]}> </Text>
@@ -178,11 +178,11 @@ export default function Records({ navigation }) {
                         </View>
                     </View>
                     <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', opacity: selectedItem.status==STATUS.WAITING?1:0.6}}>
-                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}]} onPress={()=>{if(selectedItem.status==STATUS.WAITING)commitStatus(STATUS.DENY)}}>
+                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}]} onPress={()=>{if(selectedItem.status==STATUS.WAITING)checkHandler(STATUS.DENY)}}>
                             <Ionicons name='close-circle' size={30} color='white' />
                             <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>錯誤</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#19AC9F'}]} onPress={()=>{if(selectedItem.status==STATUS.WAITING)commitStatus(STATUS.ACCEPT)}}>
+                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#19AC9F'}]} onPress={()=>{if(selectedItem.status==STATUS.WAITING)checkHandler(STATUS.ACCEPT)}}>
                             <Ionicons name='checkmark-circle' size={30} color='white' />
                             <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>正確</Text>
                         </TouchableOpacity>

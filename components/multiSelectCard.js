@@ -35,14 +35,15 @@ export default class MultiSelectCard extends Component{
 
             }).catch((e)=>{console.log('fetch records from multiselect | error',e)});
         }).catch((e)=>{console.log('reset members from multiselect | error',e)});
+        this.trigger = this.props.trigger;
         this.year = this.props.date.getFullYear();
         this.month = (this.props.date.getMonth()+1)%13;
         this.date = this.props.date.getDate();
     };
     render(){
-        // console.log('rerender multiSelectCard',this.date,this.props.date);
+        console.log('rerender multiSelectCard',this.date,this.props.date);
         const dt = this.props.date;
-        if(dt.getFullYear()!=this.year || (dt.getMonth()+1)!=this.month || dt.getDate()!=this.date){
+        if(dt.getFullYear()!=this.year || (dt.getMonth()+1)!=this.month || dt.getDate()!=this.date || this.trigger!=this.props.trigger){
             // reset members
             this.resetMembers();
         }

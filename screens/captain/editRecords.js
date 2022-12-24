@@ -123,10 +123,12 @@ export default function EditRecords({ route, navigation }) {
     const [records, setRecords] = useState(emptyRecords); // 0~47 滑動輸入結果
     const [selected, setSelected] = useState({}); // 被選中的人
     const [tasks, setTasks] = useState({}); // 所有工作類型
+    const [trigger, setTrigger] = useState(true);
 
     const isFocused = useIsFocused(); // 此頁面被focus的狀態
 
-    useEffect(()=>{fetchTasks();resetRecords();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call resetRecords
+    useEffect(()=>{fetchTasks();resetRecords();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call resetRecords，按儲存不會被動到的
+    useEffect(()=>{setSelected({})},[isFocused,trigger,]) // 按儲存或初始化會改變的時，觸發讓multiselectCard重新渲染，並且不會重設日期、滑動輸入資料
 
     const emptyRecords = () => {
         const temp = {};
@@ -142,7 +144,6 @@ export default function EditRecords({ route, navigation }) {
         setDate(new Date());
         setText(date.getFullYear() + '/' + (date.getMonth() + 1) % 13 + '/' + date.getDate());
         console.log('resetRecords from editRecords page');
-        setSelected({});
     };
 
     async function fetchTasks(){
@@ -185,6 +186,7 @@ export default function EditRecords({ route, navigation }) {
                     console.log("insertwork key:"+userKey+" | success");
                 }).catch((e)=>{console.log("insertwork key:"+userKey+" | error",e);});
             });
+            setTrigger(!trigger); // 讓multiselectCard重新渲染
         }
     };
 
@@ -245,7 +247,7 @@ export default function EditRecords({ route, navigation }) {
                                 />
                             )}
                         </TouchableOpacity>
-                        {isFocused && <MultiSelectCard selected={selected} setSelected={setSelected} date={date}/>}
+                        {isFocused && <MultiSelectCard selected={selected} setSelected={setSelected} date={date} trigger={trigger}/>}
                         <Text style={globalStyles.noticeText}>-- 僅顯示當日未記錄出勤人員 --</Text>
                     </View>
                     <View style={[globalStyles.frame, {width: '74%', justifyContent: 'flex-start'}]}>

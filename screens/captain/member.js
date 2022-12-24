@@ -13,6 +13,7 @@ import { deleteAllWorks, deleteWorks, deleteWorksFromUser } from '../../db/work'
 export default function Member({ navigation }) {
     const [search, setSearch] = useState('');
     const [selectedItem, setSelectedItem] = useState({});
+    const [filterMembers, setFilterMembers] = useState([]);
     const [members, setMembers] = useState([]);
 
     const isFocused = useIsFocused(); // 此頁面被focus的狀態
@@ -22,6 +23,7 @@ export default function Member({ navigation }) {
     async function fetchMembers(){
         getAllUsers().then((results)=>{
             setMembers(results);
+            if(search.length!=0)setFilterMembers(results.filter(item=>item.name.includes(search)));
             console.log('reset members from member page');
         }).catch(()=>{console.log('fetch member from member page | error')});
     }
@@ -31,27 +33,43 @@ export default function Member({ navigation }) {
     }
 
     const deleteHandler = () => {
-        if(Object.keys(selectedItem).length == 0){
-            Alert.alert('請選擇一名成員');
-        }else{
-            const key = selectedItem.key; // userId
-            const name = selectedItem.name;
-            console.log(`deleting member:${name} key:${key}`);
-            deleteUser(key).then((results)=>{
-                Alert.alert(name + '已被刪除');
-                deleteWorksFromUser(key).then((ret)=>{
-                    console.log("delete works from user | success");
-                }).catch((ret)=>{
-                    console.log("delete works from user | error", ret);
-                });
-                
+        if(Object.keys(selectedItem).length == 0){Alert.alert('請選擇一名成員');return}
+        else Alert.alert(
+                '提示',
+                `確認要刪除成員 ${selectedItem.name} 嗎？`,
+                [{text: '取消',onPress: () => console.log("delete pressed but not commit")},
+                {text: '確認',onPress: () => doDelete()}]
+            )
+    }
+
+    const doDelete = () => {
+        const key = selectedItem.key; // userId
+        const name = selectedItem.name;
+        console.log(`deleting member:${name} key:${key}`);
+        deleteUser(key).then((results)=>{
+            // Alert.alert(name + '已被刪除');
+            deleteWorksFromUser(key).then((ret)=>{
+                console.log("delete works from user | success");
             }).catch((ret)=>{
-                console.log(ret);
-                Alert.alert('刪除成員失敗，請再試一次');
+                console.log("delete works from user | error", ret);
             });
-            setSelectedItem({});
-            fetchMembers();
+            
+        }).catch((ret)=>{
+            console.log(ret);
+            Alert.alert('刪除成員失敗，請再試一次');
+        });
+        setSelectedItem({});
+        fetchMembers();
+    }
+
+    const onChange = (text) => {
+        setSearch(text);
+        if(text.length == 0){
+            setFilterMembers(members);
+        }else{
+            setFilterMembers(members.filter(item=>item.name.includes(text)));
         }
+        
     }
 
     function showContent() {
@@ -97,9 +115,9 @@ export default function Member({ navigation }) {
                             <View style={styles.search}>
                                 <Ionicons name='search' size={18} style={globalStyles.color} />
                                 <TextInput 
-                                    placeholder='name'
+                                    placeholder='搜尋成員'
                                     style={[globalStyles.contentText, {flex: 1, paddingHorizontal: 5}]}
-                                    onChangeText={setSearch}
+                                    onChangeText={onChange}
                                     value={search}
                                 />
                             </View>
@@ -107,7 +125,7 @@ export default function Member({ navigation }) {
                                 <Ionicons name='add-outline' size={30} color='white' />
                             </TouchableOpacity>
                         </View>
-                        <Card showStatus={false} pressHandler={pressHandler} data={members}/>
+                        <Card showStatus={false} pressHandler={pressHandler} data={filterMembers}/>
                         <Text style={globalStyles.noticeText}>-- 請點右上角 + 以新增人員 --</Text>
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
