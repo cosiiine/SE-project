@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { globalStyles } from '../../styles/global';
 import Card from '../../components/card';
@@ -9,8 +8,8 @@ import Drawer from '../../components/drawer';
 
 export default function Records({ navigation }) {
     const [date, setDate] = useState(new Date());
-    const [text, setText] = useState(date.getFullYear()+ '/' + (date.getMonth() + 1) % 13 + '/' + date.getDate());
-    const [show, setShow] = useState((Platform.OS === 'ios'));
+    const [year, setYear] = useState(date.getFullYear());
+    const [month, setMonth] = useState((date.getMonth() + 1) % 13);
     const [name, setName] = useState('');
     const [status, setStatus] = useState('');
     const tasks = [
@@ -21,12 +20,6 @@ export default function Records({ navigation }) {
         {name: "休息", color:"#cfcfcf"}
     ];
 
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate;
-        if (Platform.OS === 'android') setShow(false);
-        setDate(currentDate);
-        setText(currentDate.getFullYear()+ '/' + (currentDate.getMonth() + 1) % 13 + '/' + currentDate.getDate());
-    };
     const pressHandler = ( name, status ) => {
         setName(name);
         setStatus(status);
@@ -135,6 +128,26 @@ export default function Records({ navigation }) {
             </View>
         );
     };
+    function onChange(num) {
+        if (month + num == 13) {
+            if (year + 1 <= date.getFullYear()) {
+                setYear(year + 1);
+                setMonth(1);
+            }
+        }
+        else if (month + num == 0) {
+            if (year - 1 >= 2022) {
+                setYear(year - 1);
+                setMonth(12);
+            }
+        }
+        else {
+            if (month + num <= (date.getMonth() + 1) % 13) {
+                setMonth(month + num);
+            }
+        }
+        return;
+    };
     
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss();}}>
@@ -143,20 +156,15 @@ export default function Records({ navigation }) {
                 <View style={globalStyles.allContent}>
                     <Drawer navigation={navigation} current={'Records'} />
                     <View style={[globalStyles.frame, globalStyles.member]}>
-                        <TouchableOpacity onPress={() => {setShow(true)}} style={styles.date}>
-                            <Ionicons name='calendar-sharp' size={18} style={globalStyles.color} />
-                            {(Platform.OS === 'android') && <Text style={[globalStyles.contentText, globalStyles.color, {flex: 1, paddingHorizontal: 5}]}>{text}</Text>}
-                            {show && (
-                                <DateTimePicker
-                                    style={{flex: 1}}
-                                    testID="dateTimePicker"
-                                    value={date}
-                                    mode={'date'}
-                                    onChange={onChange}
-                                    maximumDate={new Date()} // ?
-                                />
-                            )}
-                        </TouchableOpacity>
+                        <View style={styles.date}>
+                            <TouchableOpacity onPress={() => onChange(-1)}>
+                                <Ionicons name='caret-down-circle' size={24} style={globalStyles.color} />
+                            </TouchableOpacity>
+                            <Text style={[globalStyles.contentText, globalStyles.color]}>{year} / {month}</Text>
+                            <TouchableOpacity onPress={() => onChange(1)}>
+                                <Ionicons name='caret-up-circle' size={24} style={globalStyles.color} />
+                            </TouchableOpacity>
+                        </View>
                         <Card showStatus={true} pressHandler={pressHandler}/>
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
@@ -177,6 +185,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 10,
         height: 50,
+        width: '100%',
+        justifyContent: 'space-between'
     },
     block: {
         alignItems: 'center',
