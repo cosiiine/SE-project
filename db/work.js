@@ -145,56 +145,55 @@ export function deleteWorks (userId, year, month, date) {
     });
 };
 
-export function getNearWorks () {
-    return new Promise((resolve, reject) => {
-        db.transaction(tx => { 
-            tx.executeSql (
-                "SELECT * FROM works " +
-                "ORDER BY key DESC" + 
-                "LIMIT 30",
-                (_, results) => {
-                    resolve(results.rows._array);
-                },
-                () => {
-                    reject();
-                });
-        });
-    });
-};
+// export function getNearWorks () {
+//     return new Promise((resolve, reject) => {
+//         db.transaction(tx => { 
+//             tx.executeSql (
+//                 "SELECT * FROM works " +
+//                 "ORDER BY key DESC" + 
+//                 "LIMIT 30",
+//                 (_, results) => {
+//                     resolve(results.rows._array);
+//                 },
+//                 () => {
+//                     reject();
+//                 });
+//         });
+//     });
+// };
 
-export function getNameNearWorks (name) {
-    return new Promise((resolve, reject) => {
-        db.transaction(tx => { 
-            tx.executeSql (
-                "SELECT * FROM works " +
-                "WHERE name=?" +
-                "ORDER BY key DESC" + 
-                "LIMIT 30",
-                [name],
-                (_, results) => {
-                    resolve(results.rows._array);
-                },
-                () => {
-                    reject();
-                });
-        });
-    });
-};
+// export function getNameNearWorks (name) {
+//     return new Promise((resolve, reject) => {
+//         db.transaction(tx => { 
+//             tx.executeSql (
+//                 "SELECT * FROM works " +
+//                 "WHERE name=?" +
+//                 "ORDER BY key DESC" + 
+//                 "LIMIT 30",
+//                 [name],
+//                 (_, results) => {
+//                     resolve(results.rows._array);
+//                 },
+//                 () => {
+//                     reject();
+//                 });
+//         });
+//     });
+// };
 
-export function getNameMonthWorks (name, year, month) {
+export function getMonthWorksByUser (userId, year, month) {
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
                 "SELECT * FROM works " +
-                "WHERE name=? AND year=? AND month=?" +
-                "ORDER BY key DESC" + 
-                "LIMIT 30",
-                [name, year, month],
+                "WHERE userId=? AND year=? AND month=?" +
+                "ORDER BY key DESC",
+                [userId, year, month],
                 (_, results) => {
                     resolve(results.rows._array);
                 },
-                () => {
-                    reject();
+                (_,results) => {
+                    reject(results);
                 });
         });
     });

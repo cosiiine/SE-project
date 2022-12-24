@@ -116,11 +116,11 @@ export function editUser (account, password) {
                 (_, results) => {
                     resolve(results);
                 },
-                () => {
-                    reject();
+                (_, results) => {
+                    reject(results);
                 });
         });
-      });
+    });
 };
 
 export function deleteUser (key) {

@@ -9,8 +9,6 @@ import Drawer from '../../components/drawer';
 import { useIsFocused } from '@react-navigation/native';
 import { deleteAllWorks, deleteWorks, deleteWorksFromKey, deleteWorksFromUser, getDateWorks, getWorks, STATUS } from '../../db/work';
 import { deleteUser, getAllUsers } from '../../db/user';
-import * as SQLite from 'expo-sqlite';
-import { deleteWorkHandler } from './member';
 import { getAllTasks, TASKTYPE } from '../../db/task';
 
 export default function Records({ navigation }) {
