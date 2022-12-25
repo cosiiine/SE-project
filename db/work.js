@@ -23,7 +23,10 @@ export function createWorkTable () {
             "month INTEGER NOT NULL," +
             "date INTEGER NOT NULL," +
             "records TEXT NOT NULL," + // stringify object
-            "status INTEGER NOT NULL" + // check 是內建字不能用
+            "status INTEGER NOT NULL," + // check 是內建字不能用
+            "workTimeSum INTEGER," +
+            "contWorkTime INTEGER," +
+            "contBreakTime INTEGER" +
             ");",
             [],
             (tx, results) => {
@@ -31,6 +34,22 @@ export function createWorkTable () {
             },
             (tx, results) => {
                 console.log('create work table | error');
+                console.log(results);
+            }
+        )
+    });
+};
+
+export function deleteWorksTable () {
+    db.transaction((tx) => {
+        tx.executeSql(
+            "DROP TABLE works",
+            [],
+            (tx, results) => {
+                console.log("delete works table success");
+            },
+            (tx, results) => {
+                console.log('delete works table error');
                 console.log(results);
             }
         )
@@ -55,13 +74,13 @@ export function deleteAllWorks () {
     });
 };
 
-export function insertWork (userId, year, month, date, records, status) { // records is a json_string
+export function insertWork (userId, dateObj, records, status, timeData) { // records is a json_string
     return new Promise((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql (
-                "INSERT INTO works (userId, year, month, date, records, status)" +
-                "VALUES (?,?,?,?,?,?)",
-                [userId, year, month, date, records, status],
+                "INSERT INTO works (userId, year, month, date, records, status, workTimeSum, contWorkTime, contBreakTime)" +
+                "VALUES (?,?,?,?,?,?,?,?,?)",
+                [userId,dateObj.getFullYear(),(dateObj.getMonth()+1) % 13,dateObj.getDate(),records,status,timeData.sum,timeData.work,timeData.break],
                 (_, results) => {
                     resolve(results);
                 },

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert } from 'react-native';
 import { globalStyles } from '../styles/global';
 import { createUserTable, deleteAllUsers, insertUser, getUser, USERTYPE} from '../db/user';
-import { createWorkTable } from '../db/work';
+import { createWorkTable, deleteWorksTable } from '../db/work';
 import { createSignTable, insertSign } from '../db/signRecords';
 import { createTaskTable, deleteAllTasks, getAllTasks } from '../db/task';
 

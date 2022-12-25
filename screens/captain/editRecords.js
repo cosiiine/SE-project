@@ -1,13 +1,40 @@
 import React, { useState, useEffect, Component } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, TouchableWithoutFeedback, Keyboard, PanResponder, Animated, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, TouchableWithoutFeedback, Keyboard, PanResponder, Animated, Alert, FlatList } from 'react-native';
 import { globalStyles } from '../../styles/global';
 import { useIsFocused } from '@react-navigation/native';
 import { createUserTable,deleteAllUsers,insertUser,getAllUsers, deleteUser} from '../../db/user';
-import MultiSelectCard from '../../components/multiSelectCard';
-import { insertWork, STATUS } from '../../db/work';
+import { getDateWorks, insertWork, STATUS } from '../../db/work';
 import { getAllTasks, TASKTYPE } from '../../db/task';
+
+
+export function MultiSelectCard({ canSelectMembers, selectedMembers, selectHandler}) {
+    
+    const [member, setMember] = useState(canSelectMembers);
+    useEffect(()=>{ setMember(canSelectMembers);},[canSelectMembers,selectedMembers,]);
+    
+    const turnTo = (item) => {
+        selectHandler(item);
+    }
+    return (
+        <View style={{width: '100%', flex: 1}}>
+            <FlatList
+                data={member}
+                renderItem={({item}) => (
+                    <TouchableOpacity style={[styles.card, {backgroundColor: (selectedMembers.includes(item.key))?'#E4E7EA':'#fff'}]} onPress={() => turnTo(item)}>
+                        <View style={styles.cardContent}>
+                            <View style={globalStyles.circle}>
+                                <Ionicons name='person' size={18} style={globalStyles.color}/>
+                            </View>
+                            <Text style={globalStyles.contentText}>{item.name}</Text>
+                        </View>
+                    </TouchableOpacity>
+                )}
+            />
+        </View>
+    );
+}
 
 export class TouchableGrid extends Component {
     constructor(props) {
@@ -136,15 +163,16 @@ export default function EditRecords({ route, navigation }) {
     const [show, setShow] = useState((Platform.OS === 'ios'));
     // const [search, setSearch] = useState('');
     const [chosenTask, setChosenTask] = useState(TASKTYPE.WORK1);
+    const [allMembers, setAllMembers] = useState({});
     const [records, setRecords] = useState(emptyRecords); // 0~47 滑動輸入結果
-    const [selected, setSelected] = useState({}); // 被選中的人
     const [tasks, setTasks] = useState({}); // 所有工作類型
-    const [trigger, setTrigger] = useState(true);
+
+    const [canSelectMembers, setCanSelectMembers] = useState([]); // 當天可以被選中的人
+    const [selectedMembers, setSelectedMembers] = useState([]); // 被選中的人的key
 
     const isFocused = useIsFocused(); // 此頁面被focus的狀態
 
-    useEffect(()=>{fetchTasks();resetRecords();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call resetRecords，按儲存不會被動到的
-    useEffect(()=>{setSelected({})},[isFocused,trigger,]) // 按儲存或初始化會改變的時，觸發讓multiselectCard重新渲染，並且不會重設日期、滑動輸入資料
+    useEffect(()=>{fetchTasks();fetchAllMembers(); resetRecords();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call resetRecords，按儲存不會被動到的
 
     const emptyRecords = () => {
         const temp = {};
@@ -171,40 +199,99 @@ export default function EditRecords({ route, navigation }) {
             setTasks(temp);
             console.log('fetch tasks from editRecords page | success');
         }).catch(()=>{console.log('fetch task from editRecords page | error')});
-        
+    }
+    async function fetchAllMembers(){
+        getAllUsers().then((resultsAll)=>{
+            setAllMembers(resultsAll);
+            getDateWorks(date.getFullYear(),(date.getMonth()+1) % 13,date.getDate()).then((rets)=>{
+                const existKeys = rets.map(item=>item.userId); // 本日已登記紀錄的所有 userId
+                const cans = resultsAll.filter(item=>!existKeys.includes(item.key)); // 所有member-已紀錄的
+                setCanSelectMembers(cans);
+                setSelectedMembers([]);
+                console.log('reset can & AllMembers from editRecords | success');
+            }).catch((e)=>{console.log('reset can & Members from editRecords | error',e)});
+        }).catch((e)=>{console.log('reset can & members from editRecords | error',e)});
+    }
+    
+    const selectHandler = (item) => {
+        if(selectedMembers.includes(item.key))
+            setSelectedMembers(selectedMembers.filter(i=>i!=item.key));
+        else{
+            setSelectedMembers(selectedMembers.concat([item.key]));
+        }
     }
 
-    const onChange = (event, selectedDate) => {
+    const onChangeDate = (event, selectedDate) => {
         const currentDate = selectedDate;
         if (Platform.OS === 'android') setShow(false);
         setDate(currentDate);
         setText(currentDate.getFullYear() + '/' + (currentDate.getMonth() + 1) % 13 + '/' + currentDate.getDate());
+        fetchCanSelect(currentDate);
     };
+    function fetchCanSelect(inputDate){
+        getDateWorks(inputDate.getFullYear(),(inputDate.getMonth()+1) % 13,inputDate.getDate()).then((rets)=>{
+            const existKeys = rets.map(item=>item.userId); // 本日已登記紀錄的所有 userId
+            const results = allMembers.filter(item=>!existKeys.includes(item.key)); // 所有member-已紀錄的
+            setCanSelectMembers(results);
+            setSelectedMembers([]);
+            console.log('reset canSelectMembers from editRecords | success');
+        }).catch((e)=>{console.log('reset canSelectMembers from editRecords | error',e)});
+    }
 
-    const onSave = () => {
-        // console.log(date.getFullYear(),(date.getMonth()+1)%13,date.getDate());
-        console.log(records);
-        console.log(selected);
-        const temp = Object.keys(selected).filter(k=>selected[k]=='true');
-        // for(var userKey in selected){
-        //     if(selected[userKey]=='true'){
-        //         temp.push(userKey);
-        //     }
-        // }
-        if(temp.length == 0){ // 沒選人 給error
+    const saveHandler = () => {
+        console.log(selectedMembers);
+        const timeData = calculateTime();
+        // console.log(timeData.sum,timeData.work,timeData.break);
+        if(selectedMembers.length == 0){ // 沒選人 給error
             Alert.alert('至少須選擇一名成員');
-        }else{ // 將這些人存到資料庫
-            Alert.alert('新增紀錄成功');
-            const recordString = JSON.stringify(records);
-            console.log("storing sailor records...");
-            temp.forEach(userKey => {
-                insertWork(parseInt(userKey),date.getFullYear(),(date.getMonth()+1) % 13,date.getDate(),recordString,STATUS.WAITING).then(()=>{
-                    console.log("insertwork key:"+userKey+" | success");
-                }).catch((e)=>{console.log("insertwork key:"+userKey+" | error",e);});
-            });
-            setTrigger(!trigger); // 讓multiselectCard重新渲染
+        } else if (timeData.break < 10) {// 未達連續休息10小時
+            Alert.alert(
+                '提示',
+                `未達連續休息10小時標準，請問還是要新增紀錄嗎？`,
+                [{text: '確認',onPress: () => doSave(timeData)},
+                {text: '取消',onPress: () => console.log("save pressed but not commit")}
+                ]
+            )
+        } else {
+            doSave(timeData);
         }
+    }
+
+    const doSave = (timeData) => {
+        Alert.alert('新增紀錄成功');
+        const recordString = JSON.stringify(records);
+        console.log("storing sailor records...");
+        selectedMembers.forEach(userKey => { // 將這些人存到資料庫
+            
+            insertWork(parseInt(userKey),date,recordString,STATUS.WAITING,timeData).then(()=>{
+                console.log("insertwork key:"+userKey+" | success");
+            }).catch((e)=>{console.log("insertwork key:"+userKey+" | error",e);});
+        });
+        const tempSelect = {};
+        selectedMembers.forEach(userKey=>{tempSelect[userKey]="false"});
+        setSelectedMembers([]);
+        fetchCanSelect(date);
     };
+    function calculateTime(){
+        const isWork = (work) => work<=TASKTYPE.WORK3 ;
+        // 總工時、最長連續工作、最長連續休息
+        let workTimeSum=0, contWork=0, contBreak=0, tempWork=0, tempBreak=0;
+        for(let i = 0; i < 48; i++){
+            if(isWork(records[i.toString()])){
+                if(tempBreak>contBreak) contBreak=tempBreak;
+                workTimeSum += 0.5;
+                tempWork += 0.5;
+                tempBreak = 0;
+            }else{
+                if(tempWork>contWork) contWork=tempWork;
+                tempWork = 0;
+                tempBreak += 0.5;
+            }
+        }
+        if(tempWork>contWork) contWork=tempWork;
+        if(tempBreak>contBreak) contBreak=tempBreak;
+        return {sum:workTimeSum,work:contWork,break:contBreak};
+    }
 
     function showTask() {
         const arr = [];
@@ -258,12 +345,12 @@ export default function EditRecords({ route, navigation }) {
                                     testID="dateTimePicker"
                                     value={date}
                                     mode={'date'}
-                                    onChange={onChange}
+                                    onChange={onChangeDate}
                                     maximumDate={new Date()} // ?
                                 />
                             )}
                         </TouchableOpacity>
-                        {isFocused && <MultiSelectCard selected={selected} setSelected={setSelected} date={date} trigger={trigger}/>}
+                        {isFocused && <MultiSelectCard canSelectMembers={canSelectMembers} selectedMembers={selectedMembers} selectHandler={selectHandler}/>}
                         <Text style={globalStyles.noticeText}>-- 僅顯示當日未記錄出勤人員 --</Text>
                     </View>
                     <View style={[globalStyles.frame, {width: '74%', justifyContent: 'flex-start'}]}>
@@ -272,7 +359,7 @@ export default function EditRecords({ route, navigation }) {
                                 <Ionicons name='pencil' size={25} color='white' />
                                 <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>編輯工作列</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[globalStyles.button, { margin: 0, paddingHorizontal: 25, paddingVertical: 10, backgroundColor: '#3785D6' }]} onPress={onSave}>
+                            <TouchableOpacity style={[globalStyles.button, { margin: 0, paddingHorizontal: 25, paddingVertical: 10, backgroundColor: '#3785D6' }]} onPress={saveHandler}>
                                 <Ionicons name='save' size={25} color='white' />
                                 <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1 }}>儲存</Text>
                             </TouchableOpacity>
@@ -338,5 +425,20 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         paddingLeft: 10,
         color: '#fcfcfd',
+    },
+    card: {
+        shadowColor: '#333',
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
+        borderRadius: 5,
+        marginHorizontal: 3,
+        marginVertical: 6,
+    },
+    cardContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginHorizontal: 20,
+        marginVertical: 15,
     },
 })
