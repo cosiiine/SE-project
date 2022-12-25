@@ -193,7 +193,7 @@ export default function Records({ navigation }) {
                         </View>
                     </View>
                     <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
-                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}, {opacity: selectedItem.status==STATUS.WAITING?1:0.6}]} onPress={deleteHandler}>
+                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}, {opacity: selectedItem.status!=STATUS.ACCEPT?1:0.6}]} onPress={()=>{if(selectedItem.status!=STATUS.ACCEPT)deleteHandler();}}>
                             <Ionicons name='ios-trash-sharp' size={30} color='white' />
                             <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>刪除紀錄</Text>
                         </TouchableOpacity>

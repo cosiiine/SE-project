@@ -22,7 +22,6 @@ export default function Member({ navigation }) {
     async function fetchMembers(){
         getAllUsers().then((results)=>{
             setMembers(results);
-            if(search.length!=0)setFilterMembers(results.filter(item=>item.name.includes(search)));
             console.log('reset members from member page');
         }).catch(()=>{console.log('fetch member from member page | error')});
     }

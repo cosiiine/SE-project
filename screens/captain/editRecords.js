@@ -35,12 +35,22 @@ export class TouchableGrid extends Component {
             onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
             onPanResponderGrant: (evt, gestureState) => { // 滑動開始
-                var touched = Math.floor((gestureState['x0'] - this.startX) / this.itemWidth) + startIdx;
-                this.onMove(touched);
+                if(this.inThis(gestureState['x0'],gestureState['y0'])){
+                    var touched = Math.floor((gestureState['x0'] - this.startX) / this.itemWidth) + startIdx;
+                    // console.log(gestureState,this.startX,this.startX+this.width);
+                    // console.log(touched);
+                    this.onMove(touched);
+                }
+                
             },
             onPanResponderMove: (evt, gestureState) => { // 滑動中
-                var touched = Math.floor((gestureState['moveX'] - this.startX) / this.itemWidth) + startIdx;
-                this.onMove(touched);
+                if(this.inThis(gestureState['moveX'],gestureState['moveY'])){
+                    var touched = Math.floor((gestureState['moveX'] - this.startX) / this.itemWidth) + startIdx;
+                    // console.log(gestureState,this.startX,this.itemWidth);
+                    // console.log(touched);
+                    this.onMove(touched);
+                }
+                
             },
             onPanResponderRelease: (evt, gestureState) => { // 滑動結束
                 this.index = -1;
@@ -50,7 +60,10 @@ export class TouchableGrid extends Component {
             onPanResponderTerminationRequest: (evt, gestureState) => true,
         });
     }
-
+    inThis = (x,y) => {
+        if(this.startX <= x && x <= this.startX+this.width && this.startY <= y && y <= this.startY+this.height){return true}
+        else return false;
+    }
 
     onMove = (index) => {
         if (this.index != index) {
@@ -85,7 +98,10 @@ export class TouchableGrid extends Component {
         setTimeout(()=> this.ref.measure( (x, y, width, height, pageX, pageY) => {
             // console.log('top', x, y, width, height, pageX, pageY);
             this.startX = pageX;
+            this.startY = pageY;
             this.itemWidth = width / 24;
+            this.width = width;
+            this.height = height;
         }), 0 );
     }
 

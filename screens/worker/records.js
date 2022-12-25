@@ -184,11 +184,11 @@ export default function Records({ navigation }) {
                         </View>
                     </View>
                     <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', opacity: selectedItem.status==STATUS.WAITING?1:0.6}}>
-                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}]} onPress={()=>{checkHandler(STATUS.DENY)}}>
+                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}]} onPress={()=>{if(selectedItem.status==STATUS.WAITING)checkHandler(STATUS.DENY)}}>
                             <Ionicons name='close-circle' size={30} color='white' />
                             <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>錯誤</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#19AC9F'}]} onPress={()=>{checkHandler(STATUS.ACCEPT)}}>
+                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#19AC9F'}]} onPress={()=>{if(selectedItem.status==STATUS.WAITING)checkHandler(STATUS.ACCEPT)}}>
                             <Ionicons name='checkmark-circle' size={30} color='white' />
                             <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>正確</Text>
                         </TouchableOpacity>
