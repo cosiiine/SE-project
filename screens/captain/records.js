@@ -75,11 +75,16 @@ export default function Records({ navigation }) {
         setSelectedItem(item);
     };
     const deleteHandler = () => {
+        if (selectedItem.status == STATUS.ACCEPT) {
+            Alert.alert('無法刪除已登錄紀錄');
+            return;
+        }
         Alert.alert(
             '提示',
             `確認要刪除此紀錄嗎？`,
-            [{text: '取消',onPress: () => console.log("delete pressed but not commit")},
-            {text: '確認',onPress: () => doDelete()}]
+            [{text: '確認',onPress: () => doDelete()},
+            {text: '取消',onPress: () => console.log("delete pressed but not commit")}
+            ]
         )
     }
     function doDelete () {
@@ -149,6 +154,11 @@ export default function Records({ navigation }) {
         return <Text style={[globalStyles.titleText]}> </Text>
     };
     function showContent() {
+        if (Object.keys(selectedItem).length == 0) {
+            return <Text style={globalStyles.noticeText}>-- 點左欄紀錄以顯示詳細資訊 --</Text>
+        }
+        if (Object.keys(tasks).length == 0) return;
+
         let results = [];
         results.push(
             <View style={[styles.block, {flex: 2}]} key={0}>
@@ -183,7 +193,7 @@ export default function Records({ navigation }) {
                         </View>
                     </View>
                     <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
-                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}]} onPress={deleteHandler}>
+                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}, {opacity: selectedItem.status==STATUS.WAITING?1:0.6}]} onPress={deleteHandler}>
                             <Ionicons name='ios-trash-sharp' size={30} color='white' />
                             <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>刪除紀錄</Text>
                         </TouchableOpacity>
@@ -254,8 +264,7 @@ export default function Records({ navigation }) {
                         <Text style={globalStyles.noticeText}>-- 請點右上角 + 以新增紀錄 --</Text>
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
-                        {Object.keys(selectedItem).length != 0 && Object.keys(tasks).length != 0 && showContent()}
-                        {Object.keys(selectedItem).length == 0 && <Text style={globalStyles.noticeText}>-- 點左欄紀錄以顯示詳細資訊 --</Text>}
+                        {showContent()}
                     </View>
                 </View>
             </View>

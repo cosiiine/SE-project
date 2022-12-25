@@ -13,7 +13,6 @@ import { deleteAllWorks, deleteWorks, deleteWorksFromUser } from '../../db/work'
 export default function Member({ navigation }) {
     const [search, setSearch] = useState('');
     const [selectedItem, setSelectedItem] = useState({});
-    const [filterMembers, setFilterMembers] = useState([]);
     const [members, setMembers] = useState([]);
 
     const isFocused = useIsFocused(); // 此頁面被focus的狀態
@@ -37,8 +36,9 @@ export default function Member({ navigation }) {
         else Alert.alert(
                 '提示',
                 `確認要刪除成員 ${selectedItem.name} 嗎？`,
-                [{text: '取消',onPress: () => console.log("delete pressed but not commit")},
-                {text: '確認',onPress: () => doDelete()}]
+                [{text: '確認',onPress: () => doDelete()},
+                {text: '取消',onPress: () => console.log("delete pressed but not commit")}
+                ]
             )
     }
 
@@ -62,17 +62,10 @@ export default function Member({ navigation }) {
         fetchMembers();
     }
 
-    const onChange = (text) => {
-        setSearch(text);
-        if(text.length == 0){
-            setFilterMembers(members);
-        }else{
-            setFilterMembers(members.filter(item=>item.name.includes(text)));
-        }
-        
-    }
-
     function showContent() {
+        if (Object.keys(selectedItem).length == 0) {
+            return <Text style={globalStyles.noticeText}>-- 點左欄人員以顯示詳細資訊 --</Text>
+        }
         let results = [];
         results.push(
         <TouchableOpacity style={styles.delete} key={0} onPress={deleteHandler}>
@@ -102,6 +95,12 @@ export default function Member({ navigation }) {
         </View>);
         return results;
     }
+    function showFilter() {
+        if (search.length == 0) {
+            return <Card showStatus={false} pressHandler={pressHandler} data={members}/>
+        }
+        return <Card showStatus={false} pressHandler={pressHandler} data={members.filter(item=>item.name.includes(search))}/>
+    }
 
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss();}}>
@@ -111,13 +110,12 @@ export default function Member({ navigation }) {
                 <Drawer navigation={navigation} current={'Member'} />
                     <View style={[globalStyles.frame, globalStyles.member]}>
                         <View style={[globalStyles.allContent, {flex: 0, width: '100%', marginBottom: 5}]}>
-                            {/* 還沒有功能 */}
                             <View style={styles.search}>
                                 <Ionicons name='search' size={18} style={globalStyles.color} />
                                 <TextInput 
                                     placeholder='搜尋成員'
                                     style={[globalStyles.contentText, {flex: 1, paddingHorizontal: 5}]}
-                                    onChangeText={onChange}
+                                    onChangeText={setSearch}
                                     value={search}
                                 />
                             </View>
@@ -125,12 +123,11 @@ export default function Member({ navigation }) {
                                 <Ionicons name='add-outline' size={30} color='white' />
                             </TouchableOpacity>
                         </View>
-                        <Card showStatus={false} pressHandler={pressHandler} data={filterMembers}/>
+                        {showFilter()}
                         <Text style={globalStyles.noticeText}>-- 請點右上角 + 以新增人員 --</Text>
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
-                        {(Object.keys(selectedItem).length != 0) && showContent()}
-                        {(Object.keys(selectedItem).length == 0) && <Text style={globalStyles.noticeText}>-- 點左欄人員以顯示詳細資訊 --</Text>}
+                        {showContent()}
                     </View>
                 </View>
             </View>

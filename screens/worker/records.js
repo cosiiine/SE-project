@@ -24,7 +24,7 @@ export default function Records({ navigation }) {
 
     function renderCard ()  {
         console.log("rerender card");
-        if(records.length == 0) setCard(<Text style={globalStyles.noticeText}>-- 本月尚無紀錄 --</Text>);
+        if(records.length == 0) setCard(<Text style={[globalStyles.noticeText, {marginTop: 15}]}>-- 本月尚無紀錄 --</Text>);
         else setCard(<Card showStatus={true} pressHandler={pressHandler} data={records}/>);
     }
 
@@ -65,11 +65,13 @@ export default function Records({ navigation }) {
     };
 
     function checkHandler(status){
+        if(selectedItem.status != STATUS.WAITING) return;
         Alert.alert(
             '提示',
             `確認要登記此紀錄為 ${status==STATUS.ACCEPT?"正確":"錯誤"} 嗎？`,
-            [{text: '取消',onPress: () => console.log("status pressed but not commit")},
-            {text: '確認',onPress: () => saveStatus(status)}]
+            [{text: '確認',onPress: () => saveStatus(status)},
+            {text: '取消',onPress: () => console.log("status pressed but not commit")}
+            ]
         )
     }
     function saveStatus(status){
@@ -145,7 +147,11 @@ export default function Records({ navigation }) {
         return <Text style={[globalStyles.titleText]}> </Text>
     };
     function showContent() {
-        return(
+        if (Object.keys(selectedItem).length == 0) {
+            return <Text style={globalStyles.noticeText}>-- 點左欄紀錄以顯示詳細資訊 --</Text>
+        }
+        if (Object.keys(tasks).length == 0) return;
+        return (
             <View style={styles.block}>
                 {showStatus()}
                 {grid(0)}
@@ -178,11 +184,11 @@ export default function Records({ navigation }) {
                         </View>
                     </View>
                     <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', opacity: selectedItem.status==STATUS.WAITING?1:0.6}}>
-                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}]} onPress={()=>{if(selectedItem.status==STATUS.WAITING)checkHandler(STATUS.DENY)}}>
+                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}]} onPress={()=>{checkHandler(STATUS.DENY)}}>
                             <Ionicons name='close-circle' size={30} color='white' />
                             <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>錯誤</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#19AC9F'}]} onPress={()=>{if(selectedItem.status==STATUS.WAITING)checkHandler(STATUS.ACCEPT)}}>
+                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#19AC9F'}]} onPress={()=>{checkHandler(STATUS.ACCEPT)}}>
                             <Ionicons name='checkmark-circle' size={30} color='white' />
                             <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>正確</Text>
                         </TouchableOpacity>
@@ -204,10 +210,8 @@ export default function Records({ navigation }) {
                 setMonth(12);
             }
         }
-        else {
-            if (month + num <= (date.getMonth() + 1) % 13) {
-                setMonth(month + num);
-            }
+        else if (month + num <= (date.getMonth() + 1) % 13) {
+            setMonth(month + num);
         }
         return;
     };
@@ -231,8 +235,7 @@ export default function Records({ navigation }) {
                         {card}
                     </View>
                     <View style={[globalStyles.frame, globalStyles.content]}>
-                        {Object.keys(selectedItem).length != 0 && Object.keys(tasks).length != 0 && showContent()}
-                        {Object.keys(selectedItem).length == 0 && <Text style={globalStyles.noticeText}>-- 點左欄紀錄以顯示詳細資訊 --</Text>}
+                        {showContent()}
                     </View>
                 </View>
             </View>
