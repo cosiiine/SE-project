@@ -53,7 +53,7 @@ export default function SignIn({ navigation }) {
             <View style={globalStyles.container}>
                 <Text style={[globalStyles.titleText, {fontSize: 36}]}>勤務登錄系統</Text>
                 <TextInput 
-                    placeholder='帳號'
+                    placeholder='帳號 (身分證)'
                     style={globalStyles.input}
                     onChangeText={setAccount}
                     value={account}

@@ -2,41 +2,48 @@ import React, { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard,Alert } from 'react-native';
 import { globalStyles } from '../../styles/global';
-import { getAllUser, insertUser,USERTYPE} from '../../db/user';
+import { getAllUser, getAllUsers, insertUser,USERTYPE} from '../../db/user';
 import { useIsFocused } from '@react-navigation/native';
 
 export default function AddMember({ navigation }) {
     const [ name, setName] = useState('');
     const [ account, setAccount ] = useState('');
-    // const [ phone, setPhone ] = useState('');
-
+    const [ members, setMembers] = useState([]);
     const isFocused = useIsFocused(); // 此頁面被focus的狀態
 
-    useEffect(()=>{resetBoxes();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call fetchmember
+    useEffect(()=>{resetBoxes();fetchMembers();} , [isFocused,])// 當isFocused改變，或者初始化此頁，call fetchmember
 
     const resetBoxes = () => {
         setName('');
         setAccount('');
-        // setPhone('');
-        // console.log('resetBox')
     };
+
+    async function fetchMembers(){
+        getAllUsers().then((results)=>{
+            setMembers(results);
+            console.log('reset members from addMember page | success');
+        }).catch(()=>{console.log('fetch member from addMember page | error')});
+    }
 
     const pressHandler = (name, account) => {
         if (name.length == 0) {
             Alert.alert('請輸入姓名');
         }
         else if (account.length < 3) {
-            Alert.alert('帳號長度至少3個字元');
+            Alert.alert('帳號(身分證字號)長度至少3個字元');
+        }
+        else if (members.filter(item=>item.account==account).length!=0){
+            Alert.alert('此帳號已存在');
         }
         else {
             console.log("Insert: ", name, account);
             insertUser( USERTYPE.SAILOR,account,name,account).then((results) => {
                 // console.log(results);
-                
                 Alert.alert('新增成員成功');
             }).catch(() => {
                 Alert.alert('新增成員失敗');
             });
+            members.push({name:name,account:account});
             resetBoxes();
         }
     }
