@@ -35,8 +35,8 @@ export default function Member({ navigation }) {
         else Alert.alert(
                 '提示',
                 `確認要刪除成員 ${selectedItem.name} 嗎？`,
-                [{text: '確認',onPress: () => doDelete()},
-                {text: '取消',onPress: () => console.log("delete pressed but not commit")}
+                [{text: '取消',onPress: () => console.log("delete pressed but not commit")},
+                {text: '確認',onPress: () => doDelete()}
                 ]
             )
     }

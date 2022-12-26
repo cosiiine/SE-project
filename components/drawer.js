@@ -16,6 +16,11 @@ export default function Drawer({ navigation, current }) {
                 <Ionicons name='grid' style={style('Records')} />
             </TouchableOpacity>
             {(global.user.userType == USERTYPE.CAPTAIN) &&
+                <TouchableOpacity onPress={() => {navigation.navigate('CheckRecords');}}>
+                    <Ionicons name='file-tray-full' style={style('CheckRecords')} />
+                </TouchableOpacity>
+            }
+            {(global.user.userType == USERTYPE.CAPTAIN) &&
                 <TouchableOpacity onPress={() => {navigation.navigate('Member');}}>
                     <Ionicons name='ios-people-sharp' style={style('Member')} />
                 </TouchableOpacity>

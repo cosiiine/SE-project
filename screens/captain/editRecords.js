@@ -248,8 +248,8 @@ export default function EditRecords({ route, navigation }) {
             Alert.alert(
                 '提示',
                 `未達連續休息10小時標準，請問還是要新增紀錄嗎？`,
-                [{text: '確認',onPress: () => doSave(timeData)},
-                {text: '取消',onPress: () => console.log("save pressed but not commit")}
+                [{text: '取消',onPress: () => console.log("save pressed but not commit")},
+                {text: '確認',onPress: () => doSave(timeData)}
                 ]
             )
         } else {

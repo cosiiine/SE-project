@@ -7,6 +7,7 @@ import Setting from '../screens/setting';
 import EditRecords from '../screens/captain/editRecords';
 import AddMember from '../screens/captain/addMember';
 import EditTask from '../screens/captain/editTask';
+import CheckRecords from '../screens/captain/checkRecords';
 
 const tab = createBottomTabNavigator();
 
@@ -53,6 +54,11 @@ export default function CaptainStack() {
                 name='EditTask'
                 component={EditTask}
                 options={{title: 'EditTask'}}
+            />
+            <tab.Screen
+                name='CheckRecords'
+                component={CheckRecords}
+                options={{title: 'CheckRecords'}}
             />
         </tab.Navigator>
     );

@@ -82,8 +82,8 @@ export default function Records({ navigation }) {
         Alert.alert(
             '提示',
             `確認要刪除此紀錄嗎？`,
-            [{text: '確認',onPress: () => doDelete()},
-            {text: '取消',onPress: () => console.log("delete pressed but not commit")}
+            [{text: '取消',onPress: () => console.log("delete pressed but not commit")},
+            {text: '確認',onPress: () => doDelete()}
             ]
         )
     }
@@ -162,41 +162,35 @@ export default function Records({ navigation }) {
         let results = [];
         results.push(
             <View style={[styles.block, {flex: 2}]} key={0}>
-                {showStatus()}
+                <View style={{width: '100%', flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between'}}>
+                    {showStatus()}
+                    <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}, {opacity: selectedItem.status!=STATUS.ACCEPT?1:0.6}]} onPress={()=>{if(selectedItem.status!=STATUS.ACCEPT)deleteHandler();}}>
+                        <Ionicons name='ios-trash-sharp' size={30} color='white' />
+                        <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>刪除紀錄</Text>
+                    </TouchableOpacity>
+                </View>
                 {grid(0)}
                 {grid(12)}
-                <View style={{flexDirection: 'row', marginTop: 40}}>
-                    <View>
-                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
-                            <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
-                                <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK1].color}]} />
-                                <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK1].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK1].name}</Text>
-                            </View>
-                            <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
-                                <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK2].color}]} />
-                                <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK2].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK2].name}</Text>
-                            </View>
-                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK3].color}]} />
-                                <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK3].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK3].name}</Text>
-                            </View>
-                        </View>
-                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
-                            <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
-                                <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.EAT].color}]} />
-                                <Text style={{fontSize: 20, color: tasks[TASKTYPE.EAT].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.EAT].name}</Text>
-                            </View>
-                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.BREAK].color}]} />
-                                <Text style={{fontSize: 20, color: tasks[TASKTYPE.BREAK].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.BREAK].name}</Text>
-                            </View>
-                        </View>
+                <View style={{width: '100%', flexDirection: 'row', marginTop: 30, justifyContent: 'space-around', paddingHorizontal: 20}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK1].color}]} />
+                        <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK1].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK1].name}</Text>
                     </View>
-                    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
-                        <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}, {opacity: selectedItem.status!=STATUS.ACCEPT?1:0.6}]} onPress={()=>{if(selectedItem.status!=STATUS.ACCEPT)deleteHandler();}}>
-                            <Ionicons name='ios-trash-sharp' size={30} color='white' />
-                            <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>刪除紀錄</Text>
-                        </TouchableOpacity>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK2].color}]} />
+                        <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK2].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK2].name}</Text>
+                    </View>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK3].color}]} />
+                        <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK3].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK3].name}</Text>
+                    </View>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.EAT].color}]} />
+                        <Text style={{fontSize: 20, color: tasks[TASKTYPE.EAT].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.EAT].name}</Text>
+                    </View>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.BREAK].color}]} />
+                        <Text style={{fontSize: 20, color: tasks[TASKTYPE.BREAK].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.BREAK].name}</Text>
                     </View>
                 </View>
             </View>
@@ -310,6 +304,7 @@ const styles = StyleSheet.create({
     status: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginLeft: 10,
     },
     circle: {
         width: 20,

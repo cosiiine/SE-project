@@ -69,8 +69,8 @@ export default function Records({ navigation }) {
         Alert.alert(
             '提示',
             `確認要登記此紀錄為 ${status==STATUS.ACCEPT?"正確":"錯誤"} 嗎？`,
-            [{text: '確認',onPress: () => saveStatus(status)},
-            {text: '取消',onPress: () => console.log("status pressed but not commit")}
+            [{text: '取消',onPress: () => console.log("status pressed but not commit")},
+            {text: '確認',onPress: () => saveStatus(status)}
             ]
         )
     }
@@ -151,39 +151,12 @@ export default function Records({ navigation }) {
             return <Text style={globalStyles.noticeText}>-- 點左欄紀錄以顯示詳細資訊 --</Text>
         }
         if (Object.keys(tasks).length == 0) return;
-        return (
-            <View style={styles.block}>
-                {showStatus()}
-                {grid(0)}
-                {grid(12)}
-                <View style={{flexDirection: 'row', marginVertical: 80}}>
-                    <View>
-                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
-                            <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
-                                <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK1].color}]} />
-                                <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK1].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK1].name}</Text>
-                            </View>
-                            <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
-                                <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK2].color}]} />
-                                <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK2].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK2].name}</Text>
-                            </View>
-                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK3].color}]} />
-                                <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK3].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK3].name}</Text>
-                            </View>
-                        </View>
-                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
-                            <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
-                                <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.EAT].color}]} />
-                                <Text style={{fontSize: 20, color: tasks[TASKTYPE.EAT].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.EAT].name}</Text>
-                            </View>
-                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.BREAK].color}]} />
-                                <Text style={{fontSize: 20, color: tasks[TASKTYPE.BREAK].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.BREAK].name}</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', opacity: selectedItem.status==STATUS.WAITING?1:0.6}}>
+        let result = [];
+        result.push(
+            <View style={[styles.block, {flex: 2}]} key={0}>
+                <View style={{width: '100%', flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between'}}>
+                    {showStatus()}
+                    <View style={{flexDirection: 'row', opacity: selectedItem.status==STATUS.WAITING?1:0.6}}>
                         <TouchableOpacity style={[globalStyles.button, {height: 50, backgroundColor: '#D34C5E'}]} onPress={()=>{if(selectedItem.status==STATUS.WAITING)checkHandler(STATUS.DENY)}}>
                             <Ionicons name='close-circle' size={30} color='white' />
                             <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold', paddingLeft: 10, letterSpacing: 1}}>錯誤</Text>
@@ -194,8 +167,49 @@ export default function Records({ navigation }) {
                         </TouchableOpacity>
                     </View>
                 </View>
+                {grid(0)}
+                {grid(12)}
+                <View style={{width: '100%', flexDirection: 'row', marginTop: 30, justifyContent: 'space-around', paddingHorizontal: 20}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK1].color}]} />
+                            <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK1].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK1].name}</Text>
+                        </View>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK2].color}]} />
+                            <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK2].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK2].name}</Text>
+                        </View>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.WORK3].color}]} />
+                            <Text style={{fontSize: 20, color: tasks[TASKTYPE.WORK3].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.WORK3].name}</Text>
+                        </View>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.EAT].color}]} />
+                            <Text style={{fontSize: 20, color: tasks[TASKTYPE.EAT].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.EAT].name}</Text>
+                        </View>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={[styles.circle, {backgroundColor: tasks[TASKTYPE.BREAK].color}]} />
+                            <Text style={{fontSize: 20, color: tasks[TASKTYPE.BREAK].color, fontWeight: 'bold', paddingLeft: 10}}>{tasks[TASKTYPE.BREAK].name}</Text>
+                        </View>
+                </View>
             </View>
         );
+        result.push(
+            <View style={[styles.block, {flex: 1, borderTopColor: '#9EACB9', borderTopWidth: 1}]} key={1}>
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={[globalStyles.contentText, styles.text]}>當日工作時數</Text>
+                    <Text style={[globalStyles.contentText, styles.text, {textAlign: 'center'}]}>123</Text>
+                </View>
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={[globalStyles.contentText, styles.text]}>當月工作時數</Text>
+                    <Text style={[globalStyles.contentText, styles.text, {textAlign: 'center'}]}>123</Text>
+                </View>
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={[globalStyles.contentText, styles.text]}>與上次工作間隔</Text>
+                    <Text style={[globalStyles.contentText, styles.text, {textAlign: 'center'}]}>123</Text>
+                </View>
+            </View>
+        );
+        return result;
     };
     function onChange(num) {
         if (month + num == 13) {
@@ -256,16 +270,21 @@ const styles = StyleSheet.create({
     },
     block: {
         alignItems: 'center',
+        justifyContent: 'center',
         width: '90%',
     },
+    text: {
+        width: 150,
+        marginVertical: 5,
+    },
     status: {
+        marginLeft: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 50,
     },
     circle: {
         width: 20, 
         height: 20,
         borderRadius: 10,
-    }
+    },
 })
