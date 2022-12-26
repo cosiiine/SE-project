@@ -197,16 +197,15 @@ export default function Records({ navigation }) {
             <View style={[styles.block, {flex: 1, borderTopColor: '#9EACB9', borderTopWidth: 1}]} key={1}>
                 <View style={{flexDirection: 'row'}}>
                     <Text style={[globalStyles.contentText, styles.text]}>當日工作時數</Text>
-                    <Text style={[globalStyles.contentText, styles.text, {textAlign: 'center'}]}>123</Text>
+                    <Text style={[globalStyles.contentText, styles.text2]}>123</Text>
                 </View>
                 <View style={{flexDirection: 'row'}}>
-                    <Text style={[globalStyles.contentText, styles.text]}>當月工作時數</Text>
-                    <Text style={[globalStyles.contentText, styles.text, {textAlign: 'center'}]}>123</Text>
+                    <Text style={[globalStyles.contentText, styles.text]}>當月工作天數</Text>
+                    <Text style={[globalStyles.contentText, styles.text2]}>123</Text>
                 </View>
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={[globalStyles.contentText, styles.text]}>與上次工作間隔</Text>
-                    <Text style={[globalStyles.contentText, styles.text, {textAlign: 'center'}]}>123</Text>
-                </View>
+                <TouchableOpacity style={{borderWidth: 2, borderRadius: 10, marginTop: 15, padding: 5, borderColor: '#ccc'}} onPress={alert}>
+                    <Text style={[globalStyles.contentText]}> -- 規定 -- </Text>
+                </TouchableOpacity>
             </View>
         );
         return result;
@@ -229,6 +228,36 @@ export default function Records({ navigation }) {
         }
         return;
     };
+    function alert() {
+        Alert.alert(
+            '說明',
+`
+(一)
+<< 我國境外僱用非我國籍船員許可及管理辦法 >>
+
+七、非我國籍船員
+每日休息不應低於十小時
+每月休息不應低於四日
+
+但因作業需要，
+得依勞僱雙方約定，
+另行安排補休。
+
+(二)
+<< 國際勞工組織公約C188號 >>
+
+二、對在海上停留超過三天的漁船，
+最少休息時間應為：
+在任何24小時內不得低於10小時
+在任何7天期內不得低於77小時
+
+但因作業需要，
+得作臨時性例外處理，
+並盡快安排補休。
+`,
+            [{text: 'OK'}]
+        )
+    }
     
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss();}}>
@@ -276,6 +305,11 @@ const styles = StyleSheet.create({
     text: {
         width: 150,
         marginVertical: 5,
+    },
+    text2: {
+        width: 150,
+        marginVertical: 5,
+        textAlign: 'center',
     },
     status: {
         marginLeft: 10,

@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     },
     text: {
         width: '50%',
-        marginVertical: 10,
+        marginVertical: 20,
     },
     delete: {
         backgroundColor: '#D34C5E',
