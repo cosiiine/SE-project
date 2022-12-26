@@ -206,7 +206,7 @@ export function getMonthWorksByUser (userId, year, month) {
             tx.executeSql (
                 "SELECT * FROM works " +
                 "WHERE userId=? AND year=? AND month=?" +
-                "ORDER BY key DESC",
+                "ORDER BY date DESC",
                 [userId, year, month],
                 (_, results) => {
                     resolve(results.rows._array);

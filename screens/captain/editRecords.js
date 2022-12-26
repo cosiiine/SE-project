@@ -66,7 +66,7 @@ export class TouchableGrid extends Component {
                     var touched = Math.floor((gestureState['x0'] - this.startX) / this.itemWidth) + startIdx;
                     // console.log(gestureState,this.startX,this.startX+this.width);
                     // console.log(touched);
-                    this.onMove(touched);
+                    if(startIdx <= touched && touched <= startIdx+24) this.onMove(touched);
                 }
                 
             },
@@ -75,7 +75,7 @@ export class TouchableGrid extends Component {
                     var touched = Math.floor((gestureState['moveX'] - this.startX) / this.itemWidth) + startIdx;
                     // console.log(gestureState,this.startX,this.itemWidth);
                     // console.log(touched);
-                    this.onMove(touched);
+                    if(startIdx <= touched && touched <= startIdx+24) this.onMove(touched);
                 }
                 
             },
