@@ -222,7 +222,7 @@ export function getWorks () {
     return new Promise((resolve, reject) => {
         db.transaction(tx => { 
             tx.executeSql (
-                "SELECT key FROM works;",
+                "SELECT * FROM works;",
                 [],
                 (_, results) => {
                     resolve(results.rows._array);

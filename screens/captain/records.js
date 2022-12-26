@@ -7,7 +7,7 @@ import Card from '../../components/card';
 import AppBar from '../../components/appBar';
 import Drawer from '../../components/drawer';
 import { useIsFocused } from '@react-navigation/native';
-import { deleteAllWorks, deleteWorks, deleteWorksFromKey, deleteWorksFromUser, getDateWorks, getWorks, STATUS } from '../../db/work';
+import { deleteAllWorks, deleteWorks, deleteWorksFromKey, deleteWorksFromUser, getDateWorks, getMonthWorksByUser, getWorks, STATUS } from '../../db/work';
 import { deleteUser, getAllUsers } from '../../db/user';
 import { getAllTasks, TASKTYPE } from '../../db/task';
 
@@ -15,9 +15,9 @@ export default function Records({ navigation }) {
     const [date, setDate] = useState(new Date());
     const [text, setText] = useState(date.getFullYear()+ '/' + (date.getMonth() + 1) % 13 + '/' + date.getDate());
     const [show, setShow] = useState((Platform.OS === 'ios'));
-    const [search, setSearch] = useState("");
-    const [members,setMembers] = useState({});
+    
     const [selectedItem, setSelectedItem] = useState({}); // 被選中要show出來的紀錄
+    const [workDay, setWorkDay] = useState(0); // 被選中紀錄 這個人的當月工作天
     const [records,setRecords] = useState([]); // 當日被登記的紀錄
     const [tasks, setTasks] = useState({}); // 所有工作類型
     const isFocused = useIsFocused(); // 此頁面被focus的狀態
@@ -43,7 +43,6 @@ export default function Records({ navigation }) {
                 temp[item.key]=item;
             });
             // console.log(temp);
-            setMembers(temp);
             getDateWorks(date.getFullYear(),(date.getMonth()+1)%13,date.getDate()).then((results)=>{
                 let tp = [];
                 
@@ -71,8 +70,15 @@ export default function Records({ navigation }) {
         setText(currentDate.getFullYear()+ '/' + (currentDate.getMonth() + 1) % 13 + '/' + currentDate.getDate());
     };
     const pressHandler = ( item ) => {
-        // console.log(item);
         setSelectedItem(item);
+        getMonthWorksByUser(item.userId,item.year,item.month).then((ret)=>{
+            // console.log((ret.filter(i=>i.workTimeSum!=0)).length);
+            setWorkDay(ret.filter(i=>i.workTimeSum!=0).length);
+        }).catch((ret)=>{
+            // console.log(ret);
+            setWorkDay(0);
+        });
+        
     };
     const deleteHandler = () => {
         if (selectedItem.status == STATUS.ACCEPT) {
@@ -153,7 +159,23 @@ export default function Records({ navigation }) {
         }
         return <Text style={[globalStyles.titleText]}> </Text>
     };
-    function alert() {
+    function showWorkTime(){
+        const tempStyle = (selectedItem.workTimeSum>14)?{color:'#D34C5E',fontWeight:'600'}:{};
+        return (<View style={{flexDirection: 'row'}}>
+                    <Text style={[globalStyles.contentText, styles.text, tempStyle]}>當日工作時數</Text>
+                    <Text style={[globalStyles.contentText, styles.text2, tempStyle]}>{selectedItem.workTimeSum}</Text>                
+                </View>);
+        
+    }
+    function showWorkDay(){
+        const monthDay = new Date(selectedItem.year,selectedItem.month,0).getDate();
+        const tempStyle = ((monthDay-workDay)<4)?{color:'#D34C5E',fontWeight:'600'}:{};
+        return (<View style={{flexDirection: 'row'}}>
+                    <Text style={[globalStyles.contentText, styles.text, tempStyle]}>當月工作天數</Text>
+                    <Text style={[globalStyles.contentText, styles.text2, tempStyle]}>{workDay}</Text>
+                </View>);
+    }
+    function showRule() {
         Alert.alert(
             '說明',
 `
@@ -227,20 +249,13 @@ export default function Records({ navigation }) {
         );
         results.push(
             <View style={[styles.block, {flex: 1, borderTopColor: '#9EACB9', borderTopWidth: 1}]} key={1}>
-                <View style={{flexDirection: 'row'}}>
+                {/* <View style={{flexDirection: 'row'}}>
                     <Text style={[globalStyles.contentText, styles.text]}>姓名</Text>
                     <Text style={[globalStyles.contentText, styles.text2]}>{selectedItem.name}</Text>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={[globalStyles.contentText, styles.text]}>當日工作時數</Text>
-                    <Text style={[globalStyles.contentText, styles.text2]}>123</Text>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={[globalStyles.contentText, styles.text]}>當月工作天數</Text>
-                    <Text style={[globalStyles.contentText, styles.text2]}>123</Text>
-                </View>
-                <TouchableOpacity style={{borderWidth: 2, borderRadius: 10, marginTop: 15, padding: 5, borderColor: '#ccc'}} onPress={alert}>
-                    <Text style={[globalStyles.contentText]}> -- 規定 -- </Text>
+                </View> */}
+                <TouchableOpacity onPress={showRule}>
+                    {showWorkTime()}
+                    {showWorkDay()}
                 </TouchableOpacity>
             </View>
         );

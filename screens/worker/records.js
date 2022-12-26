@@ -15,6 +15,7 @@ export default function Records({ navigation }) {
     const [month, setMonth] = useState((date.getMonth() + 1) % 13);
     const [card, setCard] = useState('');
     const [selectedItem, setSelectedItem] = useState({}); // 被選中要show出來的紀錄
+    const [workDay, setWorkDay] = useState(0); // 被選中紀錄 這個人的當月工作天
     const [records,setRecords] = useState([]); // 當日被登記的紀錄
     const [tasks, setTasks] = useState({}); // 所有工作類型
     const isFocused = useIsFocused(); // 此頁面被focus的狀態
@@ -62,6 +63,7 @@ export default function Records({ navigation }) {
 
     const pressHandler = ( item ) => {
         setSelectedItem(item);
+        setWorkDay(records.filter(i=>i.workTimeSum!=0).length);
     };
 
     function checkHandler(status){
@@ -195,16 +197,9 @@ export default function Records({ navigation }) {
         );
         result.push(
             <View style={[styles.block, {flex: 1, borderTopColor: '#9EACB9', borderTopWidth: 1}]} key={1}>
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={[globalStyles.contentText, styles.text]}>當日工作時數</Text>
-                    <Text style={[globalStyles.contentText, styles.text2]}>123</Text>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={[globalStyles.contentText, styles.text]}>當月工作天數</Text>
-                    <Text style={[globalStyles.contentText, styles.text2]}>123</Text>
-                </View>
-                <TouchableOpacity style={{borderWidth: 2, borderRadius: 10, marginTop: 15, padding: 5, borderColor: '#ccc'}} onPress={alert}>
-                    <Text style={[globalStyles.contentText]}> -- 規定 -- </Text>
+                <TouchableOpacity onPress={showRule}>
+                    {showWorkTime()}
+                    {showWorkDay()}
                 </TouchableOpacity>
             </View>
         );
@@ -228,7 +223,23 @@ export default function Records({ navigation }) {
         }
         return;
     };
-    function alert() {
+    function showWorkTime(){
+        const tempStyle = (selectedItem.workTimeSum>14)?{color:'#D34C5E',fontWeight:'600'}:{};
+        return (<View style={{flexDirection: 'row'}}>
+                    <Text style={[globalStyles.contentText, styles.text, tempStyle]}>當日工作時數</Text>
+                    <Text style={[globalStyles.contentText, styles.text2, tempStyle]}>{selectedItem.workTimeSum}</Text>                
+                </View>);
+        
+    }
+    function showWorkDay(){
+        const monthDay = new Date(selectedItem.year,selectedItem.month,0).getDate();
+        const tempStyle = ((monthDay-workDay)<4)?{color:'#D34C5E',fontWeight:'600'}:{};
+        return (<View style={{flexDirection: 'row'}}>
+                    <Text style={[globalStyles.contentText, styles.text, tempStyle]}>當月工作天數</Text>
+                    <Text style={[globalStyles.contentText, styles.text2, tempStyle]}>{workDay}</Text>
+                </View>);
+    }
+    function showRule() {
         Alert.alert(
             '說明',
 `

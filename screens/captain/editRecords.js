@@ -244,10 +244,10 @@ export default function EditRecords({ route, navigation }) {
         // console.log(timeData.sum,timeData.work,timeData.break);
         if(selectedMembers.length == 0){ // 沒選人 給error
             Alert.alert('至少須選擇一名成員');
-        } else if (timeData.break < 10) {// 未達連續休息10小時
+        } else if (timeData.sum > 14) {// 工作超過14小時，每日休息少於10小時
             Alert.alert(
                 '提示',
-                `未達連續休息10小時標準，請問還是要新增紀錄嗎？`,
+                `未達每日休息10小時標準，請問還是要新增紀錄嗎？`,
                 [{text: '取消',onPress: () => console.log("save pressed but not commit")},
                 {text: '確認',onPress: () => doSave(timeData)}
                 ]
