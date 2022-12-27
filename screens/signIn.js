@@ -57,6 +57,8 @@ export default function SignIn({ navigation }) {
 密碼預設和帳號一樣
 
 登入後即可自訂密碼
+
+* 船長帳號預設為 captain *
 `,
             [{text: 'OK'}]
         )
