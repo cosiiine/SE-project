@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "漁工勤務紀錄",
-    "slug": "漁工勤務紀錄",
+    "name": "勤務登錄系統",
+    "slug": "project",
     "version": "1.0.0",
     "orientation": "landscape",
     "icon": "./assets/icon2.png",
