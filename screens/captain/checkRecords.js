@@ -10,7 +10,7 @@ import { getAllUsers } from '../../db/user';
 
 export default function CheckRecords({ navigation }) {
     const [records,setRecords] = useState([]); // 當日被登記的紀錄
-    const [status, setStatus] = useState(STATUS.ACCEPT);
+    const [status, setStatus] = useState(STATUS.WAITING);
     const isFocused = useIsFocused(); // 此頁面被focus的狀態
 
     useEffect(()=>{fetchRecords();} ,[isFocused,])// 當isFocused改變，或者初始化此頁，call fetchmember
@@ -71,7 +71,7 @@ export default function CheckRecords({ navigation }) {
                         {showStatus(STATUS.WAITING)}
                         {showStatus(STATUS.DENY)}
                     </View>
-                    <View style={{height: '80%'}}>
+                    <View style={{height: '80%', alignItems: 'center'}}>
                         <View style={[styles.list, {borderColor: '#9EACB9'}]}>
                             <Text style={styles.text}>姓名</Text>
                             <Text style={styles.text}>日期</Text>
@@ -81,6 +81,7 @@ export default function CheckRecords({ navigation }) {
                             data={records}
                             renderItem={({item}) => showCheck(item)}
                         />
+                        <Text style={globalStyles.noticeText}>-- 點選狀態按鈕以顯示相關資訊 --</Text>
                     </View>
                 </View>
             </View>

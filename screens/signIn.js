@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons'; 
 import { globalStyles } from '../styles/global';
 import { createUserTable, deleteAllUsers, insertUser, getUser, USERTYPE} from '../db/user';
 import { createWorkTable, deleteWorksTable } from '../db/work';
@@ -47,13 +48,26 @@ export default function SignIn({ navigation }) {
             setAccount(''); setPassword(''); // 回復為0
         }
     };
+    function showRule() {
+        Alert.alert(
+            '操作說明',
+`
+帳號為 "身份證字號 / 居留證號碼"
+
+密碼預設和帳號一樣
+
+登入後即可自訂密碼
+`,
+            [{text: 'OK'}]
+        )
+    }
 
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
             <View style={globalStyles.container}>
                 <Text style={[globalStyles.titleText, {fontSize: 36}]}>勤務登錄系統</Text>
                 <TextInput 
-                    placeholder='身分證'
+                    placeholder='身分證 / 居留證'
                     style={globalStyles.input}
                     onChangeText={setAccount}
                     value={account}
@@ -70,6 +84,9 @@ export default function SignIn({ navigation }) {
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {navigation.navigate('Forgot');}}>
                     <Text style={[globalStyles.color, {marginTop: 10}]}>忘記密碼?</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{position: 'absolute', right: 40, bottom: 40}} onPress={showRule}>
+                    <FontAwesome name="question-circle-o" size={40} color="#9EACB9" />
                 </TouchableOpacity>
             </View>
 		</TouchableWithoutFeedback>
