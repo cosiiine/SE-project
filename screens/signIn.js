@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons'; 
-import { globalStyles } from '../styles/global';
+import { Ionicons } from '@expo/vector-icons'; import { globalStyles } from '../styles/global';
 import { createUserTable, deleteAllUsers, insertUser, getUser, USERTYPE} from '../db/user';
 import { createWorkTable, deleteWorksTable } from '../db/work';
 import { createSignTable, insertSign } from '../db/signRecords';
@@ -88,7 +87,7 @@ export default function SignIn({ navigation }) {
                     <Text style={[globalStyles.color, {marginTop: 10}]}>忘記密碼?</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{position: 'absolute', right: 40, bottom: 40}} onPress={showRule}>
-                    <FontAwesome name="question-circle-o" size={40} color="#9EACB9" />
+                    <Ionicons name="information-circle-outline" size={40} color="#9EACB9" />
                 </TouchableOpacity>
             </View>
 		</TouchableWithoutFeedback>
