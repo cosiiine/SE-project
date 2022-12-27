@@ -1,9 +1,7 @@
 import React from 'react';
 import Navigator from './routes/navigator';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { createUserTable } from './db/user';
-import { createWorkTable } from './db/work';
-import { createSignTable } from './db/signRecords';
+import 'react-native-gesture-handler';
 
 
 export default function App() {

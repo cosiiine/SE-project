@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "project",
-    "slug": "project",
+    "name": "漁工勤務紀錄",
+    "slug": "漁工勤務紀錄",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "landscape",
     "icon": "./assets/icon2.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash2.png",
+      "image": "./assets/splash2_landscape.png",
       "resizeMode": "contain",
       "backgroundColor": "#fbfbff"
     },
@@ -25,10 +25,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon2.png",
         "backgroundColor": "#FBFBFF"
-      }
+      },
+      "package": "csie.toolman.attendance"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f3ba91aa-4fb0-49a9-93f1-53475020490d"
+      }
     }
   }
 }

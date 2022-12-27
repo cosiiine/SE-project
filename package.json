@@ -24,7 +24,8 @@
     "expo-screen-orientation": "~4.3.0",
     "@react-native-community/datetimepicker": "6.2.0",
     "expo-sqlite": "~10.3.0",
-    "expo-updates": "~0.14.7"
+    "expo-updates": "~0.14.7",
+    "react-native-gesture-handler": "~2.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
